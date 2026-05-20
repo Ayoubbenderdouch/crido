@@ -94,9 +94,24 @@ body {
   animation: glow-pulse 9s ease-in-out infinite;
 }
 
+/* ── Number swap (interactive cards) ────────────── */
+@keyframes num-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.num-pop {
+  animation: num-pop 0.4s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .reveal, .rise, .floaty, .glow-pulse {
+  .reveal, .rise, .floaty, .glow-pulse, .num-pop {
     animation: none !important;
     transition: none !important;
     opacity: 1 !important;

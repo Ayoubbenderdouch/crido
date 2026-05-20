@@ -1,12 +1,22 @@
+import { useState } from 'react'
 import { ArrowLeft, Smartphone, BadgeCheck, Check } from 'lucide-react'
 
-const DURATIONS = [
-  { m: '4 أشهر', active: false },
-  { m: '6 أشهر', active: false },
-  { m: '12 شهر', active: true },
+const PRICE = 200000
+
+const PLANS = [
+  { months: 4, label: '4 أشهر', marginPct: 5 },
+  { months: 6, label: '6 أشهر', marginPct: 8 },
+  { months: 12, label: '12 شهر', marginPct: 15 },
 ]
 
+const fmt = (n: number) => new Intl.NumberFormat('en-US').format(Math.round(n))
+
 function FinancingCard() {
+  const [idx, setIdx] = useState(2)
+  const plan = PLANS[idx]
+  const total = PRICE * (1 + plan.marginPct / 100)
+  const monthly = total / plan.months
+
   return (
     <div className="floaty relative mx-auto w-full max-w-sm">
       <div className="absolute inset-0 translate-x-4 translate-y-6 rounded-[30px] bg-teal-bright/25" />
@@ -32,27 +42,36 @@ function FinancingCard() {
 
         <p className="mt-4 text-sm text-ink-soft">اختر مدة التقسيط</p>
         <div className="mt-2 flex gap-2">
-          {DURATIONS.map((d) => (
-            <span
-              key={d.m}
-              className={`flex-1 rounded-xl py-2 text-center text-sm font-semibold ${
-                d.active ? 'bg-teal text-white' : 'bg-cream text-ink-faint'
+          {PLANS.map((p, i) => (
+            <button
+              key={p.months}
+              type="button"
+              onClick={() => setIdx(i)}
+              aria-pressed={i === idx}
+              className={`flex-1 rounded-xl py-2.5 text-center text-sm font-semibold transition-all duration-200 ${
+                i === idx
+                  ? 'bg-teal text-white shadow-[0_10px_20px_-10px_rgba(15,110,86,0.8)]'
+                  : 'bg-cream text-ink-faint hover:bg-cream-deep hover:text-ink-soft'
               }`}
             >
-              {d.m}
-            </span>
+              {p.label}
+            </button>
           ))}
         </div>
 
         <div className="mt-4 rounded-2xl bg-teal-deep p-5 text-white">
           <p className="text-xs text-teal-surface/70">قسطك الشهري</p>
-          <p className="latin mt-1 text-[2rem] font-bold leading-none">19,166 دج</p>
-          <p className="mt-2 text-xs text-teal-surface/70">12 قسطاً متساوياً · بدون أي فوائد</p>
+          <p key={idx} className="num-pop latin mt-1 text-[2rem] font-bold leading-none">
+            {fmt(monthly)} دج
+          </p>
+          <p key={`note-${idx}`} className="num-pop mt-2 text-xs text-teal-surface/70">
+            {plan.months} قسطاً متساوياً · المجموع <span className="latin">{fmt(total)}</span> دج
+          </p>
         </div>
 
         <div className="mt-4 flex items-center gap-2 text-xs font-medium text-teal">
           <BadgeCheck size={16} />
-          السعر النهائي ثابت ومعروف لك مُسبقاً
+          بدون أي فوائد — السعر النهائي معروف لك مُسبقاً
         </div>
       </div>
     </div>
@@ -64,7 +83,8 @@ export function Hero() {
     <section id="top" className="relative overflow-hidden bg-teal-deep pt-32 pb-24 md:pt-40 md:pb-32">
       <div className="glow-pulse pointer-events-none absolute -top-40 -start-40 h-[40rem] w-[40rem] rounded-full bg-teal-bright/20 blur-[130px]" />
       <div className="pointer-events-none absolute -bottom-48 -end-32 h-[34rem] w-[34rem] rounded-full bg-teal/45 blur-[130px]" />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.5]"
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.5]"
         style={{
           backgroundImage:
             'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.07) 1px, transparent 0)',
