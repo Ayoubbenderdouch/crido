@@ -7,6 +7,7 @@ import {
 import { cn } from '@/lib/utils'
 import { clearToken } from '@/lib/auth'
 import { currentAdmin } from '@/lib/mock/data'
+import { Avatar } from '@/components/data/Avatar'
 
 const NAV = [
   {
@@ -76,9 +77,7 @@ export function Sidebar() {
       </nav>
 
       <div className="flex items-center gap-3 border-t border-border p-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-surface text-sm font-medium text-primary">
-          {currentAdmin.name.charAt(0)}
-        </span>
+        <Avatar name={currentAdmin.name} size={36} />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium text-foreground">{currentAdmin.name}</p>
           <p className="truncate text-xs text-foreground-tertiary">{currentAdmin.email}</p>

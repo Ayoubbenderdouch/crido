@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { StatusBadge } from '@/components/data/StatusBadge'
+import { Avatar } from '@/components/data/Avatar'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { fetchStaff } from '@/lib/mock/api'
@@ -24,7 +25,12 @@ export default function StaffPage() {
     {
       key: 'name',
       header: t('staff.columns.name'),
-      cell: (s) => <span className="font-medium text-foreground">{s.name}</span>,
+      cell: (s) => (
+        <div className="flex items-center gap-3">
+          <Avatar name={s.name} size={36} />
+          <span className="font-medium text-foreground">{s.name}</span>
+        </div>
+      ),
     },
     {
       key: 'phone',

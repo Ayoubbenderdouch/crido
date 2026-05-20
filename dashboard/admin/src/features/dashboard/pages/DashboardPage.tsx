@@ -7,6 +7,7 @@ import { KpiCard } from '@/components/data/KpiCard'
 import { StatusBadge } from '@/components/data/StatusBadge'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { Loader } from '@/components/data/Loader'
+import { Avatar } from '@/components/data/Avatar'
 import { AreaTrend } from '@/components/charts/AreaTrend'
 import { BarTrend } from '@/components/charts/BarTrend'
 import { DonutChart } from '@/components/charts/DonutChart'
@@ -29,9 +30,7 @@ function QueueRow({ avatar, title, subtitle, onClick }: {
       onClick={onClick}
       className="flex w-full items-center gap-3 border-b border-border px-5 py-3 text-start transition-colors last:border-0 hover:bg-background-secondary"
     >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-surface text-sm font-medium text-primary">
-        {avatar}
-      </span>
+      {avatar}
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-medium text-foreground">{title}</span>
         <span className="block truncate text-xs text-foreground-tertiary">{subtitle}</span>
@@ -202,7 +201,7 @@ export default function DashboardPage() {
           {pendingKyc.map((c) => (
             <QueueRow
               key={c.id}
-              avatar={c.name.charAt(0)}
+              avatar={<Avatar name={c.name} size={36} />}
               title={c.name}
               subtitle={c.commune}
               onClick={() => navigate(`/clients/${c.id}`)}
@@ -215,7 +214,11 @@ export default function DashboardPage() {
           {adHoc.map((r) => (
             <QueueRow
               key={r.reference}
-              avatar={<PhoneCall size={15} strokeWidth={1.75} />}
+              avatar={
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-surface text-primary">
+                  <PhoneCall size={15} strokeWidth={1.75} />
+                </span>
+              }
               title={r.merchantName}
               subtitle={`${r.clientName} · ${formatDzd(r.amountDzd, locale)}`}
               onClick={() => navigate(`/financing-requests/${r.reference}`)}

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ChevronRight, UserX } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusBadge } from '@/components/data/StatusBadge'
+import { Avatar } from '@/components/data/Avatar'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
@@ -73,9 +74,7 @@ export default function CustomerDetailPage() {
       </Link>
 
       <div className="mb-6 flex flex-wrap items-center gap-3">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-surface text-lg font-medium text-primary">
-          {c.name.charAt(0)}
-        </span>
+        <Avatar name={c.name} size={52} />
         <div className="me-auto">
           <h1 className="text-xl font-medium text-foreground">{c.name}</h1>
           <p className="text-sm tabular-nums text-foreground-tertiary" dir="ltr">{c.phone}</p>

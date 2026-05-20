@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { StatusBadge } from '@/components/data/StatusBadge'
 import { TierBadge } from '@/components/data/TierBadge'
+import { Avatar } from '@/components/data/Avatar'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { fetchRequests } from '@/lib/mock/api'
@@ -40,9 +41,10 @@ export default function RequestsPage() {
       key: 'client',
       header: t('requests.columns.client'),
       cell: (r) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          <Avatar name={r.clientName} size={34} />
+          <span className="text-foreground">{r.clientName}</span>
           <TierBadge tier={r.clientTier} />
-          <span>{r.clientName}</span>
         </div>
       ),
     },

@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { StatusBadge } from '@/components/data/StatusBadge'
 import { TierBadge } from '@/components/data/TierBadge'
+import { Avatar } from '@/components/data/Avatar'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { fetchClients } from '@/lib/mock/api'
@@ -41,9 +42,12 @@ export default function ClientsPage() {
       key: 'client',
       header: t('clients.columns.client'),
       cell: (c) => (
-        <div>
-          <p className="font-medium text-foreground">{c.name}</p>
-          <p className="text-xs tabular-nums text-foreground-tertiary" dir="ltr">{c.phone}</p>
+        <div className="flex items-center gap-3">
+          <Avatar name={c.name} size={38} />
+          <div>
+            <p className="font-medium text-foreground">{c.name}</p>
+            <p className="text-xs tabular-nums text-foreground-tertiary" dir="ltr">{c.phone}</p>
+          </div>
         </div>
       ),
     },

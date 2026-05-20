@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { Card } from '@/components/ui/card'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { StatusBadge } from '@/components/data/StatusBadge'
+import { Avatar } from '@/components/data/Avatar'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { cn } from '@/lib/utils'
@@ -48,9 +49,12 @@ export default function RequestsPage() {
       key: 'customer',
       header: t('requests.columns.customer'),
       cell: (r) => (
-        <div>
-          <p className="text-foreground">{r.customerName}</p>
-          <p className="text-xs tabular-nums text-foreground-tertiary" dir="ltr">{r.customerPhone}</p>
+        <div className="flex items-center gap-3">
+          <Avatar name={r.customerName} size={38} />
+          <div>
+            <p className="text-foreground">{r.customerName}</p>
+            <p className="text-xs tabular-nums text-foreground-tertiary" dir="ltr">{r.customerPhone}</p>
+          </div>
         </div>
       ),
     },

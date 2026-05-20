@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { Card } from '@/components/ui/card'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { StatusBadge } from '@/components/data/StatusBadge'
+import { Avatar } from '@/components/data/Avatar'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { fetchCustomers } from '@/lib/mock/api'
@@ -29,9 +30,12 @@ export default function CustomersPage() {
       key: 'customer',
       header: t('customers.columns.customer'),
       cell: (c) => (
-        <div>
-          <p className="font-medium text-foreground">{c.name}</p>
-          <p className="text-xs tabular-nums text-foreground-tertiary" dir="ltr">{c.phone}</p>
+        <div className="flex items-center gap-3">
+          <Avatar name={c.name} size={38} />
+          <div>
+            <p className="font-medium text-foreground">{c.name}</p>
+            <p className="text-xs tabular-nums text-foreground-tertiary" dir="ltr">{c.phone}</p>
+          </div>
         </div>
       ),
     },
