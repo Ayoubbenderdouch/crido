@@ -1,0 +1,18 @@
+{
+  "app": {
+    "name": "Crido",
+    "tagline": "Tableau de bord Admin"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "loading": "Chargement..."
+  },
+  "boot": {
+    "title": "Crido — Tableau de bord Admin",
+    "subtitle": "Environnement prêt. L'interface sera construite au Sprint 7.",
+    "status": "Le projet fonctionne ✓"
+  }
+}

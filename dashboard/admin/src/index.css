@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Brand — Crido Teal */
+  --color-primary: #0F6E56;
+  --color-primary-hover: #0C5B47;
+  --color-primary-light: #1D9E75;
+  --color-primary-surface: #E1F5EE;
+  --color-primary-fg: #FFFFFF;
+
+  /* Semantic */
+  --color-success: #1D9E75;
+  --color-warning: #EF9F27;
+  --color-danger: #E24B4A;
+  --color-info: #378ADD;
+
+  /* Neutrals — light mode */
+  --color-background: #FFFFFF;
+  --color-background-secondary: #F7F6F1;
+  --color-foreground: #1A1A18;
+  --color-foreground-secondary: #5F5E5A;
+  --color-foreground-tertiary: #888780;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-strong: rgba(0, 0, 0, 0.15);
+  --color-card: #FFFFFF;
+
+  /* Corners */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Fonts */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-arabic: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+}
+
+html[dir="rtl"] {
+  --font-sans: var(--font-arabic);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-background-secondary);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+}

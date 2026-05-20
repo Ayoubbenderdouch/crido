@@ -1,0 +1,18 @@
+{
+  "app": {
+    "name": "Crido",
+    "tagline": "Tableau de bord Vendeur"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "reject": "Rejeter",
+    "loading": "Chargement..."
+  },
+  "boot": {
+    "title": "Crido — Tableau de bord Vendeur",
+    "subtitle": "Environnement prêt. L'interface sera construite au Sprint 8.",
+    "status": "Le projet fonctionne ✓"
+  }
+}
