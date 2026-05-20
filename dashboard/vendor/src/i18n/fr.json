@@ -1,18 +1,339 @@
 {
-  "app": {
-    "name": "Crido",
-    "tagline": "Tableau de bord Vendeur"
+  "app": { "name": "Crido", "tagline": "Tableau de bord Vendeur" },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "requests": "Demandes",
+    "financings": "Financements",
+    "payouts": "Versements",
+    "customers": "Clients",
+    "products": "Produits",
+    "branches": "Succursales",
+    "staff": "Personnel",
+    "profile": "Profil commercial",
+    "settings": "Paramètres",
+    "sectionMain": "Opérations",
+    "sectionManage": "Boutique"
   },
   "common": {
+    "search": "Rechercher...",
+    "view": "Voir",
+    "viewAll": "Tout voir",
+    "all": "Tous",
+    "loading": "Chargement...",
+    "back": "Retour",
+    "logout": "Déconnexion",
+    "actions": "Actions",
+    "results": "résultat(s)",
+    "noResults": "Aucun résultat",
     "save": "Enregistrer",
     "cancel": "Annuler",
-    "confirm": "Confirmer",
+    "approve": "Approuver",
     "reject": "Rejeter",
-    "loading": "Chargement..."
+    "confirm": "Confirmer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "comingSoon": "Cette page est en construction",
+    "comingSoonHint": "Elle sera construite lors d'un prochain sprint selon la feuille de route.",
+    "actionDemo": "Action de démo — activée après le branchement du backend.",
+    "notFound": "Élément introuvable",
+    "call": "Appeler",
+    "whatsapp": "WhatsApp",
+    "yes": "Oui",
+    "no": "Non"
   },
-  "boot": {
-    "title": "Crido — Tableau de bord Vendeur",
-    "subtitle": "Environnement prêt. L'interface sera construite au Sprint 8.",
-    "status": "Le projet fonctionne ✓"
+  "login": {
+    "title": "Connexion",
+    "subtitle": "Espace vendeur Crido",
+    "phone": "Numéro de téléphone",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "demoHint": "Démo — identifiants pré-remplis."
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Vue d'ensemble de l'activité de votre boutique",
+    "greeting": "Bonjour, {{name}}",
+    "stats": {
+      "monthSales": "Ventes du mois",
+      "totalFinancings": "Total des financements",
+      "pendingRequests": "Demandes en attente",
+      "pendingPayout": "Solde en attente"
+    },
+    "charts": {
+      "sales": "Ventes quotidiennes (30 derniers jours)",
+      "topProducts": "Produits les plus vendus",
+      "duration": "Durée des financements"
+    },
+    "recentFinancings": "Derniers financements",
+    "recentPayouts": "Derniers versements",
+    "months": "mois",
+    "noPending": "Aucune demande en attente"
+  },
+  "requests": {
+    "title": "Demandes",
+    "subtitle": "Demandes de financement reçues de vos clients",
+    "tabs": { "new": "Nouvelles", "confirmed": "Confirmées", "approved": "Approuvées", "rejected": "Rejetées" },
+    "confirm": "Confirmer la demande",
+    "reject": "Rejeter la demande",
+    "months": "{{count}} mois",
+    "columns": {
+      "reference": "Référence",
+      "customer": "Client",
+      "product": "Produit",
+      "amount": "Montant",
+      "plan": "Plan",
+      "payout": "Vous recevez",
+      "status": "Statut",
+      "date": "Date"
+    },
+    "sections": {
+      "customer": "Client",
+      "product": "Produit",
+      "branch": "Succursale",
+      "timeline": "Statut de la demande"
+    },
+    "breakdown": {
+      "title": "Ce que vous recevez",
+      "finalPrice": "Prix final pour le client",
+      "commission": "Commission Crido (5%)",
+      "payout": "Vous recevez",
+      "hint": "Vous êtes payé intégralement d'avance après approbation de Crido — les retards de paiement du client ne vous affectent pas."
+    },
+    "confirmModal": {
+      "title": "Confirmer la demande",
+      "notesLabel": "Notes (optionnel)",
+      "notesPlaceholder": "Le prix est-il confirmé ? Le produit est-il disponible ?",
+      "submit": "Confirmer la demande"
+    },
+    "rejectModal": {
+      "title": "Rejeter la demande",
+      "reasonLabel": "Motif du rejet",
+      "reasonPlaceholder": "Ex : produit indisponible, prix incorrect...",
+      "submit": "Rejeter la demande"
+    },
+    "merchantNote": "Note du marchand",
+    "confirmedToast": "Demande confirmée — un SMS de confirmation a été envoyé au client.",
+    "rejectedToast": "Demande rejetée.",
+    "timelineSubmitted": "Le client a soumis la demande",
+    "timelineConfirmed": "Vous avez confirmé la demande",
+    "timelineApproved": "Crido a approuvé — devenue un financement",
+    "timelineRejected": "Demande rejetée"
+  },
+  "financings": {
+    "title": "Financements",
+    "subtitle": "Financements réalisés via votre boutique",
+    "tabs": { "all": "Tous", "active": "Actifs", "completed": "Clôturés" },
+    "columns": {
+      "reference": "Référence",
+      "customer": "Client",
+      "product": "Produit",
+      "total": "Montant total",
+      "payout": "Votre versement",
+      "plan": "Plan",
+      "status": "Statut",
+      "activated": "Activé le"
+    },
+    "payoutPaid": "Versé",
+    "payoutPending": "En attente de versement",
+    "privacyNote": "Le détail des échéances du client ne vous est pas visible pour des raisons de confidentialité — vous avez été payé intégralement d'avance."
+  },
+  "payouts": {
+    "title": "Versements",
+    "subtitle": "L'argent que Crido vous verse",
+    "tabs": { "all": "Tous", "pending": "En attente", "paid": "Versés" },
+    "columns": {
+      "reference": "Référence",
+      "financing": "Financement",
+      "amount": "Montant",
+      "method": "Méthode",
+      "status": "Statut",
+      "date": "Date prévue"
+    },
+    "sections": {
+      "details": "Détails du versement",
+      "delivery": "Livraison en espèces"
+    },
+    "fields": {
+      "financing": "Financement lié",
+      "customer": "Client",
+      "product": "Produit",
+      "method": "Méthode de paiement",
+      "expectedDate": "Date prévue",
+      "paidDate": "Date de paiement",
+      "externalRef": "Référence externe",
+      "agent": "Agent assigné"
+    },
+    "downloadReceipt": "Télécharger le reçu",
+    "incomingHint": "Ce versement vous parviendra à la date prévue."
+  },
+  "customers": {
+    "title": "Clients",
+    "subtitle": "Clients ayant acheté via votre boutique",
+    "columns": {
+      "customer": "Client",
+      "commune": "Commune",
+      "purchases": "Achats",
+      "total": "Total dépensé",
+      "first": "Premier achat",
+      "last": "Dernier achat",
+      "status": "Statut"
+    },
+    "fields": {
+      "phone": "Téléphone",
+      "commune": "Commune",
+      "purchases": "Nombre d'achats",
+      "total": "Total dépensé",
+      "first": "Premier achat",
+      "last": "Dernier achat"
+    },
+    "financingsTitle": "Financements du client via votre boutique",
+    "privacyNote": "Pour des raisons de confidentialité, les documents d'identité et le score de crédit du client ne sont pas affichés."
+  },
+  "products": {
+    "title": "Produits",
+    "subtitle": "Le catalogue de votre boutique",
+    "addProduct": "Ajouter un produit",
+    "category": "Catégorie",
+    "price": "Prix",
+    "sku": "Réf.",
+    "stock": "Stock",
+    "inStock": "En stock",
+    "outOfStock": "Rupture",
+    "available": "Affiché",
+    "unavailable": "Masqué",
+    "units": "unité(s)"
+  },
+  "branches": {
+    "title": "Succursales",
+    "subtitle": "Les emplacements physiques de votre boutique",
+    "addBranch": "Ajouter une succursale",
+    "columns": {
+      "branch": "Succursale",
+      "address": "Adresse",
+      "phone": "Téléphone",
+      "manager": "Responsable",
+      "status": "Statut"
+    }
+  },
+  "staff": {
+    "title": "Personnel",
+    "subtitle": "Qui peut accéder au tableau de bord",
+    "addStaff": "Inviter un membre",
+    "columns": {
+      "name": "Nom",
+      "phone": "Téléphone",
+      "role": "Rôle",
+      "lastLogin": "Dernière connexion",
+      "status": "Statut"
+    },
+    "roles": {
+      "owner": "Propriétaire",
+      "manager": "Gérant",
+      "cashier": "Caissier",
+      "viewer": "Lecture seule"
+    },
+    "neverLoggedIn": "Jamais connecté"
+  },
+  "profile": {
+    "title": "Profil commercial",
+    "subtitle": "L'identité de votre boutique chez Crido",
+    "edit": "Modifier le profil",
+    "sections": {
+      "identity": "Identité commerciale",
+      "legal": "Informations légales",
+      "contact": "Coordonnées",
+      "banking": "Informations de paiement",
+      "documents": "Documents KYB"
+    },
+    "fields": {
+      "name": "Raison sociale",
+      "category": "Catégorie",
+      "description": "Description",
+      "rc": "Registre du commerce (RC)",
+      "nif": "Identifiant fiscal (NIF)",
+      "nis": "Identifiant statistique (NIS)",
+      "art": "Numéro d'article (Art)",
+      "phone": "Téléphone",
+      "email": "E-mail",
+      "website": "Site web",
+      "address": "Adresse",
+      "wilaya": "Wilaya",
+      "commune": "Commune",
+      "commissionRate": "Taux de commission Crido",
+      "bankHolder": "Titulaire du compte",
+      "ccp": "Compte CCP",
+      "rip": "Clé RIP",
+      "baridiMob": "BaridiMob",
+      "joinedAt": "Date d'adhésion"
+    },
+    "documents": {
+      "rc": "Registre du commerce",
+      "nif": "Carte fiscale",
+      "nis": "Identifiant statistique",
+      "ownerId": "Pièce d'identité du propriétaire"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Préférences de notification et de compte",
+    "sections": {
+      "notifications": "Notifications",
+      "preferences": "Préférences",
+      "security": "Sécurité"
+    },
+    "notifications": {
+      "newRequest": "Nouvelle demande de financement",
+      "payoutSent": "Nouveau versement reçu",
+      "financingCompleted": "Financement clôturé"
+    },
+    "channels": { "sms": "SMS", "email": "E-mail", "push": "Notifications push" },
+    "defaultBranch": "Succursale par défaut",
+    "language": "Langue de l'interface",
+    "changePassword": "Changer le mot de passe"
+  },
+  "status": {
+    "draft": "Brouillon",
+    "submitted": "En attente de confirmation",
+    "merchant_confirmed": "Confirmée",
+    "merchant_rejected": "Rejetée",
+    "under_review": "En examen",
+    "documents_required": "Documents requis",
+    "contracts_generated": "Contrats générés",
+    "contracts_signed": "Contrats signés",
+    "approved": "Approuvée",
+    "rejected": "Rejetée",
+    "cancelled_by_client": "Annulée par le client",
+    "expired": "Expirée",
+    "active": "Actif",
+    "late": "En retard",
+    "completed": "Clôturé",
+    "defaulted": "En défaut",
+    "cancelled": "Annulé",
+    "processing": "En traitement",
+    "paid": "Versé",
+    "pending_proof": "Preuve attendue",
+    "pending_verification": "À vérifier",
+    "verified": "Vérifié",
+    "not_started": "Non commencé",
+    "pending": "En attente",
+    "suspended": "Suspendu",
+    "inactive": "Inactif"
+  },
+  "source": { "partner": "Partenaire", "ad_hoc": "Ad-hoc" },
+  "method": {
+    "ccp": "Compte CCP",
+    "ccp_transfer": "Virement CCP",
+    "baridi_mob": "BaridiMob",
+    "bank_transfer": "Virement bancaire",
+    "cash_to_agent": "Espèces à l'agent",
+    "cash_delivery": "Livraison en espèces"
+  },
+  "employment": {
+    "employed": "Salarié",
+    "self_employed": "Indépendant",
+    "student": "Étudiant",
+    "retired": "Retraité",
+    "unemployed": "Sans emploi",
+    "other": "Autre"
   }
 }

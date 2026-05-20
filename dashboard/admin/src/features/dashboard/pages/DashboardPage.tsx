@@ -1,37 +1,69 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import {
-  Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis,
-} from 'recharts'
 import { Users, CreditCard, Banknote, TrendingUp, PhoneCall, ChevronLeft } from 'lucide-react'
-import { PageHeader } from '@/components/layout/PageHeader'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
-import { StatCard } from '@/components/data/StatCard'
+import { KpiCard } from '@/components/data/KpiCard'
 import { StatusBadge } from '@/components/data/StatusBadge'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { Loader } from '@/components/data/Loader'
-import { fetchDashboardStats, fetchDailySeries } from '@/lib/mock/api'
-import { clients, financingRequests, type FinancingRequest } from '@/lib/mock/data'
-import { formatDzd, formatNumber, type Locale } from '@/lib/format'
+import { AreaTrend } from '@/components/charts/AreaTrend'
+import { BarTrend } from '@/components/charts/BarTrend'
+import { DonutChart } from '@/components/charts/DonutChart'
+import { fetchDashboard } from '@/lib/mock/api'
+import { clients, financingRequests, currentAdmin, type FinancingRequest } from '@/lib/mock/data'
+import { formatDzd, formatNumber, formatDate, type Locale } from '@/lib/format'
 
+const TODAY = '2026-05-20'
 const shortDate = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`
+
+function QueueRow({ avatar, title, subtitle, onClick }: {
+  avatar: React.ReactNode
+  title: string
+  subtitle: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center gap-3 border-b border-border px-5 py-3 text-start transition-colors last:border-0 hover:bg-background-secondary"
+    >
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-surface text-sm font-medium text-primary">
+        {avatar}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-medium text-foreground">{title}</span>
+        <span className="block truncate text-xs text-foreground-tertiary">{subtitle}</span>
+      </span>
+      <ChevronLeft size={16} className="shrink-0 text-foreground-tertiary ltr:rotate-180" />
+    </button>
+  )
+}
 
 export default function DashboardPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
   const navigate = useNavigate()
 
-  const stats = useQuery({ queryKey: ['dashboard', 'stats'], queryFn: fetchDashboardStats })
-  const series = useQuery({ queryKey: ['dashboard', 'series'], queryFn: fetchDailySeries })
+  const { data, isLoading } = useQuery({ queryKey: ['dashboard'], queryFn: fetchDashboard })
 
-  if (stats.isLoading || series.isLoading || !stats.data || !series.data) {
-    return <Loader />
-  }
-  const s = stats.data
+  if (isLoading || !data) return <Loader />
 
+  const { kpis, trends, sparks } = data
+  const firstName = currentAdmin.name.split(' ')[0]
   const recent = financingRequests.slice(0, 5)
   const pendingKyc = clients.filter((c) => c.kycStatus === 'pending')
+  const adHoc = financingRequests.filter(
+    (r) => r.merchantSource === 'ad_hoc' && r.status === 'submitted',
+  )
+
+  const slices = data.portfolio.map((p) => ({
+    name: t(`status.${p.name}`),
+    value: p.value,
+    color: p.color,
+  }))
+  const totalFinancings = slices.reduce((sum, s) => sum + s.value, 0)
 
   const recentColumns: Column<FinancingRequest>[] = [
     {
@@ -56,74 +88,94 @@ export default function DashboardPage() {
 
   return (
     <div className="animate-fade-up">
-      <PageHeader title={t('dashboard.title')} subtitle={t('dashboard.subtitle')} />
+      <div className="mb-6">
+        <h1 className="text-2xl font-medium text-foreground">
+          {t('dashboard.greeting', { name: firstName })}
+        </h1>
+        <p className="mt-1 text-sm text-foreground-secondary">
+          {t('dashboard.subtitle')} · {formatDate(TODAY, locale)}
+        </p>
+      </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          icon={Users}
+        <KpiCard
           label={t('dashboard.stats.activeClients')}
-          value={formatNumber(s.activeClients, locale)}
-          hint={`${formatNumber(s.kycPending, locale)} ${t('dashboard.stats.kycPending')}`}
+          value={formatNumber(kpis.activeClients, locale)}
+          icon={Users}
+          trend={trends.clients}
+          spark={sparks.clients}
         />
-        <StatCard
-          icon={CreditCard}
+        <KpiCard
           label={t('dashboard.stats.activeFinancings')}
-          value={formatNumber(s.activeFinancings, locale)}
-          hint={formatDzd(s.outstandingDzd, locale)}
+          value={formatNumber(kpis.activeFinancings, locale)}
+          icon={CreditCard}
+          trend={trends.financings}
+          spark={sparks.financings}
         />
-        <StatCard
-          icon={Banknote}
+        <KpiCard
           label={t('dashboard.stats.pendingVerification')}
-          value={formatNumber(s.pendingVerification, locale)}
+          value={formatNumber(kpis.pendingVerification, locale)}
+          icon={Banknote}
           accent="warning"
+          spark={sparks.payments}
+          sparkColor="#EF9F27"
         />
-        <StatCard
-          icon={TrendingUp}
+        <KpiCard
           label={t('dashboard.stats.monthRevenue')}
-          value={formatDzd(s.monthRevenueDzd, locale)}
+          value={formatDzd(kpis.monthRevenueDzd, locale)}
+          icon={TrendingUp}
+          trend={trends.revenue}
+          spark={sparks.revenue}
+          sparkColor="#1D9E75"
         />
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card className="p-5">
-          <p className="text-md font-medium text-foreground">{t('dashboard.charts.financings')}</p>
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Card className="p-5 lg:col-span-2">
+          <p className="text-md font-medium text-foreground">{t('dashboard.charts.revenue')}</p>
           <div className="mt-4">
-            <ResponsiveContainer width="100%" height={210}>
-              <AreaChart data={series.data} margin={{ top: 6, right: 6, bottom: 0, left: -16 }}>
-                <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.06)" />
-                <XAxis dataKey="date" tickFormatter={shortDate} interval={6} tick={{ fontSize: 11, fill: '#888780' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: '#888780' }} axisLine={false} tickLine={false} />
-                <Tooltip
-                  contentStyle={{ borderRadius: 8, border: '1px solid rgba(0,0,0,0.08)', fontSize: 12 }}
-                  labelFormatter={(l) => shortDate(String(l))}
-                />
-                <Area type="monotone" dataKey="financings" stroke="#0F6E56" strokeWidth={2} fill="#0F6E56" fillOpacity={0.08} />
-              </AreaChart>
-            </ResponsiveContainer>
+            <AreaTrend
+              data={data.daily}
+              dataKey="revenueDzd"
+              xKey="date"
+              color="#0F6E56"
+              xTickFormatter={shortDate}
+              yTickFormatter={(v) => `${Math.round(v / 1000)}k`}
+              valueFormatter={(v) => formatDzd(v, locale)}
+              labelFormatter={shortDate}
+            />
           </div>
         </Card>
 
         <Card className="p-5">
-          <p className="text-md font-medium text-foreground">{t('dashboard.charts.revenue')}</p>
-          <div className="mt-4">
-            <ResponsiveContainer width="100%" height={210}>
-              <AreaChart data={series.data} margin={{ top: 6, right: 6, bottom: 0, left: 8 }}>
-                <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.06)" />
-                <XAxis dataKey="date" tickFormatter={shortDate} interval={6} tick={{ fontSize: 11, fill: '#888780' }} axisLine={false} tickLine={false} />
-                <YAxis tickFormatter={(v) => `${Math.round(Number(v) / 1000)}k`} tick={{ fontSize: 11, fill: '#888780' }} axisLine={false} tickLine={false} width={40} />
-                <Tooltip
-                  contentStyle={{ borderRadius: 8, border: '1px solid rgba(0,0,0,0.08)', fontSize: 12 }}
-                  labelFormatter={(l) => shortDate(String(l))}
-                  formatter={(v) => formatDzd(Number(v), locale)}
-                />
-                <Area type="monotone" dataKey="revenueDzd" stroke="#1D9E75" strokeWidth={2} fill="#1D9E75" fillOpacity={0.08} />
-              </AreaChart>
-            </ResponsiveContainer>
+          <p className="text-md font-medium text-foreground">{t('dashboard.portfolio')}</p>
+          <div className="mt-2">
+            <DonutChart
+              data={slices}
+              centerValue={formatNumber(totalFinancings, locale)}
+              centerLabel={t('nav.financings')}
+            />
+          </div>
+          <div className="mt-4 space-y-2.5">
+            {slices.map((s) => (
+              <div key={s.name} className="flex items-center gap-2 text-sm">
+                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: s.color }} />
+                <span className="text-foreground-secondary">{s.name}</span>
+                <span className="ms-auto tabular-nums font-medium text-foreground">{s.value}</span>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Card className="p-5">
+          <p className="text-md font-medium text-foreground">{t('dashboard.weekly')}</p>
+          <div className="mt-4">
+            <BarTrend data={data.weekly} dataKey="financings" xKey="label" color="#0F6E56" />
+          </div>
+        </Card>
+
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>{t('dashboard.recentRequests')}</CardTitle>
@@ -142,37 +194,33 @@ export default function DashboardPage() {
             onRowClick={(r) => navigate(`/financing-requests/${r.reference}`)}
           />
         </Card>
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader><CardTitle>{t('dashboard.pendingKyc')}</CardTitle></CardHeader>
+          {pendingKyc.map((c) => (
+            <QueueRow
+              key={c.id}
+              avatar={c.name.charAt(0)}
+              title={c.name}
+              subtitle={c.commune}
+              onClick={() => navigate(`/clients/${c.id}`)}
+            />
+          ))}
+        </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>{t('dashboard.pendingKyc')}</CardTitle>
-          </CardHeader>
-          <ul>
-            {pendingKyc.map((c) => (
-              <li key={c.id}>
-                <button
-                  type="button"
-                  onClick={() => navigate(`/clients/${c.id}`)}
-                  className="flex w-full items-center gap-3 border-b border-border px-5 py-3.5 text-start transition-colors last:border-0 hover:bg-background-secondary"
-                >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-surface text-sm font-medium text-primary">
-                    {c.name.charAt(0)}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium text-foreground">{c.name}</span>
-                    <span className="block text-xs text-foreground-tertiary">{c.commune}</span>
-                  </span>
-                  <ChevronLeft size={16} className="shrink-0 text-foreground-tertiary ltr:rotate-180" />
-                </button>
-              </li>
-            ))}
-            {pendingKyc.length === 0 ? (
-              <li className="flex items-center gap-2 px-5 py-6 text-sm text-foreground-tertiary">
-                <PhoneCall size={16} strokeWidth={1.5} />
-                {t('common.noResults')}
-              </li>
-            ) : null}
-          </ul>
+          <CardHeader><CardTitle>{t('dashboard.adHoc')}</CardTitle></CardHeader>
+          {adHoc.map((r) => (
+            <QueueRow
+              key={r.reference}
+              avatar={<PhoneCall size={15} strokeWidth={1.75} />}
+              title={r.merchantName}
+              subtitle={`${r.clientName} · ${formatDzd(r.amountDzd, locale)}`}
+              onClick={() => navigate(`/financing-requests/${r.reference}`)}
+            />
+          ))}
         </Card>
       </div>
     </div>

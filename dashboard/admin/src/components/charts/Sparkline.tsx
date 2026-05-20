@@ -1,0 +1,36 @@
+import { useId } from 'react'
+import { Area, AreaChart, ResponsiveContainer } from 'recharts'
+
+type Props = {
+  data: number[]
+  color?: string
+  height?: number
+}
+
+/** Tiny axis-less trend line for KPI cards. */
+export function Sparkline({ data, color = '#0F6E56', height = 38 }: Props) {
+  const gid = `spark-${useId().replace(/:/g, '')}`
+  const series = data.map((v, i) => ({ i, v }))
+
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <AreaChart data={series} margin={{ top: 3, right: 0, bottom: 0, left: 0 }}>
+        <defs>
+          <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity={0.3} />
+            <stop offset="100%" stopColor={color} stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <Area
+          type="monotone"
+          dataKey="v"
+          stroke={color}
+          strokeWidth={1.75}
+          fill={`url(#${gid})`}
+          dot={false}
+          isAnimationActive={false}
+        />
+      </AreaChart>
+    </ResponsiveContainer>
+  )
+}

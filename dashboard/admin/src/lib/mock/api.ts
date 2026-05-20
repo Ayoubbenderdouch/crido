@@ -15,17 +15,22 @@ import {
   type Payment,
 } from './data'
 
-const delay = (ms = 320) => new Promise((r) => setTimeout(r, ms))
+const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms))
 
-export type DashboardStats = {
-  activeClients: number
-  kycPending: number
-  activeFinancings: number
-  outstandingDzd: number
-  pendingVerification: number
-  monthRevenueDzd: number
-  pendingVerifications: number
-  adHocToVerify: number
+export type DashboardData = {
+  kpis: {
+    activeClients: number
+    activeFinancings: number
+    pendingVerification: number
+    monthRevenueDzd: number
+    kycPending: number
+    outstandingDzd: number
+  }
+  trends: { clients: number; financings: number; revenue: number }
+  sparks: { clients: number[]; financings: number[]; payments: number[]; revenue: number[] }
+  daily: { date: string; financings: number; revenueDzd: number }[]
+  weekly: { label: string; financings: number }[]
+  portfolio: { name: string; value: number; color: string }[]
 }
 
 export type InstallmentRow = {
@@ -35,26 +40,56 @@ export type InstallmentRow = {
   status: 'paid' | 'due' | 'scheduled' | 'late'
 }
 
-export async function fetchDashboardStats(): Promise<DashboardStats> {
-  await delay()
-  const activeFin = financings.filter((f) => f.status === 'active' || f.status === 'late')
-  return {
-    activeClients: clients.filter((c) => c.kycStatus === 'approved').length,
-    kycPending: clients.filter((c) => c.kycStatus === 'pending').length,
-    activeFinancings: activeFin.length,
-    outstandingDzd: activeFin.reduce((s, f) => s + f.remainingDzd, 0),
-    pendingVerification: payments.filter((p) => p.status === 'pending_verification').length,
-    monthRevenueDzd: 412000,
-    pendingVerifications: payments.filter((p) => p.status === 'pending_verification').length,
-    adHocToVerify: financingRequests.filter(
-      (r) => r.merchantSource === 'ad_hoc' && r.status === 'submitted',
-    ).length,
-  }
+const STATUS_COLOR: Record<string, string> = {
+  active: '#1D9E75',
+  late: '#EF9F27',
+  completed: '#0F6E56',
+  defaulted: '#E24B4A',
+  cancelled: '#888780',
 }
 
-export async function fetchDailySeries() {
+export async function fetchDashboard(): Promise<DashboardData> {
   await delay()
-  return buildDailySeries()
+  const daily = buildDailySeries()
+  const activeFin = financings.filter((f) => f.status === 'active' || f.status === 'late')
+
+  const weekly: { label: string; financings: number }[] = []
+  for (let i = 0; i < daily.length; i += 5) {
+    const chunk = daily.slice(i, i + 5)
+    weekly.push({
+      label: `${chunk[0].date.slice(8, 10)}/${chunk[0].date.slice(5, 7)}`,
+      financings: chunk.reduce((sum, d) => sum + d.financings, 0),
+    })
+  }
+
+  const counts = new Map<string, number>()
+  for (const f of financings) counts.set(f.status, (counts.get(f.status) ?? 0) + 1)
+  const portfolio = [...counts.entries()].map(([name, value]) => ({
+    name,
+    value,
+    color: STATUS_COLOR[name] ?? '#888780',
+  }))
+
+  return {
+    kpis: {
+      activeClients: clients.filter((c) => c.kycStatus === 'approved').length,
+      activeFinancings: activeFin.length,
+      pendingVerification: payments.filter((p) => p.status === 'pending_verification').length,
+      monthRevenueDzd: 412000,
+      kycPending: clients.filter((c) => c.kycStatus === 'pending').length,
+      outstandingDzd: activeFin.reduce((sum, f) => sum + f.remainingDzd, 0),
+    },
+    trends: { clients: 12, financings: 8, revenue: 15 },
+    sparks: {
+      clients: [3, 4, 4, 5, 6, 6, 7, 7, 8, 9, 9, 10],
+      financings: daily.slice(-12).map((d) => d.financings),
+      payments: [2, 1, 3, 2, 4, 3, 2, 5, 3, 4, 3, 3],
+      revenue: daily.slice(-12).map((d) => d.revenueDzd),
+    },
+    daily,
+    weekly,
+    portfolio,
+  }
 }
 
 export async function fetchClients(): Promise<Client[]> {

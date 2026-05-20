@@ -69,7 +69,10 @@
     },
     "recentRequests": "Dernières demandes de financement",
     "pendingKyc": "Dossiers KYC en attente",
-    "adHoc": "Marchands à vérifier par téléphone"
+    "adHoc": "Marchands à vérifier par téléphone",
+    "greeting": "Bonjour, {{name}}",
+    "portfolio": "Répartition du portefeuille",
+    "weekly": "Financements par semaine"
   },
   "clients": {
     "title": "Clients",
