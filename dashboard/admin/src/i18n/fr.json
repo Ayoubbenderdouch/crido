@@ -1,18 +1,214 @@
 {
-  "app": {
-    "name": "Crido",
-    "tagline": "Tableau de bord Admin"
+  "app": { "name": "Crido", "tagline": "Tableau de bord Admin" },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "clients": "Clients",
+    "merchants": "Marchands",
+    "requests": "Demandes",
+    "financings": "Financements",
+    "payments": "Paiements",
+    "payouts": "Versements marchands",
+    "verifications": "Appels de vérification",
+    "collections": "Recouvrement",
+    "reports": "Rapports",
+    "settings": "Paramètres",
+    "sectionMain": "Opérations",
+    "sectionManage": "Gestion"
   },
   "common": {
+    "search": "Rechercher...",
+    "view": "Voir",
+    "viewAll": "Tout voir",
+    "all": "Tous",
+    "loading": "Chargement...",
+    "back": "Retour",
+    "logout": "Déconnexion",
+    "actions": "Actions",
+    "results": "résultat(s)",
+    "noResults": "Aucun résultat",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "approve": "Approuver",
     "reject": "Rejeter",
-    "loading": "Chargement..."
+    "confirm": "Confirmer",
+    "comingSoon": "Cette page est en construction",
+    "comingSoonHint": "Elle sera construite lors d'un prochain sprint selon la feuille de route.",
+    "actionDemo": "Action de démo — activée après le branchement du backend.",
+    "notFound": "Élément introuvable"
   },
-  "boot": {
-    "title": "Crido — Tableau de bord Admin",
-    "subtitle": "Environnement prêt. L'interface sera construite au Sprint 7.",
-    "status": "Le projet fonctionne ✓"
+  "kyc": {
+    "docsTitle": "Documents KYC",
+    "idFront": "Carte d'identité — recto",
+    "idBack": "Carte d'identité — verso",
+    "selfie": "Selfie avec la carte",
+    "approveKyc": "Approuver le KYC",
+    "rejectKyc": "Rejeter le KYC"
+  },
+  "login": {
+    "title": "Connexion",
+    "subtitle": "Tableau de bord Admin Crido",
+    "phone": "Numéro de téléphone",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "demoHint": "Démo — saisissez n'importe quel numéro et mot de passe."
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Vue d'ensemble de l'activité Crido à Adrar",
+    "stats": {
+      "activeClients": "Clients actifs",
+      "activeFinancings": "Financements actifs",
+      "pendingVerification": "Paiements à vérifier",
+      "monthRevenue": "Revenus du mois",
+      "outstanding": "Encours à recouvrer",
+      "kycPending": "Dossiers à examiner"
+    },
+    "charts": {
+      "financings": "Nouveaux financements (30 derniers jours)",
+      "revenue": "Revenus quotidiens (30 derniers jours)"
+    },
+    "recentRequests": "Dernières demandes de financement",
+    "pendingKyc": "Dossiers KYC en attente",
+    "adHoc": "Marchands à vérifier par téléphone"
+  },
+  "clients": {
+    "title": "Clients",
+    "subtitle": "Gérer les clients Crido et examiner leurs dossiers",
+    "columns": {
+      "client": "Client",
+      "commune": "Commune",
+      "kyc": "Statut KYC",
+      "tier": "Catégorie",
+      "credit": "Limite / utilisé",
+      "financings": "Financements actifs",
+      "lastActivity": "Dernière activité"
+    },
+    "filters": { "kyc": "Statut KYC", "tier": "Catégorie" },
+    "tabs": {
+      "overview": "Aperçu",
+      "kyc": "KYC",
+      "financings": "Financements",
+      "credit": "Limite de crédit"
+    },
+    "fields": {
+      "phone": "Téléphone",
+      "dob": "Date de naissance",
+      "address": "Adresse",
+      "employment": "Situation professionnelle",
+      "employer": "Employeur",
+      "income": "Revenu mensuel",
+      "score": "Score de crédit",
+      "limit": "Limite de crédit",
+      "used": "Utilisé",
+      "available": "Disponible"
+    }
+  },
+  "merchants": {
+    "title": "Marchands",
+    "subtitle": "Marchands partenaires et ad-hoc",
+    "columns": {
+      "merchant": "Marchand",
+      "source": "Type",
+      "phone": "Téléphone",
+      "sales": "Ventes totales",
+      "financings": "Financements",
+      "status": "Statut"
+    }
+  },
+  "requests": {
+    "title": "Demandes de financement",
+    "subtitle": "File d'attente d'examen des demandes",
+    "columns": {
+      "reference": "Référence",
+      "client": "Client",
+      "merchant": "Marchand",
+      "product": "Produit",
+      "plan": "Plan",
+      "amount": "Montant",
+      "status": "Statut",
+      "date": "Date"
+    },
+    "months": "{{count}} mois",
+    "breakdown": {
+      "title": "Détail du calcul",
+      "principal": "Prix du produit",
+      "merchantCommission": "Commission marchand (5%)",
+      "merchantPayout": "Versement au marchand",
+      "clientMargin": "Marge client (15%)",
+      "totalToCollect": "Total à recouvrer",
+      "monthly": "Mensualité",
+      "profit": "Profit Crido"
+    },
+    "sections": {
+      "client": "Client",
+      "merchant": "Marchand",
+      "product": "Produit"
+    }
+  },
+  "financings": {
+    "title": "Financements",
+    "subtitle": "Tous les financements actifs et clôturés",
+    "columns": {
+      "reference": "Référence",
+      "client": "Client",
+      "merchant": "Marchand",
+      "progress": "Progression",
+      "remaining": "Restant",
+      "nextDue": "Prochaine échéance",
+      "status": "Statut"
+    }
+  },
+  "payments": {
+    "title": "Paiements",
+    "subtitle": "File d'attente de vérification des paiements",
+    "columns": {
+      "reference": "Référence",
+      "client": "Client",
+      "financing": "Financement",
+      "amount": "Montant",
+      "method": "Méthode",
+      "externalRef": "Réf. externe",
+      "status": "Statut"
+    }
+  },
+  "status": {
+    "draft": "Brouillon",
+    "submitted": "Soumise",
+    "merchant_confirmed": "Confirmée marchand",
+    "merchant_rejected": "Rejetée marchand",
+    "under_review": "En examen",
+    "documents_required": "Documents requis",
+    "contracts_generated": "Contrats générés",
+    "contracts_signed": "Contrats signés",
+    "approved": "Approuvée",
+    "rejected": "Rejetée",
+    "cancelled_by_client": "Annulée par le client",
+    "expired": "Expirée",
+    "active": "Actif",
+    "late": "En retard",
+    "completed": "Clôturé",
+    "defaulted": "En défaut",
+    "cancelled": "Annulé",
+    "pending_proof": "Preuve attendue",
+    "pending_verification": "À vérifier",
+    "verified": "Vérifié",
+    "not_started": "Non commencé",
+    "pending": "En attente",
+    "suspended": "Suspendu"
+  },
+  "source": { "partner": "Partenaire", "ad_hoc": "Ad-hoc" },
+  "employment": {
+    "employed": "Salarié",
+    "self_employed": "Indépendant",
+    "student": "Étudiant",
+    "retired": "Retraité",
+    "unemployed": "Sans emploi",
+    "other": "Autre"
+  },
+  "method": {
+    "ccp": "Compte CCP",
+    "baridi_mob": "BaridiMob",
+    "bank_transfer": "Virement bancaire",
+    "cash_to_agent": "Espèces à l'agent"
   }
 }

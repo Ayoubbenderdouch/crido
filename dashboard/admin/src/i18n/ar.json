@@ -1,18 +1,214 @@
 {
-  "app": {
-    "name": "Crido",
-    "tagline": "لوحة تحكم الإدارة"
+  "app": { "name": "Crido", "tagline": "لوحة تحكم الإدارة" },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "clients": "العملاء",
+    "merchants": "التجار",
+    "requests": "طلبات التمويل",
+    "financings": "التمويلات",
+    "payments": "المدفوعات",
+    "payouts": "مدفوعات التجار",
+    "verifications": "مكالمات التحقق",
+    "collections": "التحصيل",
+    "reports": "التقارير",
+    "settings": "الإعدادات",
+    "sectionMain": "العمليات",
+    "sectionManage": "الإدارة"
   },
   "common": {
+    "search": "بحث...",
+    "view": "عرض",
+    "viewAll": "عرض الكل",
+    "all": "الكل",
+    "loading": "جارٍ التحميل...",
+    "back": "رجوع",
+    "logout": "تسجيل الخروج",
+    "actions": "إجراءات",
+    "results": "نتيجة",
+    "noResults": "لا توجد نتائج",
     "save": "حفظ",
     "cancel": "إلغاء",
     "approve": "موافقة",
     "reject": "رفض",
-    "loading": "جارٍ التحميل..."
+    "confirm": "تأكيد",
+    "comingSoon": "هذه الصفحة قيد الإنشاء",
+    "comingSoonHint": "ستُبنى ضمن السبرينت القادم حسب خارطة الطريق.",
+    "actionDemo": "إجراء تجريبي — سيُفعَّل بعد ربط الواجهة الخلفية.",
+    "notFound": "العنصر غير موجود"
   },
-  "boot": {
-    "title": "Crido — لوحة تحكم الإدارة",
-    "subtitle": "البيئة جاهزة. الواجهة تُبنى في سبرينت 7.",
-    "status": "المشروع يعمل بنجاح ✓"
+  "kyc": {
+    "docsTitle": "مستندات KYC",
+    "idFront": "بطاقة التعريف — الوجه",
+    "idBack": "بطاقة التعريف — الظهر",
+    "selfie": "صورة ذاتية مع البطاقة",
+    "approveKyc": "قبول KYC",
+    "rejectKyc": "رفض KYC"
+  },
+  "login": {
+    "title": "تسجيل الدخول",
+    "subtitle": "لوحة تحكم إدارة Crido",
+    "phone": "رقم الهاتف",
+    "password": "كلمة المرور",
+    "submit": "دخول",
+    "demoHint": "نموذج تجريبي — أدخل أي رقم وكلمة مرور للدخول."
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "subtitle": "نظرة عامة على نشاط Crido في أدرار",
+    "stats": {
+      "activeClients": "العملاء النشطون",
+      "activeFinancings": "التمويلات النشطة",
+      "pendingVerification": "مدفوعات تنتظر التحقق",
+      "monthRevenue": "إيرادات الشهر",
+      "outstanding": "المبلغ المستحق",
+      "kycPending": "ملفات تنتظر المراجعة"
+    },
+    "charts": {
+      "financings": "التمويلات الجديدة (آخر 30 يوم)",
+      "revenue": "الإيرادات اليومية (آخر 30 يوم)"
+    },
+    "recentRequests": "أحدث طلبات التمويل",
+    "pendingKyc": "ملفات KYC تنتظر المراجعة",
+    "adHoc": "تجار يحتاجون تحقق هاتفي"
+  },
+  "clients": {
+    "title": "العملاء",
+    "subtitle": "إدارة عملاء Crido ومراجعة ملفاتهم",
+    "columns": {
+      "client": "العميل",
+      "commune": "البلدية",
+      "kyc": "حالة KYC",
+      "tier": "الفئة",
+      "credit": "الحد / المستعمل",
+      "financings": "تمويلات نشطة",
+      "lastActivity": "آخر نشاط"
+    },
+    "filters": { "kyc": "حالة KYC", "tier": "الفئة" },
+    "tabs": {
+      "overview": "نظرة عامة",
+      "kyc": "KYC",
+      "financings": "التمويلات",
+      "credit": "الحد الائتماني"
+    },
+    "fields": {
+      "phone": "الهاتف",
+      "dob": "تاريخ الميلاد",
+      "address": "العنوان",
+      "employment": "الوضع المهني",
+      "employer": "جهة العمل",
+      "income": "الدخل الشهري",
+      "score": "النقاط الائتمانية",
+      "limit": "الحد الائتماني",
+      "used": "المستعمل",
+      "available": "المتاح"
+    }
+  },
+  "merchants": {
+    "title": "التجار",
+    "subtitle": "التجار الشركاء والتجار المؤقتون",
+    "columns": {
+      "merchant": "التاجر",
+      "source": "النوع",
+      "phone": "الهاتف",
+      "sales": "إجمالي المبيعات",
+      "financings": "التمويلات",
+      "status": "الحالة"
+    }
+  },
+  "requests": {
+    "title": "طلبات التمويل",
+    "subtitle": "قائمة انتظار مراجعة الطلبات",
+    "columns": {
+      "reference": "المرجع",
+      "client": "العميل",
+      "merchant": "التاجر",
+      "product": "المنتج",
+      "plan": "الخطة",
+      "amount": "المبلغ",
+      "status": "الحالة",
+      "date": "التاريخ"
+    },
+    "months": "{{count}} شهر",
+    "breakdown": {
+      "title": "تفصيل الحساب",
+      "principal": "سعر المنتج",
+      "merchantCommission": "عمولة التاجر (5%)",
+      "merchantPayout": "المبلغ المدفوع للتاجر",
+      "clientMargin": "هامش العميل (15%)",
+      "totalToCollect": "إجمالي التحصيل",
+      "monthly": "القسط الشهري",
+      "profit": "ربح Crido"
+    },
+    "sections": {
+      "client": "العميل",
+      "merchant": "التاجر",
+      "product": "المنتج"
+    }
+  },
+  "financings": {
+    "title": "التمويلات",
+    "subtitle": "كل التمويلات النشطة والمكتملة",
+    "columns": {
+      "reference": "المرجع",
+      "client": "العميل",
+      "merchant": "التاجر",
+      "progress": "التقدم",
+      "remaining": "المتبقي",
+      "nextDue": "الاستحقاق القادم",
+      "status": "الحالة"
+    }
+  },
+  "payments": {
+    "title": "المدفوعات",
+    "subtitle": "قائمة انتظار التحقق من المدفوعات",
+    "columns": {
+      "reference": "المرجع",
+      "client": "العميل",
+      "financing": "التمويل",
+      "amount": "المبلغ",
+      "method": "الطريقة",
+      "externalRef": "المرجع الخارجي",
+      "status": "الحالة"
+    }
+  },
+  "status": {
+    "draft": "مسودة",
+    "submitted": "مُرسَل",
+    "merchant_confirmed": "أكّده التاجر",
+    "merchant_rejected": "رفضه التاجر",
+    "under_review": "قيد المراجعة",
+    "documents_required": "مستندات مطلوبة",
+    "contracts_generated": "العقود جاهزة",
+    "contracts_signed": "العقود موقّعة",
+    "approved": "موافق عليه",
+    "rejected": "مرفوض",
+    "cancelled_by_client": "ألغاه العميل",
+    "expired": "منتهي الصلاحية",
+    "active": "نشط",
+    "late": "متأخر",
+    "completed": "مكتمل",
+    "defaulted": "متعثّر",
+    "cancelled": "ملغى",
+    "pending_proof": "بانتظار الإثبات",
+    "pending_verification": "بانتظار التحقق",
+    "verified": "مؤكّد",
+    "not_started": "لم يبدأ",
+    "pending": "قيد المراجعة",
+    "suspended": "موقوف"
+  },
+  "source": { "partner": "شريك", "ad_hoc": "مؤقت" },
+  "employment": {
+    "employed": "موظف",
+    "self_employed": "عمل حر",
+    "student": "طالب",
+    "retired": "متقاعد",
+    "unemployed": "بدون عمل",
+    "other": "أخرى"
+  },
+  "method": {
+    "ccp": "حساب بريدي CCP",
+    "baridi_mob": "بريدي موب",
+    "bank_transfer": "تحويل بنكي",
+    "cash_to_agent": "نقداً للوكيل"
   }
 }
