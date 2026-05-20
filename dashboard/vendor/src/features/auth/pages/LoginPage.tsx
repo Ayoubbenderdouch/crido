@@ -18,8 +18,9 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="w-full max-w-sm animate-fade-up">
-        <div className="mb-7 text-center">
-          <p className="text-3xl font-semibold text-primary">Crido</p>
+        <div className="mb-7 flex flex-col items-center text-center">
+          <img src="/crido-logo.png" alt="Crido" className="h-16 w-16 rounded-2xl" />
+          <p className="mt-3 text-2xl font-semibold text-primary">Crido</p>
           <p className="mt-1 text-sm text-foreground-tertiary">{t('login.subtitle')}</p>
         </div>
 

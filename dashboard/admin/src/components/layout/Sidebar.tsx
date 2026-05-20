@@ -44,9 +44,12 @@ export function Sidebar() {
 
   return (
     <aside className="flex h-screen w-60 shrink-0 flex-col border-e border-border bg-background">
-      <div className="flex h-15 shrink-0 items-center px-5">
-        <span className="text-xl font-semibold text-primary">Crido</span>
-        <span className="ms-2 text-xs text-foreground-tertiary">{t('app.tagline')}</span>
+      <div className="flex h-15 shrink-0 items-center gap-2.5 px-5">
+        <img src="/crido-logo.png" alt="Crido" className="h-8 w-8 rounded-lg" />
+        <div className="leading-tight">
+          <p className="text-lg font-semibold text-primary">Crido</p>
+          <p className="text-xs text-foreground-tertiary">{t('app.tagline')}</p>
+        </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-3">
