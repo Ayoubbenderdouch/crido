@@ -18,8 +18,9 @@ const STATUS_TONE: Record<string, keyof typeof TONES> = {
   approved: 'teal', verified: 'teal', active: 'teal',
   late: 'amber', documents_required: 'amber',
   rejected: 'red', defaulted: 'red', merchant_rejected: 'red', suspended: 'red',
-  completed: 'green',
-  cancelled: 'mute', cancelled_by_client: 'mute', expired: 'mute',
+  completed: 'green', paid: 'green',
+  processing: 'amber',
+  cancelled: 'mute', cancelled_by_client: 'mute', expired: 'mute', inactive: 'mute',
 }
 
 export function StatusBadge({ status }: { status: string }) {

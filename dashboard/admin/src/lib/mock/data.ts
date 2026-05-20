@@ -177,3 +177,89 @@ export function buildDailySeries(): { date: string; financings: number; revenueD
   }
   return out
 }
+
+// ── Merchant payouts (money Crido pays merchants) ─────────────
+export type PayoutMethod = 'ccp_transfer' | 'baridi_mob' | 'cash_delivery'
+export type PayoutStatus = 'pending' | 'processing' | 'paid'
+
+export type MerchantPayout = {
+  reference: string
+  merchantName: string
+  customerName: string
+  financingRef: string
+  amountDzd: number
+  method: PayoutMethod
+  status: PayoutStatus
+  createdAt: string
+  paidAt: string | null
+}
+
+export const merchantPayouts: MerchantPayout[] = [
+  { reference: 'PO-2026-000231', merchantName: 'طاهر فون', customerName: 'أيوب قويدري', financingRef: 'CRF-2026-000089', amountDzd: 190000, method: 'ccp_transfer', status: 'pending', createdAt: '2026-05-18', paidAt: null },
+  { reference: 'PO-2026-000228', merchantName: 'إلكترو أدرار', customerName: 'نسيمة بكاي', financingRef: 'CRF-2026-000078', amountDzd: 76000, method: 'baridi_mob', status: 'pending', createdAt: '2026-05-16', paidAt: null },
+  { reference: 'PO-2026-000224', merchantName: 'أثاث توات', customerName: 'سمية حساني', financingRef: 'CRF-2026-000081', amountDzd: 109250, method: 'cash_delivery', status: 'processing', createdAt: '2026-05-12', paidAt: null },
+  { reference: 'PO-2026-000219', merchantName: 'أثاث توات', customerName: 'محمد الأمين تواتي', financingRef: 'CRF-2026-000084', amountDzd: 142500, method: 'ccp_transfer', status: 'paid', createdAt: '2026-04-09', paidAt: '2026-04-10' },
+  { reference: 'PO-2026-000211', merchantName: 'أثاث توات', customerName: 'خديجة عمراني', financingRef: 'CRF-2026-000074', amountDzd: 102600, method: 'ccp_transfer', status: 'paid', createdAt: '2026-01-16', paidAt: '2026-01-17' },
+  { reference: 'PO-2026-000198', merchantName: 'طاهر فون', customerName: 'كريم العماري', financingRef: 'CRF-2026-000066', amountDzd: 145000, method: 'baridi_mob', status: 'paid', createdAt: '2025-04-21', paidAt: '2025-04-21' },
+  { reference: 'PO-2026-000185', merchantName: 'إلكترو أدرار', customerName: 'عبد الرحمن مولاي', financingRef: 'CRF-2026-000059', amountDzd: 131000, method: 'cash_delivery', status: 'paid', createdAt: '2025-12-29', paidAt: '2025-12-30' },
+]
+
+// ── Ad-hoc merchant verification queue (admin phone calls) ────
+export type VerificationItem = {
+  requestRef: string
+  proposedMerchantName: string
+  proposedMerchantPhone: string
+  proposedMerchantAddress: string
+  clientName: string
+  clientPhone: string
+  amountDzd: number
+  planMonths: number
+  submittedAt: string
+}
+
+export const verificationQueue: VerificationItem[] = [
+  { requestRef: 'CR-2026-000142', proposedMerchantName: 'محل البركة للإلكترونيك', proposedMerchantPhone: '+213661902255', proposedMerchantAddress: 'حي تيليلان، أدرار', clientName: 'إبراهيم سحنون', clientPhone: '+213770112648', amountDzd: 195000, planMonths: 12, submittedAt: '2026-05-20' },
+  { requestRef: 'CR-2026-000140', proposedMerchantName: 'متجر الهاتف أولف', proposedMerchantPhone: '+213551660934', proposedMerchantAddress: 'حي النصر، أولف', clientName: 'يوسف بن عيسى', clientPhone: '+213663401255', amountDzd: 72000, planMonths: 6, submittedAt: '2026-05-19' },
+  { requestRef: 'CR-2026-000136', proposedMerchantName: 'محل النور للأجهزة', proposedMerchantPhone: '+213770339187', proposedMerchantAddress: 'حي السلام، رقان', clientName: 'كريم العماري', clientPhone: '+213662918334', amountDzd: 89000, planMonths: 6, submittedAt: '2026-05-12' },
+]
+
+// ── Collections — late / defaulted accounts ───────────────────
+export type CollectionStatus = 'late' | 'defaulted'
+export type CollectionAccount = {
+  financingRef: string
+  customerName: string
+  customerPhone: string
+  daysLate: number
+  overdueDzd: number
+  lateInstallments: number
+  status: CollectionStatus
+  lastAction: string
+  lastActionAt: string
+}
+
+export const collectionAccounts: CollectionAccount[] = [
+  { financingRef: 'CRF-2026-000059', customerName: 'عبد الرحمن مولاي', customerPhone: '+213551884003', daysLate: 82, overdueDzd: 23000, lateInstallments: 2, status: 'defaulted', lastAction: 'إنذار قانوني', lastActionAt: '2026-04-28' },
+  { financingRef: 'CRF-2026-000078', customerName: 'نسيمة بكاي', customerPhone: '+213662550719', daysLate: 8, overdueDzd: 16000, lateInstallments: 1, status: 'late', lastAction: 'مكالمة هاتفية', lastActionAt: '2026-05-15' },
+  { financingRef: 'CRF-2026-000081', customerName: 'سمية حساني', customerPhone: '+213779338471', daysLate: 4, overdueDzd: 11021, lateInstallments: 1, status: 'late', lastAction: 'تذكير SMS', lastActionAt: '2026-05-17' },
+]
+
+// ── Admin-configurable settings (see docs/BUSINESS_RULES.md §14) ──
+export type SettingCategory = 'financing' | 'risk' | 'kyc'
+export type SettingUnit = 'days' | 'years' | 'dzd'
+export type SettingItem = {
+  key: string
+  category: SettingCategory
+  value: number
+  unit: SettingUnit
+}
+
+export const settings: SettingItem[] = [
+  { key: 'grace_period_days', category: 'financing', value: 3, unit: 'days' },
+  { key: 'request_expiry_days', category: 'financing', value: 7, unit: 'days' },
+  { key: 'default_first_due_offset_days', category: 'financing', value: 30, unit: 'days' },
+  { key: 'max_credit_limit_dzd', category: 'financing', value: 500000, unit: 'dzd' },
+  { key: 'default_threshold_days', category: 'risk', value: 90, unit: 'days' },
+  { key: 'kyc_validity_days', category: 'kyc', value: 365, unit: 'days' },
+  { key: 'min_age_years', category: 'kyc', value: 18, unit: 'years' },
+  { key: 'max_age_years', category: 'kyc', value: 65, unit: 'years' },
+]

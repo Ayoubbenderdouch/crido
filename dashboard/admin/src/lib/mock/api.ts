@@ -4,15 +4,23 @@
 import {
   buildDailySeries,
   clients,
+  collectionAccounts,
   financingRequests,
   financings,
+  merchantPayouts,
   merchants,
   payments,
+  settings,
+  verificationQueue,
   type Client,
+  type CollectionAccount,
   type Financing,
   type FinancingRequest,
   type Merchant,
+  type MerchantPayout,
   type Payment,
+  type SettingItem,
+  type VerificationItem,
 } from './data'
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms))
@@ -145,4 +153,24 @@ export function buildInstallments(f: Financing): InstallmentRow[] {
     })
   }
   return rows
+}
+
+export async function fetchMerchantPayouts(): Promise<MerchantPayout[]> {
+  await delay()
+  return merchantPayouts
+}
+
+export async function fetchVerifications(): Promise<VerificationItem[]> {
+  await delay()
+  return verificationQueue
+}
+
+export async function fetchCollections(): Promise<CollectionAccount[]> {
+  await delay()
+  return [...collectionAccounts].sort((a, b) => b.daysLate - a.daysLate)
+}
+
+export async function fetchSettings(): Promise<SettingItem[]> {
+  await delay()
+  return settings
 }

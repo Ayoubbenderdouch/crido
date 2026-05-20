@@ -174,6 +174,89 @@
       "status": "الحالة"
     }
   },
+  "payouts": {
+    "title": "مدفوعات التجار",
+    "subtitle": "الأموال المستحقة للتجار ومعالجتها",
+    "tabs": { "all": "الكل", "pending": "معلق", "processing": "قيد المعالجة", "paid": "مدفوع" },
+    "columns": {
+      "reference": "المرجع",
+      "merchant": "التاجر",
+      "customer": "العميل",
+      "financing": "التمويل",
+      "amount": "المبلغ",
+      "method": "الطريقة",
+      "status": "الحالة",
+      "date": "التاريخ"
+    },
+    "markPaid": "تأكيد الدفع"
+  },
+  "verifications": {
+    "title": "مكالمات التحقق",
+    "subtitle": "التحقق الهاتفي من التجار المؤقتين قبل الموافقة",
+    "columns": {
+      "request": "الطلب",
+      "merchant": "التاجر المقترح",
+      "phone": "الهاتف",
+      "address": "العنوان",
+      "client": "العميل",
+      "amount": "المبلغ",
+      "date": "تاريخ الإرسال"
+    },
+    "callNow": "اتصل الآن",
+    "confirm": "تأكيد التاجر",
+    "deny": "رفض"
+  },
+  "collections": {
+    "title": "التحصيل",
+    "subtitle": "الحسابات المتأخرة التي تحتاج إجراءً، مرتّبة حسب التأخير",
+    "columns": {
+      "financing": "التمويل",
+      "customer": "العميل",
+      "daysLate": "أيام التأخير",
+      "overdue": "المبلغ المتأخر",
+      "lateInstallments": "أقساط متأخرة",
+      "lastAction": "آخر إجراء",
+      "status": "الحالة"
+    },
+    "daysUnit": "يوم",
+    "logAction": "تسجيل إجراء"
+  },
+  "reports": {
+    "title": "التقارير",
+    "subtitle": "أداء المحفظة والإيرادات والمخاطر",
+    "period": "آخر 30 يوم",
+    "export": "تصدير",
+    "kpis": {
+      "collected": "المُحصّل",
+      "disbursed": "المصروف للتجار",
+      "profit": "صافي الربح",
+      "defaultRate": "نسبة التعثّر"
+    },
+    "revenueTitle": "اتجاه الإيرادات",
+    "portfolioTitle": "توزيع المحفظة",
+    "financingsTitle": "التمويلات الأسبوعية"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "القيم القابلة للضبط في النظام",
+    "save": "حفظ التغييرات",
+    "categories": {
+      "financing": "التمويل",
+      "risk": "المخاطر",
+      "kyc": "التحقق من الهوية (KYC)"
+    },
+    "units": { "days": "يوم", "years": "سنة", "dzd": "دج" },
+    "keys": {
+      "grace_period_days": "فترة السماح",
+      "request_expiry_days": "مدة صلاحية الطلب",
+      "default_first_due_offset_days": "مهلة أول قسط",
+      "max_credit_limit_dzd": "أقصى حد ائتماني",
+      "default_threshold_days": "عتبة التعثّر",
+      "kyc_validity_days": "صلاحية التحقق من الهوية",
+      "min_age_years": "أدنى سن",
+      "max_age_years": "أقصى سن"
+    }
+  },
   "status": {
     "draft": "مسودة",
     "submitted": "مُرسَل",
@@ -195,6 +278,8 @@
     "pending_proof": "بانتظار الإثبات",
     "pending_verification": "بانتظار التحقق",
     "verified": "مؤكّد",
+    "processing": "قيد المعالجة",
+    "paid": "مدفوع",
     "not_started": "لم يبدأ",
     "pending": "قيد المراجعة",
     "suspended": "موقوف"
@@ -212,6 +297,8 @@
     "ccp": "حساب بريدي CCP",
     "baridi_mob": "بريدي موب",
     "bank_transfer": "تحويل بنكي",
-    "cash_to_agent": "نقداً للوكيل"
+    "cash_to_agent": "نقداً للوكيل",
+    "ccp_transfer": "تحويل CCP",
+    "cash_delivery": "تسليم نقدي"
   }
 }

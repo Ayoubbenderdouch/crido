@@ -174,6 +174,89 @@
       "status": "Statut"
     }
   },
+  "payouts": {
+    "title": "Versements marchands",
+    "subtitle": "L'argent dû aux marchands et son traitement",
+    "tabs": { "all": "Tous", "pending": "En attente", "processing": "En cours", "paid": "Versés" },
+    "columns": {
+      "reference": "Référence",
+      "merchant": "Marchand",
+      "customer": "Client",
+      "financing": "Financement",
+      "amount": "Montant",
+      "method": "Méthode",
+      "status": "Statut",
+      "date": "Date"
+    },
+    "markPaid": "Marquer payé"
+  },
+  "verifications": {
+    "title": "Appels de vérification",
+    "subtitle": "Vérification téléphonique des marchands ad-hoc avant approbation",
+    "columns": {
+      "request": "Demande",
+      "merchant": "Marchand proposé",
+      "phone": "Téléphone",
+      "address": "Adresse",
+      "client": "Client",
+      "amount": "Montant",
+      "date": "Soumise le"
+    },
+    "callNow": "Appeler",
+    "confirm": "Confirmer le marchand",
+    "deny": "Refuser"
+  },
+  "collections": {
+    "title": "Recouvrement",
+    "subtitle": "Comptes en retard nécessitant une action, triés par retard",
+    "columns": {
+      "financing": "Financement",
+      "customer": "Client",
+      "daysLate": "Jours de retard",
+      "overdue": "Montant en retard",
+      "lateInstallments": "Échéances en retard",
+      "lastAction": "Dernière action",
+      "status": "Statut"
+    },
+    "daysUnit": "j",
+    "logAction": "Journaliser une action"
+  },
+  "reports": {
+    "title": "Rapports",
+    "subtitle": "Performance du portefeuille, revenus et risque",
+    "period": "30 derniers jours",
+    "export": "Exporter",
+    "kpis": {
+      "collected": "Encaissé",
+      "disbursed": "Versé aux marchands",
+      "profit": "Bénéfice net",
+      "defaultRate": "Taux de défaut"
+    },
+    "revenueTitle": "Tendance des revenus",
+    "portfolioTitle": "Répartition du portefeuille",
+    "financingsTitle": "Financements par semaine"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Les valeurs configurables du système",
+    "save": "Enregistrer",
+    "categories": {
+      "financing": "Financement",
+      "risk": "Risque",
+      "kyc": "Vérification d'identité (KYC)"
+    },
+    "units": { "days": "jours", "years": "ans", "dzd": "DZD" },
+    "keys": {
+      "grace_period_days": "Délai de grâce",
+      "request_expiry_days": "Validité d'une demande",
+      "default_first_due_offset_days": "Délai avant 1re échéance",
+      "max_credit_limit_dzd": "Limite de crédit max",
+      "default_threshold_days": "Seuil de défaut",
+      "kyc_validity_days": "Validité du KYC",
+      "min_age_years": "Âge minimum",
+      "max_age_years": "Âge maximum"
+    }
+  },
   "status": {
     "draft": "Brouillon",
     "submitted": "Soumise",
@@ -195,6 +278,8 @@
     "pending_proof": "Preuve attendue",
     "pending_verification": "À vérifier",
     "verified": "Vérifié",
+    "processing": "En cours",
+    "paid": "Versé",
     "not_started": "Non commencé",
     "pending": "En attente",
     "suspended": "Suspendu"
@@ -212,6 +297,8 @@
     "ccp": "Compte CCP",
     "baridi_mob": "BaridiMob",
     "bank_transfer": "Virement bancaire",
-    "cash_to_agent": "Espèces à l'agent"
+    "cash_to_agent": "Espèces à l'agent",
+    "ccp_transfer": "Virement CCP",
+    "cash_delivery": "Livraison espèces"
   }
 }

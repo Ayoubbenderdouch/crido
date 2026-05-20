@@ -9,7 +9,11 @@ import RequestsPage from '@/features/financing-requests/pages/RequestsPage'
 import RequestDetailPage from '@/features/financing-requests/pages/RequestDetailPage'
 import FinancingsPage from '@/features/financings/pages/FinancingsPage'
 import PaymentsPage from '@/features/payments/pages/PaymentsPage'
-import PlaceholderPage from '@/features/misc/pages/PlaceholderPage'
+import PayoutsPage from '@/features/payouts/pages/PayoutsPage'
+import VerificationsPage from '@/features/verifications/pages/VerificationsPage'
+import CollectionsPage from '@/features/collections/pages/CollectionsPage'
+import ReportsPage from '@/features/reports/pages/ReportsPage'
+import SettingsPage from '@/features/settings/pages/SettingsPage'
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -25,11 +29,11 @@ export const router = createBrowserRouter([
       { path: 'financing-requests/:reference', element: <RequestDetailPage /> },
       { path: 'financings', element: <FinancingsPage /> },
       { path: 'payments', element: <PaymentsPage /> },
-      { path: 'payouts', element: <PlaceholderPage titleKey="nav.payouts" /> },
-      { path: 'merchant-verifications', element: <PlaceholderPage titleKey="nav.verifications" /> },
-      { path: 'collections', element: <PlaceholderPage titleKey="nav.collections" /> },
-      { path: 'reports', element: <PlaceholderPage titleKey="nav.reports" /> },
-      { path: 'settings', element: <PlaceholderPage titleKey="nav.settings" /> },
+      { path: 'payouts', element: <PayoutsPage /> },
+      { path: 'merchant-verifications', element: <VerificationsPage /> },
+      { path: 'collections', element: <CollectionsPage /> },
+      { path: 'reports', element: <ReportsPage /> },
+      { path: 'settings', element: <SettingsPage /> },
     ],
   },
   { path: '*', element: <Navigate to="/dashboard" replace /> },
