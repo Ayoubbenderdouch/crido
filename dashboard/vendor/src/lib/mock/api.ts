@@ -49,15 +49,14 @@ export async function fetchDashboard(): Promise<DashboardData> {
     .filter((p) => p.status === 'pending' || p.status === 'processing')
     .reduce((sum, p) => sum + p.amountDzd, 0)
 
-  // Top-5 selling products by financing count.
-  const productCounts = new Map<string, number>()
-  for (const f of financings) {
-    productCounts.set(f.productName, (productCounts.get(f.productName) ?? 0) + 1)
-  }
-  const topProducts = [...productCounts.entries()]
-    .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 5)
+  // Top-selling products (units sold over the period).
+  const topProducts = [
+    { name: 'iPhone 16', value: 9 },
+    { name: 'Samsung Galaxy A55', value: 7 },
+    { name: 'iPad Air', value: 5 },
+    { name: 'iPhone 15 Pro', value: 4 },
+    { name: 'حاسوب محمول HP Pavilion', value: 3 },
+  ]
 
   // Financing-duration distribution.
   const durationCounts = new Map<string, number>()

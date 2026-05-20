@@ -8,7 +8,6 @@ import { StatusBadge } from '@/components/data/StatusBadge'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { Loader } from '@/components/data/Loader'
 import { AreaTrend } from '@/components/charts/AreaTrend'
-import { BarTrend } from '@/components/charts/BarTrend'
 import { DonutChart } from '@/components/charts/DonutChart'
 import { fetchDashboard } from '@/lib/mock/api'
 import { currentUser, financings, payouts, type Financing, type Payout } from '@/lib/mock/data'
@@ -30,6 +29,7 @@ export default function DashboardPage() {
   const firstName = currentUser.name.split(' ')[0]
 
   const topProducts = data.topProducts.map((p) => ({ name: p.name, value: p.value }))
+  const maxProduct = Math.max(...topProducts.map((p) => p.value), 1)
   const durationSlices = data.duration.map((d) => ({
     name: `${d.name} ${t('dashboard.months')}`,
     value: d.value,
@@ -166,8 +166,21 @@ export default function DashboardPage() {
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="p-5">
           <p className="text-md font-medium text-foreground">{t('dashboard.charts.topProducts')}</p>
-          <div className="mt-4">
-            <BarTrend data={topProducts} dataKey="value" xKey="name" color="#0F6E56" height={232} />
+          <div className="mt-5 space-y-4">
+            {topProducts.map((p) => (
+              <div key={p.name}>
+                <div className="mb-1.5 flex items-center justify-between gap-3 text-sm">
+                  <span className="truncate text-foreground">{p.name}</span>
+                  <span className="shrink-0 tabular-nums text-foreground-tertiary">{p.value}</span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-background-secondary">
+                  <div
+                    className="h-full rounded-full bg-primary"
+                    style={{ width: `${(p.value / maxProduct) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
 
