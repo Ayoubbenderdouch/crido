@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Wallet } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Card } from '@/components/ui/card'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { StatusBadge } from '@/components/data/StatusBadge'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { cn } from '@/lib/utils'
-import { fetchPayouts } from '@/lib/mock/api'
+import { fetchPayouts } from '@/lib/api'
 import type { Payout } from '@/lib/mock/data'
 import { formatDzd, formatDate, type Locale } from '@/lib/format'
 
@@ -23,11 +22,16 @@ export default function PayoutsPage() {
   const [tab, setTab] = useState<(typeof TABS)[number]>('all')
 
   const { data, isLoading } = useQuery({ queryKey: ['payouts'], queryFn: fetchPayouts })
-  const rows = (data ?? []).filter((p) => {
+  const all = data ?? []
+  const rows = all.filter((p) => {
     if (tab === 'all') return true
     if (tab === 'paid') return p.status === 'paid'
     return p.status !== 'paid'
   })
+
+  const pendingTotal = all
+    .filter((p) => p.status !== 'paid')
+    .reduce((sum, p) => sum + p.amountDzd, 0)
 
   const columns: Column<Payout>[] = [
     {
@@ -63,19 +67,34 @@ export default function PayoutsPage() {
 
   return (
     <div className="animate-fade-up">
-      <PageHeader title={t('payouts.title')} subtitle={t('payouts.subtitle')} />
+      <div className="mb-8">
+        <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary-surface px-3 py-1 text-xs font-medium text-primary">
+          <Wallet size={14} />
+          {t('payouts.badge')}
+        </div>
+        <PageHeader title={t('payouts.title')} subtitle={t('payouts.subtitle')} />
+      </div>
 
-      <div className="mb-4 flex gap-1 border-b border-border">
+      {pendingTotal > 0 ? (
+        <div className="mb-6 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary-surface/90 to-transparent px-5 py-4 shadow-sm">
+          <p className="text-xs text-foreground-tertiary">{t('payouts.pendingLabel')}</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums text-primary">
+            {formatDzd(pendingTotal, locale)}
+          </p>
+        </div>
+      ) : null}
+
+      <div className="mb-5 flex flex-wrap gap-1 rounded-2xl border border-border bg-card p-1 shadow-sm">
         {TABS.map((tb) => (
           <button
             key={tb}
             type="button"
             onClick={() => setTab(tb)}
             className={cn(
-              '-mb-px border-b-2 px-4 py-2 text-sm transition-colors',
+              'flex flex-1 items-center justify-center rounded-xl px-4 py-2.5 text-sm transition-all sm:flex-none',
               tab === tb
-                ? 'border-primary font-medium text-primary'
-                : 'border-transparent text-foreground-secondary hover:text-foreground',
+                ? 'bg-primary font-medium text-primary-fg shadow-sm'
+                : 'text-foreground-secondary hover:bg-background-secondary hover:text-foreground',
             )}
           >
             {t(`payouts.tabs.${tb}`)}
@@ -83,7 +102,7 @@ export default function PayoutsPage() {
         ))}
       </div>
 
-      <Card>
+      <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         {isLoading ? (
           <Loader />
         ) : rows.length === 0 ? (
@@ -96,7 +115,7 @@ export default function PayoutsPage() {
             onRowClick={(p) => navigate(`/payouts/${p.reference}`)}
           />
         )}
-      </Card>
+      </section>
     </div>
   )
 }

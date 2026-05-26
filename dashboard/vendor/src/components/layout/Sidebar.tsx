@@ -5,8 +5,11 @@ import {
   Users, Package, Store, UserCog, Building2, Settings, LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { clearToken } from '@/lib/auth'
-import { currentUser, incomingRequests } from '@/lib/mock/data'
+import { clearToken, getStoredUser } from '@/lib/auth'
+import { currentUser } from '@/lib/mock/data'
+import { getPendingRequestCount } from '@/lib/vendorStore'
+import { logout as apiLogout } from '@/lib/api/auth'
+import { isRealApi } from '@/lib/api'
 import { Avatar } from '@/components/data/Avatar'
 
 const NAV = [
@@ -36,10 +39,17 @@ export function Sidebar() {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  const pendingCount = incomingRequests.filter((r) => r.status === 'submitted').length
+  const pendingCount = getPendingRequestCount()
+  const storedUser = isRealApi ? getStoredUser() : null
+  const displayName = storedUser?.full_name ?? currentUser.name
+  const displayRole = storedUser?.role ?? currentUser.role
 
-  function logout() {
-    clearToken()
+  async function logout() {
+    if (isRealApi) {
+      await apiLogout()
+    } else {
+      clearToken()
+    }
     navigate('/login')
   }
 
@@ -86,11 +96,11 @@ export function Sidebar() {
       </nav>
 
       <div className="flex items-center gap-3 border-t border-border p-3">
-        <Avatar name={currentUser.name} size={36} />
+        <Avatar name={displayName} size={36} />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-foreground">{currentUser.name}</p>
+          <p className="truncate text-sm font-medium text-foreground">{displayName}</p>
           <p className="truncate text-xs text-foreground-tertiary">
-            {t(`staff.roles.${currentUser.role}`)}
+            {t(`staff.roles.${displayRole}`, { defaultValue: displayRole })}
           </p>
         </div>
         <button

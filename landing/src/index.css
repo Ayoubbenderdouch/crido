@@ -35,11 +35,31 @@ body {
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern', 'liga', 'tnum';
+}
+
+/* When the page switches to French (LTR), use Inter as the primary font. */
+html[dir='ltr'] body,
+html[lang='fr'] body {
+  font-family: var(--font-latin);
 }
 
 ::selection {
   background: var(--color-teal-bright);
   color: #fff;
+}
+
+/* Focus-visible polish — applied to every interactive element */
+:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+/* Pills/buttons that already have rounded-full look better with offset 3 */
+a:focus-visible,
+button:focus-visible {
+  outline-offset: 3px;
 }
 
 /* Latin numerals/words keep Inter for crispness */
@@ -80,10 +100,10 @@ body {
 
 @keyframes floaty {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  50% { transform: translateY(-10px); }
 }
 .floaty {
-  animation: floaty 7s ease-in-out infinite;
+  animation: floaty 5s ease-in-out infinite;
 }
 
 @keyframes glow-pulse {
@@ -109,9 +129,70 @@ body {
   animation: num-pop 0.4s cubic-bezier(0.22, 0.7, 0.2, 1);
 }
 
+/* ── Fade-up (gentler than rise) ────────────────── */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  opacity: 0;
+  animation: fade-up 0.7s cubic-bezier(0.22, 0.7, 0.2, 1) forwards;
+}
+
+/* ── Card tilt — subtle 3D lift on hover ────────── */
+.card-tilt {
+  transition: transform 0.45s cubic-bezier(0.22, 0.7, 0.2, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 0.7, 0.2, 1),
+    border-color 0.3s ease;
+  transform: perspective(1000px) rotateX(0) rotateY(0) translateY(0);
+}
+.card-tilt:hover {
+  transform: perspective(1000px) translateY(-4px) rotateX(0.6deg);
+}
+
+/* ── Soft drift — slower, gentler than floaty ───── */
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(8px, -8px); }
+}
+.drift {
+  animation: drift 12s ease-in-out infinite;
+}
+
+/* ── Floating particles in dark sections ────────── */
+@keyframes drift-1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20px, -30px); }
+}
+@keyframes drift-2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-25px, 20px); }
+}
+@keyframes drift-3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(15px, 25px); }
+}
+.drift-1 { animation: drift-1 18s ease-in-out infinite; }
+.drift-2 { animation: drift-2 22s ease-in-out infinite; }
+.drift-3 { animation: drift-3 26s ease-in-out infinite; }
+
+/* Disable particles on small screens for performance */
+@media (max-width: 640px) {
+  .drift-1, .drift-2, .drift-3 {
+    animation-duration: 30s;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .reveal, .rise, .floaty, .glow-pulse, .num-pop {
+  .reveal, .rise, .floaty, .glow-pulse, .num-pop, .fade-up, .drift, .card-tilt,
+  .drift-1, .drift-2, .drift-3 {
     animation: none !important;
     transition: none !important;
     opacity: 1 !important;

@@ -3,14 +3,9 @@
 // merchant. Same call sites later point at /api/v1/merchant endpoints.
 
 import {
-  branches,
   buildDailySeries,
   customers,
   financings,
-  incomingRequests,
-  payouts,
-  products,
-  staff,
   type Branch,
   type Customer,
   type Financing,
@@ -19,12 +14,20 @@ import {
   type Product,
   type Staff,
 } from './data'
+import {
+  getBranches,
+  getPayouts,
+  getProducts,
+  getRequests,
+  getStaff,
+} from '@/lib/vendorStore'
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms))
 
 export type DashboardData = {
   kpis: {
     monthSalesDzd: number
+    monthlyGoalDzd: number
     totalFinancings: number
     pendingRequests: number
     pendingPayoutDzd: number
@@ -45,7 +48,7 @@ export async function fetchDashboard(): Promise<DashboardData> {
   await delay()
   const daily = buildDailySeries()
 
-  const pendingPayout = payouts
+  const pendingPayout = getPayouts()
     .filter((p) => p.status === 'pending' || p.status === 'processing')
     .reduce((sum, p) => sum + p.amountDzd, 0)
 
@@ -71,13 +74,14 @@ export async function fetchDashboard(): Promise<DashboardData> {
   return {
     kpis: {
       monthSalesDzd: 575000,
+      monthlyGoalDzd: 1_500_000,
       totalFinancings: financings.length,
-      pendingRequests: incomingRequests.filter((r) => r.status === 'submitted').length,
+      pendingRequests: getRequests().filter((r) => r.status === 'submitted').length,
       pendingPayoutDzd: pendingPayout,
     },
     trends: { sales: 14, financings: 9, payout: 6 },
     sparks: {
-      sales: daily.slice(-12).map((d) => d.salesDzd),
+      sales: daily.slice(-30).slice(-12).map((d) => d.salesDzd),
       financings: [1, 0, 2, 1, 1, 2, 0, 1, 2, 1, 1, 2],
       requests: [2, 1, 3, 2, 1, 2, 3, 2, 1, 2, 3, 3],
       payout: [60000, 0, 90000, 55000, 0, 112000, 68000, 0, 90000, 55000, 0, 68000],
@@ -90,12 +94,12 @@ export async function fetchDashboard(): Promise<DashboardData> {
 
 export async function fetchRequests(): Promise<IncomingRequest[]> {
   await delay()
-  return incomingRequests
+  return getRequests()
 }
 
 export async function fetchRequest(reference: string): Promise<IncomingRequest | undefined> {
   await delay()
-  return incomingRequests.find((r) => r.reference === reference)
+  return getRequests().find((r) => r.reference === reference)
 }
 
 export async function fetchFinancings(): Promise<Financing[]> {
@@ -110,12 +114,12 @@ export async function fetchFinancing(reference: string): Promise<Financing | und
 
 export async function fetchPayouts(): Promise<Payout[]> {
   await delay()
-  return payouts
+  return getPayouts()
 }
 
 export async function fetchPayout(reference: string): Promise<Payout | undefined> {
   await delay()
-  return payouts.find((p) => p.reference === reference)
+  return getPayouts().find((p) => p.reference === reference)
 }
 
 export async function fetchCustomers(): Promise<Customer[]> {
@@ -130,15 +134,15 @@ export async function fetchCustomer(id: number): Promise<Customer | undefined> {
 
 export async function fetchProducts(): Promise<Product[]> {
   await delay()
-  return products
+  return getProducts()
 }
 
 export async function fetchBranches(): Promise<Branch[]> {
   await delay()
-  return branches
+  return getBranches()
 }
 
 export async function fetchStaff(): Promise<Staff[]> {
   await delay()
-  return staff
+  return getStaff()
 }

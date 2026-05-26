@@ -14,6 +14,24 @@ export function Reveal({ children, delay = 0, className = '' }: Props) {
   useEffect(() => {
     const el = ref.current
     if (!el) return
+
+    // Respect reduced motion + safety net for SSR/old browsers
+    if (
+      typeof window === 'undefined' ||
+      typeof IntersectionObserver === 'undefined' ||
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    ) {
+      setShown(true)
+      return
+    }
+
+    // If the element is already in view at mount (e.g. above-the-fold), show immediately
+    const rect = el.getBoundingClientRect()
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      setShown(true)
+      return
+    }
+
     const io = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
@@ -21,7 +39,7 @@ export function Reveal({ children, delay = 0, className = '' }: Props) {
           io.disconnect()
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -48px 0px' },
+      { threshold: 0.08, rootMargin: '0px 0px -64px 0px' },
     )
     io.observe(el)
     return () => io.disconnect()

@@ -1,0 +1,35 @@
+[
+  {
+    "name_ar": "4 أشهر",
+    "name_fr": "4 mois",
+    "duration_months": 4,
+    "client_margin_pct": 5.00,
+    "merchant_commission_pct": 5.00,
+    "min_amount_dzd": 10000,
+    "max_amount_dzd": 500000,
+    "required_credit_score": 500,
+    "sort_order": 1
+  },
+  {
+    "name_ar": "6 أشهر",
+    "name_fr": "6 mois",
+    "duration_months": 6,
+    "client_margin_pct": 8.00,
+    "merchant_commission_pct": 5.00,
+    "min_amount_dzd": 10000,
+    "max_amount_dzd": 500000,
+    "required_credit_score": 500,
+    "sort_order": 2
+  },
+  {
+    "name_ar": "12 شهراً",
+    "name_fr": "12 mois",
+    "duration_months": 12,
+    "client_margin_pct": 15.00,
+    "merchant_commission_pct": 5.00,
+    "min_amount_dzd": 10000,
+    "max_amount_dzd": 500000,
+    "required_credit_score": 500,
+    "sort_order": 3
+  }
+]

@@ -1,5 +1,9 @@
 import dayjs from 'dayjs'
+import 'dayjs/locale/ar'
 import 'dayjs/locale/fr'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
 
 export type Locale = 'ar' | 'fr'
 
@@ -32,4 +36,9 @@ export function formatDate(iso: string, locale: Locale = 'ar'): string {
 /** Relative-ish day count helper for "X days late" style labels. */
 export function daysBetween(fromIso: string, toIso: string = new Date().toISOString()): number {
   return dayjs(toIso).startOf('day').diff(dayjs(fromIso).startOf('day'), 'day')
+}
+
+/** Relative time — Arabic/French via dayjs locales. */
+export function formatRelative(date: string | Date, locale: Locale = 'ar'): string {
+  return dayjs(date).locale(locale).fromNow()
 }

@@ -113,6 +113,10 @@ export type Product = {
   sku: string
   stock: number | null
   available: boolean
+  descriptionAr?: string
+  descriptionFr?: string
+  coverImage?: string
+  gallery?: string[]
 }
 
 export type Branch = {
@@ -214,17 +218,18 @@ export const kybDocuments = [
   { key: 'ownerId', status: 'pending' as const },
 ]
 
-/** Daily sales series for the dashboard charts (last 30 days). */
+/** Daily sales series for dashboard charts (365 days — filtered in UI by period). */
 export function buildDailySeries(): { date: string; salesDzd: number }[] {
   const out: { date: string; salesDzd: number }[] = []
   const today = new Date('2026-05-20')
-  for (let i = 29; i >= 0; i--) {
+  for (let i = 364; i >= 0; i--) {
     const d = new Date(today)
     d.setDate(d.getDate() - i)
-    const wave = Math.sin(i / 4.2) + 1.25
+    const wave = Math.sin(i / 17) + Math.cos(i / 38) * 0.3 + 1.2
+    const seasonal = 1 + Math.sin((i / 365) * Math.PI * 2) * 0.14
     out.push({
       date: d.toISOString().slice(0, 10),
-      salesDzd: Math.round((wave * 34000 + (i % 5) * 9000) / 1000) * 1000,
+      salesDzd: Math.round((wave * 34000 * seasonal + (i % 5) * 9000) / 1000) * 1000,
     })
   }
   return out

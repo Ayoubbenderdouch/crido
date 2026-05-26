@@ -11,9 +11,22 @@
     "verifications": "Appels de vérification",
     "collections": "Recouvrement",
     "reports": "Rapports",
+    "finance": "Finance & bénéfices",
     "settings": "Paramètres",
     "sectionMain": "Opérations",
     "sectionManage": "Gestion"
+  },
+  "timeRange": {
+    "label": "Période",
+    "1d": "1 jour",
+    "7d": "7 jours",
+    "30d": "30 jours",
+    "90d": "90 jours",
+    "6m": "6 mois",
+    "1y": "1 an",
+    "all": "Tout",
+    "chartHint": "Période : {{period}}",
+    "kpiRevenue": "Revenus — {{period}}"
   },
   "common": {
     "search": "Rechercher...",
@@ -31,6 +44,7 @@
     "approve": "Approuver",
     "reject": "Rejeter",
     "confirm": "Confirmer",
+    "delete": "Supprimer",
     "comingSoon": "Cette page est en construction",
     "comingSoonHint": "Elle sera construite lors d'un prochain sprint selon la feuille de route.",
     "actionDemo": "Action de démo — activée après le branchement du backend.",
@@ -47,10 +61,26 @@
   "login": {
     "title": "Connexion",
     "subtitle": "Tableau de bord Admin Crido",
+    "welcome": "Bon retour — Adrar, Algérie",
+    "badge": "Plateforme BNPL",
+    "hero": "Financements et marchands, un seul espace",
+    "heroSub": "Suivez demandes, paiements et finances en toute clarté.",
+    "highlights": {
+      "secure": "KYC et paiements sécurisés",
+      "finance": "Profits et charges en temps réel",
+      "bnpl": "Financement flexible clients & marchands"
+    },
     "phone": "Numéro de téléphone",
     "password": "Mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
     "submit": "Se connecter",
-    "demoHint": "Démo — saisissez n'importe quel numéro et mot de passe."
+    "submitting": "Connexion…",
+    "success": "Connexion réussie",
+    "errorInvalid": "Identifiants invalides",
+    "errorEmpty": "Saisissez votre téléphone et mot de passe",
+    "errorNotAdmin": "Ce compte n'a pas l'accès Admin",
+    "footer": "© Crido — Adrar, Algérie"
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -64,8 +94,8 @@
       "kycPending": "Dossiers à examiner"
     },
     "charts": {
-      "financings": "Nouveaux financements (30 derniers jours)",
-      "revenue": "Revenus quotidiens (30 derniers jours)"
+      "financings": "Nouveaux financements",
+      "revenue": "Revenus"
     },
     "recentRequests": "Dernières demandes de financement",
     "pendingKyc": "Dossiers KYC en attente",
@@ -116,6 +146,56 @@
       "sales": "Ventes totales",
       "financings": "Financements",
       "status": "Statut"
+    },
+    "list": {
+      "viewProfile": "Voir le profil",
+      "tenure": "Avec nous depuis {{tenure}}"
+    },
+    "proposed": {
+      "backToRequest": "Retour à la demande",
+      "subtitle": "Marchand ad-hoc proposé par le client — pas encore partenaire",
+      "linkedRequest": "Demande liée",
+      "contact": "Coordonnées",
+      "requestContext": "Contexte de la demande",
+      "whatsapp": "Contacter sur WhatsApp",
+      "openRequest": "Ouvrir la demande",
+      "stats": {
+        "requests": "Demandes via ce magasin",
+        "volume": "Volume des demandes",
+        "currentAmount": "Montant de cette demande",
+        "submitted": "Date d'envoi"
+      }
+    },
+    "detail": {
+      "withUs": "Durée de partenariat",
+      "since": "Depuis le {{date}}",
+      "profile": "Informations marchand",
+      "salesChart": "Évolution des ventes",
+      "operations": "Activité du magasin",
+      "tabs": {
+        "overview": "Vue d'ensemble",
+        "financings": "Financements",
+        "payouts": "Versements",
+        "requests": "Demandes"
+      },
+      "stats": {
+        "totalSales": "Ventes totales",
+        "financings": "Nombre de financements",
+        "month": "ce mois",
+        "pendingPayout": "Solde en attente"
+      },
+      "fields": {
+        "category": "Activité",
+        "wilaya": "Localisation",
+        "address": "Adresse",
+        "commission": "Commission Crido",
+        "lastActivity": "Dernière activité",
+        "rc": "Registre de commerce",
+        "nif": "NIF",
+        "branches": "Succursales",
+        "products": "Produits",
+        "staff": "Personnel"
+      }
     }
   },
   "requests": {
@@ -146,11 +226,53 @@
       "client": "Client",
       "merchant": "Marchand",
       "product": "Produit"
+    },
+    "profile": {
+      "creditScore": "Score de crédit",
+      "creditLimit": "Plafond de crédit",
+      "creditUsed": "Utilisé",
+      "activeFinancings": "Financements actifs",
+      "month": "mois",
+      "viewClient": "Voir le dossier client",
+      "viewMerchant": "Voir le profil marchand",
+      "tenure": "Durée de partenariat",
+      "commission": "Commission",
+      "adHocPending": "Marchand ad-hoc — vérification téléphonique en attente",
+      "openVerification": "Ouvrir la file de vérification"
+    },
+    "approveModal": {
+      "title": "Approuver la demande",
+      "subtitle": "La demande sera acceptée et poursuivie dans le workflow.",
+      "noteLabel": "Note pour l'équipe ou le client",
+      "notePlaceholder": "Ex. : KYC vérifié, prix confirmé...",
+      "success": "Demande approuvée"
+    },
+    "rejectModal": {
+      "title": "Refuser la demande",
+      "subtitle": "Vous pouvez indiquer un motif — optionnel.",
+      "noteLabel": "Motif du refus",
+      "notePlaceholder": "Ex. : plafond dépassé, documents manquants...",
+      "success": "Demande refusée"
+    },
+    "adminNote": {
+      "title": "Note administrateur",
+      "optional": "optionnel"
     }
   },
   "financings": {
     "title": "Financements",
-    "subtitle": "Tous les financements actifs et clôturés",
+    "subtitle": "Suivi du portefeuille — actifs, en retard et clôturés",
+    "search": "Rechercher réf., client, marchand...",
+    "stats": {
+      "active": "Financements actifs",
+      "late": "En retard",
+      "outstanding": "Encours total",
+      "collected": "Encaissé"
+    },
+    "list": {
+      "ofTotal": "sur {{amount}}",
+      "inDays": "dans {{days}} j"
+    },
     "columns": {
       "reference": "Référence",
       "client": "Client",
@@ -159,11 +281,43 @@
       "remaining": "Restant",
       "nextDue": "Prochaine échéance",
       "status": "Statut"
+    },
+    "detail": {
+      "paid": "payé",
+      "activated": "Activé le {{date}}",
+      "total": "Total à recouvrer",
+      "daysLate": "{{days}} j de retard",
+      "clientCard": "Client",
+      "merchantCard": "Marchand",
+      "financingCount": "financements",
+      "installments": "Échéancier",
+      "payments": "Paiements",
+      "dueDate": "Date d'échéance",
+      "amount": "Montant",
+      "summary": "Résumé",
+      "monthly": "Mensualité",
+      "collected": "Encaissé",
+      "installmentsUnit": "échéances",
+      "plan": "Durée"
+    },
+    "installmentStatus": {
+      "paid": "Payé",
+      "due": "Dû",
+      "scheduled": "Planifié",
+      "late": "En retard"
     }
   },
   "payments": {
     "title": "Paiements",
-    "subtitle": "File d'attente de vérification des paiements",
+    "subtitle": "Vérifier les paiements clients et les lier aux financements",
+    "search": "Rechercher réf., client, financement...",
+    "verify": "Vérifier",
+    "stats": {
+      "pending": "En attente",
+      "pendingAmount": "Montant en attente",
+      "verified": "Confirmés",
+      "rejected": "Refusés"
+    },
     "columns": {
       "reference": "Référence",
       "client": "Client",
@@ -172,12 +326,43 @@
       "method": "Méthode",
       "externalRef": "Réf. externe",
       "status": "Statut"
+    },
+    "verifyModal": {
+      "title": "Confirmer le paiement",
+      "subtitle": "Confirmer que le montant et la preuve sont corrects.",
+      "noteLabel": "Note",
+      "notePlaceholder": "Ex. : correspond à la mensualité, preuve lisible...",
+      "success": "Paiement confirmé"
+    },
+    "rejectModal": {
+      "title": "Refuser le paiement",
+      "subtitle": "Preuve ou montant non accepté.",
+      "noteLabel": "Motif du refus",
+      "notePlaceholder": "Ex. : montant incorrect, preuve invalide...",
+      "success": "Paiement refusé"
+    },
+    "detail": {
+      "payment": "Paiement",
+      "proof": "Preuve de paiement",
+      "proofDemo": "Aperçu de la preuve (démo)",
+      "baridiMobCapture": "Capture Baridi Mob",
+      "amountMatch": "Le montant correspond à la mensualité",
+      "amountMismatch": "Alerte : montant différent du versement attendu"
     }
   },
   "payouts": {
     "title": "Versements marchands",
-    "subtitle": "L'argent dû aux marchands et son traitement",
+    "subtitle": "Fonds dus aux marchands — virement, Baridi Mob ou espèces",
+    "search": "Rechercher réf., marchand, client…",
+    "startProcessing": "Démarrer le traitement",
+    "markPaid": "Confirmer le versement",
     "tabs": { "all": "Tous", "pending": "En attente", "processing": "En cours", "paid": "Versés" },
+    "stats": {
+      "pending": "En attente",
+      "pendingAmount": "Montant en attente",
+      "processing": "En cours",
+      "paid": "Versés"
+    },
     "columns": {
       "reference": "Référence",
       "merchant": "Marchand",
@@ -188,11 +373,82 @@
       "status": "Statut",
       "date": "Date"
     },
-    "markPaid": "Marquer payé"
+    "workflow": {
+      "pending": "En attente",
+      "pendingHint": "Prêt à payer",
+      "processing": "En cours",
+      "processingHint": "Paiement lancé",
+      "paid": "Versé",
+      "paidHint": "Marchand payé"
+    },
+    "detail": {
+      "payout": "Versement marchand",
+      "paidOn": "Payé le {{date}}",
+      "payVia": "Mode de paiement du marchand",
+      "copy": "Copier",
+      "copied": "Copié",
+      "ccpAccount": "Compte CCP",
+      "ccpKey": "Clé",
+      "baridiRip": "RIP Baridi Mob",
+      "cashContact": "Contact",
+      "verifyBeforePay": "Vérifier les coordonnées avant le virement",
+      "breakdown": "Détail du montant",
+      "grossSale": "Vente brute",
+      "commission": "Commission Crido ({{rate}} %)",
+      "netPayout": "Net marchand",
+      "financing": "Financement lié",
+      "transferRef": "Réf. virement",
+      "vendorLabel": "Marchand",
+      "proof": "Preuve de versement",
+      "proofHint": "Aperçu du reçu après virement — archivage",
+      "proofBadge": "Reçu de virement",
+      "proofPreviewLive": "La réf. se met à jour selon votre saisie",
+      "cashProofTitle": "Reçu remise espèces"
+    },
+    "upload": {
+      "label": "Photo / fichier du reçu",
+      "title": "Téléverser la preuve",
+      "hint": "Glissez un fichier ou cliquez pour choisir",
+      "maxSize": "max. 3 Mo",
+      "remove": "Supprimer",
+      "openPdf": "Ouvrir le PDF",
+      "uploadedLabel": "Reçu téléversé",
+      "required": "Veuillez téléverser une image ou un PDF",
+      "tooLarge": "Fichier trop volumineux (3 Mo max.)",
+      "invalidType": "Format non pris en charge (JPG, PNG, PDF)",
+      "readError": "Impossible de lire le fichier"
+    },
+    "modal": { "noteOptional": "Note (facultatif)" },
+    "processModal": {
+      "title": "Démarrer le traitement",
+      "body": "Indiquez que le virement ou la remise en espèces est en cours.",
+      "notePlaceholder": "Ex. virement CCP demandé lundi matin",
+      "success": "Versement en cours de traitement"
+    },
+    "paidModal": {
+      "title": "Confirmer le paiement",
+      "body": "Confirmez que le marchand a reçu les fonds.",
+      "transferRef": "Réf. virement / reçu",
+      "transferRefPlaceholder": "CCP-88421 ou BM-99201",
+      "notePlaceholder": "Ex. virement effectué, marchand a confirmé",
+      "success": "Versement confirmé"
+    }
   },
   "verifications": {
     "title": "Appels de vérification",
-    "subtitle": "Vérification téléphonique des marchands ad-hoc avant approbation",
+    "subtitle": "Vérification téléphonique des marchands ad-hoc — produit et prix visibles avant l'appel",
+    "search": "Rechercher produit, marchand, client, réf.…",
+    "product": "Produit",
+    "categoryPhone": "Téléphone",
+    "categoryPc": "Ordinateur",
+    "monthly": "{{amount}} / mois · {{months}} mois",
+    "openRequest": "Ouvrir la demande",
+    "hint": "Appelez le marchand pour valider identité et point de vente avant approbation",
+    "stats": {
+      "pending": "Appels à passer",
+      "totalValue": "Valeur des demandes",
+      "products": "Produits à vérifier"
+    },
     "columns": {
       "request": "Demande",
       "merchant": "Marchand proposé",
@@ -220,6 +476,103 @@
     },
     "daysUnit": "j",
     "logAction": "Journaliser une action"
+  },
+  "finance": {
+    "title": "Finance & bénéfices",
+    "subtitle": "Dépenses, loyer, revenus Crido et bénéfice net — vue financière complète",
+    "netProfit": "Bénéfice net",
+    "netProfitHint": "Revenus {{revenue}} − dépenses {{expenses}} · marge {{margin}} %",
+    "kpis": {
+      "revenue": "Revenus Crido (encaissés)",
+      "expenses": "Charges d'exploitation",
+      "collected": "Encaissements clients",
+      "disbursed": "Versements marchands"
+    },
+    "tabs": { "summary": "Synthèse", "expenses": "Dépenses", "cashflow": "Flux" },
+    "pl": {
+      "title": "Compte de résultat",
+      "hint": "Commissions + marge − loyer, salaires, etc.",
+      "commissionCollected": "Commissions marchands (5 %) — encaissées",
+      "marginCollected": "Marge financement — encaissée",
+      "revenueSubtotal": "Total revenus",
+      "rent": "Loyer",
+      "salaries": "Salaires",
+      "marketing": "Marketing",
+      "technology": "Technologie",
+      "legal": "Juridique / compta",
+      "operations": "Exploitation",
+      "other": "Autres charges",
+      "expenseSubtotal": "Total charges",
+      "netProfit": "Bénéfice net"
+    },
+    "chart": {
+      "title": "Revenus vs dépenses",
+      "income": "Revenus",
+      "expenses": "Dépenses"
+    },
+    "revenueBreakdown": "Détail des revenus",
+    "revenue": {
+      "commission": "Commissions",
+      "margin": "Marge",
+      "projected": "Prévu sur portefeuille",
+      "totalProjected": "Profit Crido total prévu"
+    },
+    "categories": {
+      "rent": "Loyer",
+      "salaries": "Salaires",
+      "marketing": "Marketing",
+      "technology": "Technologie",
+      "legal": "Juridique",
+      "operations": "Exploitation",
+      "other": "Autre"
+    },
+    "quick": {
+      "title": "Ajouter une charge rapidement",
+      "hint": "Choisissez le type, saisissez le montant — le bénéfice net se met à jour",
+      "live": "Calcul en direct",
+      "empty": "Aucune charge pour cette période",
+      "labels": {
+        "rent": "Loyer bureau — Adrar",
+        "salaries": "Salaires équipe",
+        "marketing": "Campagne marketing",
+        "technology": "Abonnements tech",
+        "legal": "Comptable / juridique",
+        "operations": "Exploitation bureau"
+      }
+    },
+    "expense": {
+      "title": "Charges d'exploitation",
+      "total": "Total période",
+      "add": "Ajouter une charge",
+      "edit": "Modifier la charge",
+      "save": "Enregistrer",
+      "added": "Charge ajoutée",
+      "updated": "Mis à jour — calculs actualisés",
+      "deleted": "Supprimé",
+      "validation": "Saisir libellé et montant",
+      "category": "Catégorie",
+      "label": "Libellé",
+      "labelPlaceholder": "Ex. loyer bureau — Adrar",
+      "amount": "Montant (DA)",
+      "preview": "Montant : {{amount}}",
+      "period": "Mois",
+      "recurring": "Charge mensuelle récurrente",
+      "recurringBadge": "récurrent",
+      "note": "Note"
+    },
+    "cashflow": {
+      "title": "Flux de trésorerie",
+      "in": "Entrées — mensualités",
+      "out": "Sorties — marchands",
+      "pendingPayouts": "Versements marchands en attente",
+      "outstanding": "Reste dû clients"
+    },
+    "portfolio": {
+      "title": "Portefeuille",
+      "active": "Financements actifs",
+      "defaulted": "En défaut",
+      "hint": "Bénéfice net = revenus Crido (commissions + marge) moins charges d'exploitation."
+    }
   },
   "reports": {
     "title": "Rapports",

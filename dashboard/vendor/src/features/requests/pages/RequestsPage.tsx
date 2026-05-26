@@ -2,16 +2,15 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ClipboardList } from 'lucide-react'
+import { ClipboardList, Inbox } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Card } from '@/components/ui/card'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { StatusBadge } from '@/components/data/StatusBadge'
 import { Avatar } from '@/components/data/Avatar'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { cn } from '@/lib/utils'
-import { fetchRequests } from '@/lib/mock/api'
+import { fetchRequests } from '@/lib/api'
 import { merchantProfile, type IncomingRequest, type RequestStatus } from '@/lib/mock/data'
 import { formatDzd, formatDate, type Locale } from '@/lib/format'
 
@@ -22,7 +21,7 @@ const TABS: { key: string; status: RequestStatus | 'all' }[] = [
   { key: 'rejected', status: 'merchant_rejected' },
 ]
 
-export function payoutOf(amount: number): number {
+function payoutOf(amount: number): number {
   return amount - Math.round((amount * merchantProfile.commissionRate) / 100)
 }
 
@@ -38,6 +37,7 @@ export default function RequestsPage() {
   const active = TABS.find((tb) => tb.key === tab) ?? TABS[0]
   const rows = all.filter((r) => r.status === active.status)
   const countOf = (status: RequestStatus) => all.filter((r) => r.status === status).length
+  const pendingCount = countOf('submitted')
 
   const columns: Column<IncomingRequest>[] = [
     {
@@ -96,9 +96,21 @@ export default function RequestsPage() {
 
   return (
     <div className="animate-fade-up">
-      <PageHeader title={t('requests.title')} subtitle={t('requests.subtitle')} />
+      <div className="mb-8">
+        <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary-surface px-3 py-1 text-xs font-medium text-primary">
+          <Inbox size={14} />
+          {t('requests.badge')}
+        </div>
+        <PageHeader title={t('requests.title')} subtitle={t('requests.subtitle')} />
+      </div>
 
-      <div className="mb-4 flex flex-wrap gap-1 border-b border-border">
+      {pendingCount > 0 ? (
+        <div className="mb-6 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary-surface/90 to-transparent px-5 py-4 shadow-sm">
+          <p className="text-sm font-medium text-primary">{t('requests.pendingBanner', { count: pendingCount })}</p>
+        </div>
+      ) : null}
+
+      <div className="mb-5 flex flex-wrap gap-1 rounded-2xl border border-border bg-card p-1 shadow-sm">
         {TABS.map((tb) => {
           const count = countOf(tb.status as RequestStatus)
           return (
@@ -107,10 +119,10 @@ export default function RequestsPage() {
               type="button"
               onClick={() => setTab(tb.key)}
               className={cn(
-                '-mb-px flex items-center gap-2 border-b-2 px-4 py-2 text-sm transition-colors',
+                'flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm transition-all sm:flex-none',
                 tab === tb.key
-                  ? 'border-primary font-medium text-primary'
-                  : 'border-transparent text-foreground-secondary hover:text-foreground',
+                  ? 'bg-primary font-medium text-primary-fg shadow-sm'
+                  : 'text-foreground-secondary hover:bg-background-secondary hover:text-foreground',
               )}
             >
               {t(`requests.tabs.${tb.key}`)}
@@ -118,9 +130,7 @@ export default function RequestsPage() {
                 <span
                   className={cn(
                     'flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-medium',
-                    tab === tb.key
-                      ? 'bg-primary text-primary-fg'
-                      : 'bg-background-secondary text-foreground-tertiary',
+                    tab === tb.key ? 'bg-primary-fg/20 text-primary-fg' : 'bg-background-secondary text-foreground-tertiary',
                   )}
                 >
                   {count}
@@ -131,11 +141,11 @@ export default function RequestsPage() {
         })}
       </div>
 
-      <Card>
+      <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         {isLoading ? (
           <Loader />
         ) : rows.length === 0 ? (
-          <EmptyState icon={ClipboardList} title={t('common.noResults')} />
+          <EmptyState icon={ClipboardList} title={t('requests.emptyTab')} />
         ) : (
           <DataTable
             columns={columns}
@@ -144,7 +154,7 @@ export default function RequestsPage() {
             onRowClick={(r) => navigate(`/requests/${r.reference}`)}
           />
         )}
-      </Card>
+      </section>
     </div>
   )
 }

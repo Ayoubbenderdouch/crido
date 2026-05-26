@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Store } from 'lucide-react'
+import { Store, ChevronLeft } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Card } from '@/components/ui/card'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { StatusBadge } from '@/components/data/StatusBadge'
+import { Avatar } from '@/components/data/Avatar'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { fetchMerchants } from '@/lib/mock/api'
 import type { Merchant } from '@/lib/mock/data'
-import { formatDzd, type Locale } from '@/lib/format'
+import { formatDzd, formatTenure, type Locale } from '@/lib/format'
 import { cn } from '@/lib/utils'
 
 const TABS = ['all', 'partner', 'ad_hoc'] as const
@@ -18,6 +20,7 @@ const TABS = ['all', 'partner', 'ad_hoc'] as const
 export default function MerchantsPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
+  const navigate = useNavigate()
   const [tab, setTab] = useState<(typeof TABS)[number]>('all')
 
   const { data, isLoading } = useQuery({ queryKey: ['merchants'], queryFn: fetchMerchants })
@@ -29,9 +32,14 @@ export default function MerchantsPage() {
       key: 'merchant',
       header: t('merchants.columns.merchant'),
       cell: (m) => (
-        <div>
-          <p className="font-medium text-foreground">{m.name}</p>
-          <p className="text-xs text-foreground-tertiary">{m.commune}</p>
+        <div className="flex items-center gap-3">
+          <Avatar name={m.name} size={36} />
+          <div>
+            <p className="font-medium text-foreground">{m.name}</p>
+            <p className="text-xs text-foreground-tertiary">
+              {m.commune} · {t('merchants.list.tenure', { tenure: formatTenure(m.joinedAt, locale) })}
+            </p>
+          </div>
         </div>
       ),
     },
@@ -67,6 +75,17 @@ export default function MerchantsPage() {
       align: 'end',
       cell: (m) => <StatusBadge status={m.status} />,
     },
+    {
+      key: 'actions',
+      header: '',
+      align: 'end',
+      cell: () => (
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-primary">
+          {t('merchants.list.viewProfile')}
+          <ChevronLeft size={14} className="ltr:rotate-180" />
+        </span>
+      ),
+    },
   ]
 
   return (
@@ -97,7 +116,12 @@ export default function MerchantsPage() {
         ) : rows.length === 0 ? (
           <EmptyState icon={Store} title={t('common.noResults')} />
         ) : (
-          <DataTable columns={columns} rows={rows} rowKey={(m) => String(m.id)} />
+          <DataTable
+            columns={columns}
+            rows={rows}
+            rowKey={(m) => String(m.id)}
+            onRowClick={(m) => navigate(`/merchants/${m.id}`)}
+          />
         )}
       </Card>
     </div>

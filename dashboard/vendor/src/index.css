@@ -85,3 +85,64 @@ body {
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
 }
+
+:root {
+  --transition-fast: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Notification drawer */
+.crido-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(26, 26, 24, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.crido-drawer-backdrop--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.crido-drawer-panel {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  width: min(380px, 100vw);
+  background: var(--color-background);
+  border-inline-start: 1px solid var(--color-border);
+  box-shadow: -4px 0 24px rgba(26, 26, 24, 0.08);
+  transform: translateX(100%);
+  transition: transform var(--transition-slow);
+}
+
+[dir='rtl'] .crido-drawer-panel {
+  transform: translateX(-100%);
+  box-shadow: 4px 0 24px rgba(26, 26, 24, 0.08);
+}
+
+.crido-drawer-panel--open {
+  transform: translateX(0);
+}
+
+.crido-notification-item {
+  transition: background-color var(--transition-fast);
+}
+
+.crido-notification-item:hover {
+  background-color: var(--color-background-secondary);
+}
+
+.crido-notification-item--unread {
+  background-color: rgba(225, 245, 238, 0.35);
+}
+
+.crido-notification-item--unread:hover {
+  background-color: rgba(225, 245, 238, 0.55);
+}

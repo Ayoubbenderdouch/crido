@@ -44,14 +44,50 @@ export type Merchant = {
   id: number
   slug: string
   name: string
+  nameFr: string | null
+  tagline: string | null
+  description: string | null
   source: MerchantSource
   status: MerchantStatus
   phone: string
+  email: string | null
+  website: string | null
+  wilaya: string
   commune: string
+  address: string
+  category: string
+  rc: string | null
+  nif: string | null
   totalSalesDzd: number
   totalFinancings: number
+  monthSalesDzd: number
+  pendingPayoutDzd: number
   commissionRate: number
+  branchesCount: number
+  productsCount: number
+  staffCount: number
+  joinedAt: string
+  lastActivityAt: string
+  /** @deprecated use joinedAt — kept for list sorting */
   createdAt: string
+}
+
+/** Daily sales per merchant (365 days, seeded by merchant id). */
+export function buildMerchantSalesSeries(merchantId: number): { date: string; salesDzd: number }[] {
+  const out: { date: string; salesDzd: number }[] = []
+  const today = new Date('2026-05-20')
+  const seed = merchantId * 1.37
+  for (let i = 364; i >= 0; i--) {
+    const d = new Date(today)
+    d.setDate(d.getDate() - i)
+    const wave = Math.sin((i + seed) / 17) + Math.cos((i + seed) / 38) * 0.3 + 1.1
+    const scale = 12000 + merchantId * 4500
+    out.push({
+      date: d.toISOString().slice(0, 10),
+      salesDzd: Math.round((wave * scale + (i % 4) * 2000) / 1000) * 1000,
+    })
+  }
+  return out
 }
 
 export type FinancingRequest = {
@@ -117,12 +153,78 @@ export const clients: Client[] = [
 ]
 
 export const merchants: Merchant[] = [
-  { id: 1, slug: 'tahar-phones', name: 'طاهر فون', source: 'partner', status: 'active', phone: '+213661234567', commune: 'أدرار', totalSalesDzd: 4350000, totalFinancings: 23, commissionRate: 5, createdAt: '2025-12-10' },
-  { id: 2, slug: 'electro-adrar', name: 'إلكترو أدرار', source: 'partner', status: 'active', phone: '+213551098220', commune: 'أدرار', totalSalesDzd: 2980000, totalFinancings: 16, commissionRate: 5, createdAt: '2026-01-08' },
-  { id: 3, slug: 'meuble-touat', name: 'أثاث توات', source: 'partner', status: 'active', phone: '+213662771403', commune: 'أدرار', totalSalesDzd: 1640000, totalFinancings: 9, commissionRate: 6, createdAt: '2026-02-14' },
-  { id: 4, slug: 'maison-reggane', name: 'محل النور للأجهزة', source: 'ad_hoc', status: 'active', phone: '+213770339187', commune: 'رقان', totalSalesDzd: 520000, totalFinancings: 3, commissionRate: 5, createdAt: '2026-03-22' },
-  { id: 5, slug: 'phone-store-aoulef', name: 'متجر الهاتف أولف', source: 'ad_hoc', status: 'pending', phone: '+213551660934', commune: 'أولف', totalSalesDzd: 0, totalFinancings: 0, commissionRate: 5, createdAt: '2026-05-18' },
-  { id: 6, slug: 'tamest-electro', name: 'تامست إلكترونيك', source: 'partner', status: 'suspended', phone: '+213663008255', commune: 'تامست', totalSalesDzd: 780000, totalFinancings: 4, commissionRate: 5, createdAt: '2026-01-25' },
+  {
+    id: 1, slug: 'tahar-phones', name: 'طاهر فون', nameFr: 'Tahar Phone',
+    tagline: 'هواتف ذكية وإلكترونيات — أدرار',
+    description: 'متجر متخصص في الهواتف الذكية والأجهزة الإلكترونية. شريك معتمد لدى Crido.',
+    source: 'partner', status: 'active', phone: '+213661234567', email: 'contact@taharphone.dz',
+    website: 'taharphone.dz', wilaya: 'أدرار', commune: 'أدرار',
+    address: 'شارع الإمام مالك، حي 20 أوت، أدرار', category: 'إلكترونيات',
+    rc: '11/00-1248763 B 25', nif: '002011124876355',
+    totalSalesDzd: 4350000, totalFinancings: 23, monthSalesDzd: 575000, pendingPayoutDzd: 190000,
+    commissionRate: 5, branchesCount: 2, productsCount: 48, staffCount: 4,
+    joinedAt: '2025-12-10', lastActivityAt: '2026-05-19', createdAt: '2025-12-10',
+  },
+  {
+    id: 2, slug: 'electro-adrar', name: 'إلكترو أدرار', nameFr: 'Electro Adrar',
+    tagline: 'أجهزة كهرومنزلية وتلفزيونات',
+    description: 'بيع التلفزيونات والثلاجات والأجهزة المنزلية بالتقسيط عبر Crido.',
+    source: 'partner', status: 'active', phone: '+213551098220', email: 'info@electro-adrar.dz',
+    website: null, wilaya: 'أدرار', commune: 'أدرار',
+    address: 'حي السلام، أدرار', category: 'أجهزة منزلية',
+    rc: '11/00-9821044 B 25', nif: '002011982104422',
+    totalSalesDzd: 2980000, totalFinancings: 16, monthSalesDzd: 412000, pendingPayoutDzd: 76000,
+    commissionRate: 5, branchesCount: 1, productsCount: 32, staffCount: 3,
+    joinedAt: '2026-01-08', lastActivityAt: '2026-05-17', createdAt: '2026-01-08',
+  },
+  {
+    id: 3, slug: 'meuble-touat', name: 'أثاث توات', nameFr: 'Meuble Touat',
+    tagline: 'أثاث وديكور المنزل',
+    description: 'معرض أثاث في وسط أدرار — غرف نوم، صالونات، مطابخ.',
+    source: 'partner', status: 'active', phone: '+213662771403', email: null,
+    website: null, wilaya: 'أدرار', commune: 'أدرار',
+    address: 'شارع بريد العام، أدرار', category: 'أثاث',
+    rc: '11/00-7712041 B 25', nif: null,
+    totalSalesDzd: 1640000, totalFinancings: 9, monthSalesDzd: 218000, pendingPayoutDzd: 109250,
+    commissionRate: 6, branchesCount: 1, productsCount: 24, staffCount: 2,
+    joinedAt: '2026-02-14', lastActivityAt: '2026-05-16', createdAt: '2026-02-14',
+  },
+  {
+    id: 4, slug: 'maison-reggane', name: 'محل النور للأجهزة', nameFr: null,
+    tagline: null,
+    description: 'تاجر مؤقت — تم التحقق منه عبر مكالمة Crido بعد طلب عميل.',
+    source: 'ad_hoc', status: 'active', phone: '+213770339187', email: null,
+    website: null, wilaya: 'أدرار', commune: 'رقان',
+    address: 'حي السلام، رقان', category: 'إلكترونيات',
+    rc: null, nif: null,
+    totalSalesDzd: 520000, totalFinancings: 3, monthSalesDzd: 89000, pendingPayoutDzd: 0,
+    commissionRate: 5, branchesCount: 1, productsCount: 0, staffCount: 0,
+    joinedAt: '2026-03-22', lastActivityAt: '2026-05-12', createdAt: '2026-03-22',
+  },
+  {
+    id: 5, slug: 'phone-store-aoulef', name: 'متجر الهاتف أولف', nameFr: null,
+    tagline: null,
+    description: 'تاجر مؤقت قيد المراجعة — لم يُفعَّل بعد في النظام.',
+    source: 'ad_hoc', status: 'pending', phone: '+213551660934', email: null,
+    website: null, wilaya: 'أدرار', commune: 'أولف',
+    address: 'حي النصر، أولف', category: 'إلكترونيات',
+    rc: null, nif: null,
+    totalSalesDzd: 0, totalFinancings: 0, monthSalesDzd: 0, pendingPayoutDzd: 0,
+    commissionRate: 5, branchesCount: 0, productsCount: 0, staffCount: 0,
+    joinedAt: '2026-05-18', lastActivityAt: '2026-05-18', createdAt: '2026-05-18',
+  },
+  {
+    id: 6, slug: 'tamest-electro', name: 'تامست إلكترونيك', nameFr: 'Tamest Electro',
+    tagline: 'إلكترونيات — تامست',
+    description: 'شريك موقوف مؤقتاً بسبب تأخر في تسليم مستندات KYB.',
+    source: 'partner', status: 'suspended', phone: '+213663008255', email: 'tamest@mail.dz',
+    website: null, wilaya: 'أدرار', commune: 'تامست',
+    address: 'وسط المدينة، تامست', category: 'إلكترونيات',
+    rc: '11/00-6602188 B 25', nif: '002011660218877',
+    totalSalesDzd: 780000, totalFinancings: 4, monthSalesDzd: 0, pendingPayoutDzd: 0,
+    commissionRate: 5, branchesCount: 1, productsCount: 12, staffCount: 1,
+    joinedAt: '2026-01-25', lastActivityAt: '2026-04-02', createdAt: '2026-01-25',
+  },
 ]
 
 export const financingRequests: FinancingRequest[] = [
@@ -132,7 +234,7 @@ export const financingRequests: FinancingRequest[] = [
   { reference: 'CR-2026-000139', clientId: 1, clientName: 'أيوب قويدري', clientTier: 'B', merchantName: 'طاهر فون', merchantSource: 'partner', productName: 'iPhone 16', amountDzd: 200000, planMonths: 12, status: 'contracts_generated', createdAt: '2026-05-16' },
   { reference: 'CR-2026-000138', clientId: 11, clientName: 'الطاهر بن زيان', clientTier: 'C', merchantName: 'طاهر فون', merchantSource: 'partner', productName: 'حاسوب محمول HP', amountDzd: 124000, planMonths: 12, status: 'documents_required', createdAt: '2026-05-15' },
   { reference: 'CR-2026-000137', clientId: 6, clientName: 'سمية حساني', clientTier: 'B', merchantName: 'أثاث توات', merchantSource: 'partner', productName: 'طقم صالون', amountDzd: 165000, planMonths: 12, status: 'merchant_confirmed', createdAt: '2026-05-14' },
-  { reference: 'CR-2026-000136', clientId: 2, clientName: 'كريم العماري', clientTier: 'C', merchantName: 'محل النور للأجهزة', merchantSource: 'ad_hoc', productName: 'غسالة Condor', amountDzd: 89000, planMonths: 6, status: 'contracts_signed', createdAt: '2026-05-12' },
+  { reference: 'CR-2026-000136', clientId: 2, clientName: 'كريم العماري', clientTier: 'C', merchantName: 'محل النور للأجهزة', merchantSource: 'ad_hoc', productName: 'حاسوب محمول HP', amountDzd: 124000, planMonths: 12, status: 'contracts_signed', createdAt: '2026-05-12' },
   { reference: 'CR-2026-000135', clientId: 12, clientName: 'وليد شعباني', clientTier: 'A', merchantName: 'إلكترو أدرار', merchantSource: 'partner', productName: 'تلفاز Samsung 65"', amountDzd: 178000, planMonths: 12, status: 'approved', createdAt: '2026-05-08' },
   { reference: 'CR-2026-000134', clientId: 7, clientName: 'عبد الرحمن مولاي', clientTier: 'D', merchantName: 'طاهر فون', merchantSource: 'partner', productName: 'iPhone 13', amountDzd: 145000, planMonths: 12, status: 'rejected', createdAt: '2026-05-03' },
   { reference: 'CR-2026-000133', clientId: 10, clientName: 'خديجة عمراني', clientTier: 'B', merchantName: 'تامست إلكترونيك', merchantSource: 'partner', productName: 'مكيف هواء Cristor', amountDzd: 115000, planMonths: 12, status: 'approved', createdAt: '2026-04-29' },
@@ -161,18 +263,19 @@ export const payments: Payment[] = [
   { reference: 'PAY-2026-000305', clientName: 'سمية حساني', financingRef: 'CRF-2026-000081', amountDzd: 11021, method: 'ccp', externalRef: 'CCP-9901223', status: 'verified', submittedAt: '2026-04-29' },
 ]
 
-/** Daily series for the dashboard charts (last 30 days). */
+/** Daily series for dashboard charts (365 days — filtered in UI by period). */
 export function buildDailySeries(): { date: string; financings: number; revenueDzd: number }[] {
   const out: { date: string; financings: number; revenueDzd: number }[] = []
   const today = new Date('2026-05-20')
-  for (let i = 29; i >= 0; i--) {
+  for (let i = 364; i >= 0; i--) {
     const d = new Date(today)
     d.setDate(d.getDate() - i)
-    const wave = Math.sin(i / 4) + 1.2
+    const wave = Math.sin(i / 18) + Math.cos(i / 42) * 0.35 + 1.15
+    const seasonal = 1 + Math.sin((i / 365) * Math.PI * 2) * 0.12
     out.push({
       date: d.toISOString().slice(0, 10),
-      financings: Math.max(0, Math.round(wave * 1.6 + (i % 3))),
-      revenueDzd: Math.round((wave * 26000 + (i % 5) * 7000) / 1000) * 1000,
+      financings: Math.max(0, Math.round(wave * 1.6 * seasonal + (i % 3))),
+      revenueDzd: Math.round((wave * 26000 * seasonal + (i % 5) * 7000) / 1000) * 1000,
     })
   }
   return out
@@ -207,6 +310,7 @@ export const merchantPayouts: MerchantPayout[] = [
 // ── Ad-hoc merchant verification queue (admin phone calls) ────
 export type VerificationItem = {
   requestRef: string
+  productName: string
   proposedMerchantName: string
   proposedMerchantPhone: string
   proposedMerchantAddress: string
@@ -218,9 +322,9 @@ export type VerificationItem = {
 }
 
 export const verificationQueue: VerificationItem[] = [
-  { requestRef: 'CR-2026-000142', proposedMerchantName: 'محل البركة للإلكترونيك', proposedMerchantPhone: '+213661902255', proposedMerchantAddress: 'حي تيليلان، أدرار', clientName: 'إبراهيم سحنون', clientPhone: '+213770112648', amountDzd: 195000, planMonths: 12, submittedAt: '2026-05-20' },
-  { requestRef: 'CR-2026-000140', proposedMerchantName: 'متجر الهاتف أولف', proposedMerchantPhone: '+213551660934', proposedMerchantAddress: 'حي النصر، أولف', clientName: 'يوسف بن عيسى', clientPhone: '+213663401255', amountDzd: 72000, planMonths: 6, submittedAt: '2026-05-19' },
-  { requestRef: 'CR-2026-000136', proposedMerchantName: 'محل النور للأجهزة', proposedMerchantPhone: '+213770339187', proposedMerchantAddress: 'حي السلام، رقان', clientName: 'كريم العماري', clientPhone: '+213662918334', amountDzd: 89000, planMonths: 6, submittedAt: '2026-05-12' },
+  { requestRef: 'CR-2026-000142', productName: 'iPhone 15', proposedMerchantName: 'محل البركة للإلكترونيك', proposedMerchantPhone: '+213661902255', proposedMerchantAddress: 'حي تيليلان، أدرار', clientName: 'إبراهيم سحنون', clientPhone: '+213770112648', amountDzd: 195000, planMonths: 12, submittedAt: '2026-05-20' },
+  { requestRef: 'CR-2026-000140', productName: 'Samsung Galaxy A55', proposedMerchantName: 'متجر الهاتف أولف', proposedMerchantPhone: '+213551660934', proposedMerchantAddress: 'حي النصر، أولف', clientName: 'يوسف بن عيسى', clientPhone: '+213663401255', amountDzd: 72000, planMonths: 6, submittedAt: '2026-05-19' },
+  { requestRef: 'CR-2026-000136', productName: 'حاسوب محمول HP', proposedMerchantName: 'محل النور للأجهزة', proposedMerchantPhone: '+213770339187', proposedMerchantAddress: 'حي السلام، رقان', clientName: 'كريم العماري', clientPhone: '+213662918334', amountDzd: 124000, planMonths: 12, submittedAt: '2026-05-12' },
 ]
 
 // ── Collections — late / defaulted accounts ───────────────────

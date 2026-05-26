@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -13,22 +14,50 @@ import { DonutChart } from '@/components/charts/DonutChart'
 import { fetchDashboard } from '@/lib/mock/api'
 import { financings, merchantPayouts } from '@/lib/mock/data'
 import { formatDzd, type Locale } from '@/lib/format'
-
-const shortDate = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`
+import { TimeRangePicker } from '@/components/data/TimeRangePicker'
+import {
+  barPointsForRange,
+  chartPointsForRange,
+  computeTrendPct,
+  filterByRange,
+  formatChartAxisLabel,
+  loadStoredTimeRange,
+  sumNumeric,
+  type TimeRangeId,
+} from '@/lib/timeRange'
 
 export default function ReportsPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
+  const [range, setRange] = useState<TimeRangeId>(loadStoredTimeRange)
 
   const { data, isLoading } = useQuery({ queryKey: ['dashboard'], queryFn: fetchDashboard })
-  if (isLoading || !data) return <Loader />
+
+  const periodStats = useMemo(() => {
+    if (!data) return null
+    const filtered = filterByRange(data.daily, range)
+    const revenueValues = filtered.map((d) => d.revenueDzd)
+    return {
+      periodRevenue: sumNumeric(filtered, 'revenueDzd'),
+      revenueTrend: computeTrendPct(revenueValues),
+      areaPoints: chartPointsForRange(data.daily, range, ['revenueDzd']),
+      barPoints: barPointsForRange(data.daily, range, 'financings').map((p) => ({
+        label: p.label,
+        financings: p.value,
+      })),
+    }
+  }, [data, range])
+
+  if (isLoading || !data || !periodStats) return <Loader />
 
   const collected = financings.reduce((sum, f) => sum + f.paidAmountDzd, 0)
   const disbursed = merchantPayouts
     .filter((p) => p.status === 'paid')
     .reduce((sum, p) => sum + p.amountDzd, 0)
-  const profit = Math.round(collected * 0.18)
+  const profit = Math.round(periodStats.periodRevenue * 0.18)
   const defaultRate = (financings.filter((f) => f.status === 'defaulted').length / financings.length) * 100
+  const periodLabel = t(`timeRange.${range}`)
+  const axisFmt = (v: string) => formatChartAxisLabel(v, range)
 
   const slices = data.portfolio.map((p) => ({
     name: t(`status.${p.name}`),
@@ -40,9 +69,7 @@ export default function ReportsPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader title={t('reports.title')} subtitle={t('reports.subtitle')}>
-        <span className="rounded-md bg-background-secondary px-3 py-1.5 text-sm text-foreground-secondary">
-          {t('reports.period')}
-        </span>
+        <TimeRangePicker value={range} onChange={setRange} />
         <Button variant="secondary" size="sm" onClick={() => toast(t('common.actionDemo'))}>
           <Download size={15} />
           {t('reports.export')}
@@ -50,9 +77,24 @@ export default function ReportsPage() {
       </PageHeader>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard label={t('reports.kpis.collected')} value={formatDzd(collected, locale)} icon={Banknote} trend={15} />
-        <KpiCard label={t('reports.kpis.disbursed')} value={formatDzd(disbursed, locale)} icon={Send} trend={9} />
-        <KpiCard label={t('reports.kpis.profit')} value={formatDzd(profit, locale)} icon={TrendingUp} trend={18} />
+        <KpiCard
+          label={t('reports.kpis.collected')}
+          value={formatDzd(collected, locale)}
+          icon={Banknote}
+          trend={15}
+        />
+        <KpiCard
+          label={t('reports.kpis.disbursed')}
+          value={formatDzd(disbursed, locale)}
+          icon={Send}
+          trend={9}
+        />
+        <KpiCard
+          label={t('reports.kpis.profit')}
+          value={formatDzd(profit, locale)}
+          icon={TrendingUp}
+          trend={periodStats.revenueTrend}
+        />
         <KpiCard
           label={t('reports.kpis.defaultRate')}
           value={`${defaultRate.toFixed(1)}%`}
@@ -62,18 +104,27 @@ export default function ReportsPage() {
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="p-5 lg:col-span-2">
-          <p className="text-md font-medium text-foreground">{t('reports.revenueTitle')}</p>
-          <div className="mt-4">
+        <Card className="overflow-hidden p-0 lg:col-span-2">
+          <div className="flex flex-col gap-3 border-b border-border bg-gradient-to-r from-primary-surface/70 to-transparent px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-foreground">{t('reports.revenueTitle')}</p>
+              <p className="mt-0.5 text-xs text-foreground-tertiary">
+                {t('timeRange.chartHint', { period: periodLabel })}
+              </p>
+            </div>
+            <TimeRangePicker value={range} onChange={setRange} compact />
+          </div>
+          <div className="p-5">
             <AreaTrend
-              data={data.daily}
+              data={periodStats.areaPoints}
               dataKey="revenueDzd"
               xKey="date"
               color="#0F6E56"
-              xTickFormatter={shortDate}
+              xTickFormatter={axisFmt}
               yTickFormatter={(v) => `${Math.round(v / 1000)}k`}
               valueFormatter={(v) => formatDzd(v, locale)}
-              labelFormatter={shortDate}
+              labelFormatter={axisFmt}
+              height={260}
             />
           </div>
         </Card>
@@ -99,10 +150,21 @@ export default function ReportsPage() {
         </Card>
       </div>
 
-      <Card className="mt-4 p-5">
-        <p className="text-md font-medium text-foreground">{t('reports.financingsTitle')}</p>
-        <div className="mt-4">
-          <BarTrend data={data.weekly} dataKey="financings" xKey="label" color="#0F6E56" />
+      <Card className="mt-4 overflow-hidden p-0">
+        <div className="border-b border-border bg-gradient-to-r from-primary-surface/70 to-transparent px-5 py-4">
+          <p className="text-sm font-semibold text-foreground">{t('reports.financingsTitle')}</p>
+          <p className="mt-0.5 text-xs text-foreground-tertiary">
+            {t('timeRange.chartHint', { period: periodLabel })}
+          </p>
+        </div>
+        <div className="p-5">
+          <BarTrend
+            data={periodStats.barPoints}
+            dataKey="financings"
+            xKey="label"
+            color="#0F6E56"
+            height={240}
+          />
         </div>
       </Card>
     </div>

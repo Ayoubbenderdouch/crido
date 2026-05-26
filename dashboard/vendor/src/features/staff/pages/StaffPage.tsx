@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
+import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
 import { UserCog, UserPlus } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Card } from '@/components/ui/card'
@@ -10,13 +10,14 @@ import { StatusBadge } from '@/components/data/StatusBadge'
 import { Avatar } from '@/components/data/Avatar'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
-import { fetchStaff } from '@/lib/mock/api'
+import { fetchStaff } from '@/lib/api'
 import type { Staff } from '@/lib/mock/data'
 import { formatDate, type Locale } from '@/lib/format'
 
 export default function StaffPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
+  const navigate = useNavigate()
 
   const { data, isLoading } = useQuery({ queryKey: ['staff'], queryFn: fetchStaff })
   const rows = data ?? []
@@ -35,13 +36,17 @@ export default function StaffPage() {
     {
       key: 'phone',
       header: t('staff.columns.phone'),
-      cell: (s) => <span className="tabular-nums text-foreground-secondary" dir="ltr">{s.phone}</span>,
+      cell: (s) => (
+        <span className="tabular-nums text-foreground-secondary" dir="ltr">
+          {s.phone}
+        </span>
+      ),
     },
     {
       key: 'role',
       header: t('staff.columns.role'),
       cell: (s) => (
-        <span className="rounded-sm bg-background-secondary px-2 py-0.5 text-xs text-foreground-secondary">
+        <span className="rounded-full bg-background-secondary px-2.5 py-0.5 text-xs font-medium text-foreground-secondary">
           {t(`staff.roles.${s.role}`)}
         </span>
       ),
@@ -66,10 +71,12 @@ export default function StaffPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader title={t('staff.title')} subtitle={t('staff.subtitle')}>
-        <Button size="sm" onClick={() => toast(t('common.actionDemo'))}>
-          <UserPlus size={15} />
-          {t('staff.addStaff')}
-        </Button>
+        <Link to="/staff/new">
+          <Button size="sm" type="button" className="shadow-sm">
+            <UserPlus size={15} />
+            {t('staff.addStaff')}
+          </Button>
+        </Link>
       </PageHeader>
 
       <Card>
@@ -78,7 +85,12 @@ export default function StaffPage() {
         ) : rows.length === 0 ? (
           <EmptyState icon={UserCog} title={t('common.noResults')} />
         ) : (
-          <DataTable columns={columns} rows={rows} rowKey={(s) => String(s.id)} />
+          <DataTable
+            columns={columns}
+            rows={rows}
+            rowKey={(s) => String(s.id)}
+            onRowClick={(s) => navigate(`/staff/${s.id}`)}
+          />
         )}
       </Card>
     </div>

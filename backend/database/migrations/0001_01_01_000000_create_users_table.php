@@ -13,12 +13,24 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->uuid('uuid')->unique();
+            $table->string('role', 50)->default('client'); // ENUM admin|vendor|client|agent
+            $table->string('full_name', 150);
+            $table->string('phone', 20)->unique();
+            $table->string('email', 150)->nullable()->unique();
             $table->string('password');
+            $table->timestamp('phone_verified_at')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('locale', 2)->default('ar'); // ENUM ar|fr
+            $table->string('status', 50)->default('active'); // ENUM active|suspended|blocked
+            $table->timestamp('last_login_at')->nullable();
+            $table->string('last_login_ip', 45)->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index('role', 'idx_users_role');
+            $table->index('status', 'idx_users_status');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

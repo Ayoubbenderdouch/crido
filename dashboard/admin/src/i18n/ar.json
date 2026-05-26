@@ -11,9 +11,22 @@
     "verifications": "مكالمات التحقق",
     "collections": "التحصيل",
     "reports": "التقارير",
+    "finance": "المالية والأرباح",
     "settings": "الإعدادات",
     "sectionMain": "العمليات",
     "sectionManage": "الإدارة"
+  },
+  "timeRange": {
+    "label": "الفترة",
+    "1d": "يوم",
+    "7d": "7 أيام",
+    "30d": "30 يوم",
+    "90d": "90 يوم",
+    "6m": "6 أشهر",
+    "1y": "سنة",
+    "all": "الكل",
+    "chartHint": "الفترة: {{period}}",
+    "kpiRevenue": "إيرادات {{period}}"
   },
   "common": {
     "search": "بحث...",
@@ -31,6 +44,7 @@
     "approve": "موافقة",
     "reject": "رفض",
     "confirm": "تأكيد",
+    "delete": "حذف",
     "comingSoon": "هذه الصفحة قيد الإنشاء",
     "comingSoonHint": "ستُبنى ضمن السبرينت القادم حسب خارطة الطريق.",
     "actionDemo": "إجراء تجريبي — سيُفعَّل بعد ربط الواجهة الخلفية.",
@@ -47,10 +61,26 @@
   "login": {
     "title": "تسجيل الدخول",
     "subtitle": "لوحة تحكم إدارة Crido",
+    "welcome": "مرحباً بعودتك — أدرار، الجزائر",
+    "badge": "منصة BNPL",
+    "hero": "إدارة التمويل والتجار في مكان واحد",
+    "heroSub": "تابع الطلبات، المدفوعات، والمالية بأمان ووضوح.",
+    "highlights": {
+      "secure": "تحقق KYC ومدفوعات آمنة",
+      "finance": "أرباح ومصروفات محدّثة لحظياً",
+      "bnpl": "تمويل مرن للعملاء والتجار"
+    },
     "phone": "رقم الهاتف",
     "password": "كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
     "submit": "دخول",
-    "demoHint": "نموذج تجريبي — أدخل أي رقم وكلمة مرور للدخول."
+    "submitting": "جاري تسجيل الدخول…",
+    "success": "تم تسجيل الدخول بنجاح",
+    "errorInvalid": "بيانات الدخول غير صحيحة",
+    "errorEmpty": "أدخل رقم الهاتف وكلمة المرور",
+    "errorNotAdmin": "هذا الحساب ليس له صلاحية إدارة",
+    "footer": "© Crido — أدرار، الجزائر"
   },
   "dashboard": {
     "title": "لوحة التحكم",
@@ -64,8 +94,8 @@
       "kycPending": "ملفات تنتظر المراجعة"
     },
     "charts": {
-      "financings": "التمويلات الجديدة (آخر 30 يوم)",
-      "revenue": "الإيرادات اليومية (آخر 30 يوم)"
+      "financings": "التمويلات الجديدة",
+      "revenue": "الإيرادات"
     },
     "recentRequests": "أحدث طلبات التمويل",
     "pendingKyc": "ملفات KYC تنتظر المراجعة",
@@ -116,6 +146,56 @@
       "sales": "إجمالي المبيعات",
       "financings": "التمويلات",
       "status": "الحالة"
+    },
+    "list": {
+      "viewProfile": "الملف التجاري",
+      "tenure": "معنا منذ {{tenure}}"
+    },
+    "proposed": {
+      "backToRequest": "العودة إلى الطلب",
+      "subtitle": "تاجر مؤقت مقترح من العميل — لم يُسجَّل بعد كشريك",
+      "linkedRequest": "الطلب المرتبط",
+      "contact": "بيانات الاتصال",
+      "requestContext": "سياق الطلب الحالي",
+      "whatsapp": "مراسلة عبر واتساب",
+      "openRequest": "فتح الطلب",
+      "stats": {
+        "requests": "طلبات عبر هذا المحل",
+        "volume": "حجم الطلبات",
+        "currentAmount": "مبلغ هذا الطلب",
+        "submitted": "تاريخ الإرسال"
+      }
+    },
+    "detail": {
+      "withUs": "مدة الشراكة",
+      "since": "منذ {{date}}",
+      "profile": "معلومات التاجر",
+      "salesChart": "تطور المبيعات",
+      "operations": "نشاط المتجر",
+      "tabs": {
+        "overview": "نظرة عامة",
+        "financings": "التمويلات",
+        "payouts": "المدفوعات",
+        "requests": "الطلبات"
+      },
+      "stats": {
+        "totalSales": "إجمالي المبيعات",
+        "financings": "عدد التمويلات",
+        "month": "هذا الشهر",
+        "pendingPayout": "رصيد معلق"
+      },
+      "fields": {
+        "category": "النشاط",
+        "wilaya": "الموقع",
+        "address": "العنوان",
+        "commission": "عمولة Crido",
+        "lastActivity": "آخر نشاط",
+        "rc": "السجل التجاري",
+        "nif": "الرقم الجبائي",
+        "branches": "الفروع",
+        "products": "المنتجات",
+        "staff": "الموظفون"
+      }
     }
   },
   "requests": {
@@ -146,11 +226,53 @@
       "client": "العميل",
       "merchant": "التاجر",
       "product": "المنتج"
+    },
+    "profile": {
+      "creditScore": "النقاط الائتمانية",
+      "creditLimit": "الحد الائتماني",
+      "creditUsed": "المستعمل",
+      "activeFinancings": "تمويلات نشطة",
+      "month": "شهر",
+      "viewClient": "ملف العميل الكامل",
+      "viewMerchant": "ملف التاجر الكامل",
+      "tenure": "مدة الشراكة",
+      "commission": "العمولة",
+      "adHocPending": "تاجر مؤقت — بانتظار التحقق الهاتفي",
+      "openVerification": "فتح قائمة التحقق"
+    },
+    "approveModal": {
+      "title": "موافقة على الطلب",
+      "subtitle": "سيتم قبول طلب التمويل والمتابعة في سير العمل.",
+      "noteLabel": "ملاحظة للفريق أو للعميل",
+      "notePlaceholder": "مثال: تم التحقق من KYC والسعر مؤكد...",
+      "success": "تمت الموافقة على الطلب"
+    },
+    "rejectModal": {
+      "title": "رفض الطلب",
+      "subtitle": "يمكنك توضيح سبب الرفض — اختياري.",
+      "noteLabel": "سبب الرفض",
+      "notePlaceholder": "مثال: تجاوز الحد الائتماني، مستندات ناقصة...",
+      "success": "تم رفض الطلب"
+    },
+    "adminNote": {
+      "title": "ملاحظة المسؤول",
+      "optional": "اختياري"
     }
   },
   "financings": {
     "title": "التمويلات",
-    "subtitle": "كل التمويلات النشطة والمكتملة",
+    "subtitle": "متابعة المحفظة — نشطة، متأخرة، ومكتملة",
+    "search": "بحث بالمرجع، العميل، التاجر...",
+    "stats": {
+      "active": "تمويلات نشطة",
+      "late": "متأخرة",
+      "outstanding": "إجمالي المتبقي",
+      "collected": "تم تحصيله"
+    },
+    "list": {
+      "ofTotal": "من {{amount}}",
+      "inDays": "خلال {{days}} يوم"
+    },
     "columns": {
       "reference": "المرجع",
       "client": "العميل",
@@ -159,11 +281,43 @@
       "remaining": "المتبقي",
       "nextDue": "الاستحقاق القادم",
       "status": "الحالة"
+    },
+    "detail": {
+      "paid": "مدفوع",
+      "activated": "مُفعَّل منذ {{date}}",
+      "total": "إجمالي التحصيل",
+      "daysLate": "{{days}} يوم تأخير",
+      "clientCard": "العميل",
+      "merchantCard": "التاجر",
+      "financingCount": "تمويل",
+      "installments": "جدول الأقساط",
+      "payments": "المدفوعات",
+      "dueDate": "تاريخ الاستحقاق",
+      "amount": "المبلغ",
+      "summary": "ملخص التمويل",
+      "monthly": "القسط الشهري",
+      "collected": "المحصّل",
+      "installmentsUnit": "قسط",
+      "plan": "المدة"
+    },
+    "installmentStatus": {
+      "paid": "مدفوع",
+      "due": "مستحق",
+      "scheduled": "مجدول",
+      "late": "متأخر"
     }
   },
   "payments": {
     "title": "المدفوعات",
-    "subtitle": "قائمة انتظار التحقق من المدفوعات",
+    "subtitle": "تحقّق من مدفوعات العملاء واربطها بالتمويلات",
+    "search": "بحث بالمرجع، العميل، التمويل...",
+    "verify": "تحقّق",
+    "stats": {
+      "pending": "بانتظار التحقق",
+      "pendingAmount": "مبلغ معلق",
+      "verified": "مؤكدة",
+      "rejected": "مرفوضة"
+    },
     "columns": {
       "reference": "المرجع",
       "client": "العميل",
@@ -172,12 +326,43 @@
       "method": "الطريقة",
       "externalRef": "المرجع الخارجي",
       "status": "الحالة"
+    },
+    "verifyModal": {
+      "title": "تأكيد الدفع",
+      "subtitle": "تأكيد أن المبلغ والإثبات صحيحان.",
+      "noteLabel": "ملاحظة",
+      "notePlaceholder": "مثال: يطابق القسط الشهري، الإثبات واضح...",
+      "success": "تم تأكيد الدفع"
+    },
+    "rejectModal": {
+      "title": "رفض الدفع",
+      "subtitle": "الإثبات غير مقبول أو المبلغ غير صحيح.",
+      "noteLabel": "سبب الرفض",
+      "notePlaceholder": "مثال: المبلغ لا يطابق القسط، إثبات مزور...",
+      "success": "تم رفض الدفع"
+    },
+    "detail": {
+      "payment": "دفعة",
+      "proof": "إثبات الدفع",
+      "proofDemo": "معاينة الإثبات (تجريبي)",
+      "baridiMobCapture": "لقطة شاشة بريدي موب",
+      "amountMatch": "المبلغ يطابق القسط الشهري",
+      "amountMismatch": "تنبيه: المبلغ يختلف عن القسط المتوقع"
     }
   },
   "payouts": {
     "title": "مدفوعات التجار",
-    "subtitle": "الأموال المستحقة للتجار ومعالجتها",
+    "subtitle": "الأموال المستحقة للتجار ومعالجتها — تحويل، بريدي موب، أو تسليم نقدي",
+    "search": "بحث بالمرجع، التاجر، العميل…",
+    "startProcessing": "بدء المعالجة",
+    "markPaid": "تأكيد الدفع",
     "tabs": { "all": "الكل", "pending": "معلق", "processing": "قيد المعالجة", "paid": "مدفوع" },
+    "stats": {
+      "pending": "بانتظار الدفع",
+      "pendingAmount": "المبلغ المعلق",
+      "processing": "قيد المعالجة",
+      "paid": "مدفوع هذا الشهر"
+    },
     "columns": {
       "reference": "المرجع",
       "merchant": "التاجر",
@@ -188,11 +373,82 @@
       "status": "الحالة",
       "date": "التاريخ"
     },
-    "markPaid": "تأكيد الدفع"
+    "workflow": {
+      "pending": "في الانتظار",
+      "pendingHint": "جاهز للتحويل",
+      "processing": "قيد التحويل",
+      "processingHint": "تم بدء الدفع",
+      "paid": "مدفوع",
+      "paidHint": "أُرسل للتاجر"
+    },
+    "detail": {
+      "payout": "دفعة تاجر",
+      "paidOn": "دُفع في {{date}}",
+      "payVia": "طريقة الدفع المفضلة للتاجر",
+      "copy": "نسخ",
+      "copied": "تم النسخ",
+      "ccpAccount": "رقم الحساب CCP",
+      "ccpKey": "المفتاح",
+      "baridiRip": "رقم بريدي موب (RIP)",
+      "cashContact": "جهة الاتصال",
+      "verifyBeforePay": "تحقق من البيانات قبل التحويل",
+      "breakdown": "تفصيل المبلغ",
+      "grossSale": "سعر البيع (إجمالي)",
+      "commission": "عمولة Crido ({{rate}}٪)",
+      "netPayout": "صافي للتاجر",
+      "financing": "التمويل المرتبط",
+      "transferRef": "مرجع التحويل",
+      "vendorLabel": "التاجر",
+      "proof": "إثبات الدفع للتاجر",
+      "proofHint": "معاينة الإيصال بعد التحويل — للأرشفة والتدقيق",
+      "proofBadge": "إيصال التحويل",
+      "proofPreviewLive": "يتحدّث المرجع عند إدخاله أدناه",
+      "cashProofTitle": "إيصال تسليم نقدي"
+    },
+    "upload": {
+      "label": "صورة / ملف الإيصال",
+      "title": "رفع إثبات الدفع",
+      "hint": "اسحب الملف هنا أو انقر للاختيار",
+      "maxSize": "حتى 3 م.ب",
+      "remove": "إزالة",
+      "openPdf": "فتح PDF",
+      "uploadedLabel": "إيصال مرفوع",
+      "required": "يرجى رفع صورة أو PDF للإيصال",
+      "tooLarge": "الملف أكبر من 3 م.ب",
+      "invalidType": "صيغة غير مدعومة (JPG, PNG, PDF)",
+      "readError": "تعذّر قراءة الملف"
+    },
+    "modal": { "noteOptional": "ملاحظة (اختياري)" },
+    "processModal": {
+      "title": "بدء معالجة الدفع",
+      "body": "سجّل أنك بدأت التحويل أو الترتيب للتسليم النقدي.",
+      "notePlaceholder": "مثال: طلب تحويل CCP صباح الاثنين",
+      "success": "تم وضع الدفعة قيد المعالجة"
+    },
+    "paidModal": {
+      "title": "تأكيد دفع التاجر",
+      "body": "أكّد أن المبلغ وصل للتاجر وأدخل مرجع التحويل إن وُجد.",
+      "transferRef": "مرجع التحويل / الإيصال",
+      "transferRefPlaceholder": "CCP-88421 أو BM-99201",
+      "notePlaceholder": "مثال: تم التحويل — التاجر أكّد الاستلام",
+      "success": "تم تأكيد الدفع للتاجر"
+    }
   },
   "verifications": {
     "title": "مكالمات التحقق",
-    "subtitle": "التحقق الهاتفي من التجار المؤقتين قبل الموافقة",
+    "subtitle": "التحقق الهاتفي من التجار المؤقتين قبل الموافقة — المنتج والسعر واضحان قبل الاتصال",
+    "search": "بحث بالمنتج، التاجر، العميل، المرجع…",
+    "product": "المنتج",
+    "categoryPhone": "هاتف",
+    "categoryPc": "حاسوب",
+    "monthly": "{{amount}} / شهر · {{months}} أشهر",
+    "openRequest": "فتح الطلب",
+    "hint": "اتصل بالتاجر للتحقق من هويته ووجود المحل قبل الموافقة على الطلب",
+    "stats": {
+      "pending": "مكالمات مطلوبة",
+      "totalValue": "قيمة الطلبات",
+      "products": "منتجات للتحقق"
+    },
     "columns": {
       "request": "الطلب",
       "merchant": "التاجر المقترح",
@@ -221,10 +477,111 @@
     "daysUnit": "يوم",
     "logAction": "تسجيل إجراء"
   },
+  "finance": {
+    "title": "المالية والأرباح",
+    "subtitle": "مصروفات، إيجار، إيرادات Crido، وصافي الربح — خلاصة مالية كاملة للإدارة",
+    "netProfit": "صافي الربح",
+    "netProfitHint": "إيرادات {{revenue}} − مصروفات {{expenses}} · هامش {{margin}}٪",
+    "kpis": {
+      "revenue": "إيرادات Crido (محصّلة)",
+      "expenses": "مصروفات التشغيل",
+      "collected": "تحصيل العملاء",
+      "disbursed": "مدفوعات التجار"
+    },
+    "tabs": {
+      "summary": "الخلاصة",
+      "expenses": "المصروفات",
+      "cashflow": "التدفقات"
+    },
+    "pl": {
+      "title": "قائمة الدخل",
+      "hint": "عمولات + هامش التمويل − الإيجار والرواتب وغيرها",
+      "commissionCollected": "عمولات التجار (5٪) — محصّلة",
+      "marginCollected": "هامش التمويل — محصّل",
+      "revenueSubtotal": "إجمالي الإيرادات",
+      "rent": "الإيجار (كراء)",
+      "salaries": "الرواتب",
+      "marketing": "التسويق",
+      "technology": "التقنية",
+      "legal": "قانوني / محاسبة",
+      "operations": "تشغيل ومكتب",
+      "other": "مصروفات أخرى",
+      "expenseSubtotal": "إجمالي المصروفات",
+      "netProfit": "صافي الربح"
+    },
+    "chart": {
+      "title": "إيرادات مقابل مصروفات",
+      "income": "إيرادات",
+      "expenses": "مصروفات"
+    },
+    "revenueBreakdown": "تفصيل الإيرادات",
+    "revenue": {
+      "commission": "عمولات التجار",
+      "margin": "هامش التمويل",
+      "projected": "متوقّع على المحفظة",
+      "totalProjected": "إجمالي ربح Crido المتوقّع"
+    },
+    "categories": {
+      "rent": "إيجار / كراء",
+      "salaries": "رواتب",
+      "marketing": "تسويق",
+      "technology": "تقنية",
+      "legal": "قانوني",
+      "operations": "تشغيل",
+      "other": "أخرى"
+    },
+    "quick": {
+      "title": "أضف مصروفاً بسرعة",
+      "hint": "اختر النوع، أدخل السعر — يُحدَّث صافي الربح مباشرة في القائمة",
+      "live": "حساب مباشر",
+      "empty": "لا توجد مصروفات لهذه الفترة — أضف إيجاراً أو راتباً",
+      "labels": {
+        "rent": "إيجار المكتب — أدرار",
+        "salaries": "رواتب الفريق",
+        "marketing": "حملة تسويق",
+        "technology": "اشتراكات تقنية",
+        "legal": "محاسب / قانوني",
+        "operations": "تشغيل ومكتب"
+      }
+    },
+    "expense": {
+      "title": "مصروفات التشغيل",
+      "total": "المجموع للفترة",
+      "add": "إضافة مصروف",
+      "edit": "تعديل المصروف",
+      "save": "حفظ التعديل",
+      "added": "تمت إضافة المصروف",
+      "updated": "تم التحديث — الحسابات محدّثة",
+      "deleted": "تم الحذف",
+      "validation": "أدخل الاسم والمبلغ",
+      "category": "الفئة",
+      "label": "الوصف",
+      "labelPlaceholder": "مثال: إيجار المكتب — أدرار",
+      "amount": "المبلغ (دج)",
+      "preview": "المبلغ: {{amount}}",
+      "period": "الشهر",
+      "recurring": "مصروف شهري متكرر",
+      "recurringBadge": "متكرر",
+      "note": "ملاحظة"
+    },
+    "cashflow": {
+      "title": "حركة النقد",
+      "in": "داخل — أقساط محققة",
+      "out": "خارج — مدفوعات للتجار",
+      "pendingPayouts": "مدفوعات تجار معلّقة",
+      "outstanding": "متبقّي على العملاء"
+    },
+    "portfolio": {
+      "title": "المحفظة",
+      "active": "تمويلات نشطة",
+      "defaulted": "متعثّرة",
+      "hint": "صافي الربح = إيرادات Crido من العمولات والهامش ناقص مصروفات التشغيل (إيجار، رواتب، إلخ). لا يشمل تمويل التجار — ذلك تدفّق منفصل."
+    }
+  },
   "reports": {
     "title": "التقارير",
     "subtitle": "أداء المحفظة والإيرادات والمخاطر",
-    "period": "آخر 30 يوم",
+    "period": "حسب الفترة المختارة",
     "export": "تصدير",
     "kpis": {
       "collected": "المُحصّل",

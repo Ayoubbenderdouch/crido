@@ -2,10 +2,10 @@ import { NavLink, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard, Users, Store, FileText, CreditCard, Banknote,
-  Send, PhoneCall, AlertTriangle, BarChart3, Settings, LogOut,
+  Send, PhoneCall, AlertTriangle, BarChart3, Wallet, Settings, LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { clearToken } from '@/lib/auth'
+import { getStoredUser, logoutWithApi } from '@/lib/auth'
 import { currentAdmin } from '@/lib/mock/data'
 import { Avatar } from '@/components/data/Avatar'
 
@@ -27,6 +27,7 @@ const NAV = [
   {
     section: 'sectionManage',
     items: [
+      { to: '/finance', key: 'finance', icon: Wallet },
       { to: '/reports', key: 'reports', icon: BarChart3 },
       { to: '/settings', key: 'settings', icon: Settings },
     ],
@@ -37,8 +38,11 @@ export function Sidebar() {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  function logout() {
-    clearToken()
+  const storedUser = getStoredUser()
+  const displayName = storedUser?.full_name ?? currentAdmin.name
+
+  async function logout() {
+    await logoutWithApi()
     navigate('/login')
   }
 
@@ -80,10 +84,12 @@ export function Sidebar() {
       </nav>
 
       <div className="flex items-center gap-3 border-t border-border p-3">
-        <Avatar name={currentAdmin.name} size={36} />
+        <Avatar name={displayName} size={36} />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-foreground">{currentAdmin.name}</p>
-          <p className="truncate text-xs text-foreground-tertiary">{currentAdmin.email}</p>
+          <p className="truncate text-sm font-medium text-foreground">{displayName}</p>
+          <p className="truncate text-xs text-foreground-tertiary">
+            {storedUser?.email ?? currentAdmin.email}
+          </p>
         </div>
         <button
           type="button"

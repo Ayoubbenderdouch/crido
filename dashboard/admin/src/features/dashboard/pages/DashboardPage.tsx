@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
@@ -12,11 +13,22 @@ import { AreaTrend } from '@/components/charts/AreaTrend'
 import { BarTrend } from '@/components/charts/BarTrend'
 import { DonutChart } from '@/components/charts/DonutChart'
 import { fetchDashboard } from '@/lib/mock/api'
-import { clients, financingRequests, currentAdmin, type FinancingRequest } from '@/lib/mock/data'
+import { getFinancingRequests } from '@/lib/adminRequestStore'
+import { clients, currentAdmin, type FinancingRequest } from '@/lib/mock/data'
 import { formatDzd, formatNumber, formatDate, type Locale } from '@/lib/format'
+import { TimeRangePicker } from '@/components/data/TimeRangePicker'
+import {
+  barPointsForRange,
+  chartPointsForRange,
+  computeTrendPct,
+  filterByRange,
+  formatChartAxisLabel,
+  loadStoredTimeRange,
+  sumNumeric,
+  type TimeRangeId,
+} from '@/lib/timeRange'
 
 const TODAY = '2026-05-20'
-const shortDate = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`
 
 function QueueRow({ avatar, title, subtitle, onClick }: {
   avatar: React.ReactNode
@@ -44,16 +56,38 @@ export default function DashboardPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
   const navigate = useNavigate()
+  const [range, setRange] = useState<TimeRangeId>(loadStoredTimeRange)
 
   const { data, isLoading } = useQuery({ queryKey: ['dashboard'], queryFn: fetchDashboard })
 
-  if (isLoading || !data) return <Loader />
+  const periodStats = useMemo(() => {
+    if (!data) return null
+    const filtered = filterByRange(data.daily, range)
+    const revenueValues = filtered.map((d) => d.revenueDzd)
+    const financingValues = filtered.map((d) => d.financings)
+    return {
+      filtered,
+      periodRevenue: sumNumeric(filtered, 'revenueDzd'),
+      revenueTrend: computeTrendPct(revenueValues),
+      revenueSpark: revenueValues.length > 24 ? revenueValues.slice(-24) : revenueValues,
+      financingTrend: computeTrendPct(financingValues),
+      financingSpark: financingValues.length > 24 ? financingValues.slice(-24) : financingValues,
+      areaPoints: chartPointsForRange(data.daily, range, ['revenueDzd']),
+      barPoints: barPointsForRange(data.daily, range, 'financings').map((p) => ({
+        label: p.label,
+        financings: p.value,
+      })),
+    }
+  }, [data, range])
 
-  const { kpis, trends, sparks } = data
+  if (isLoading || !data || !periodStats) return <Loader />
+
+  const { kpis } = data
   const firstName = currentAdmin.name.split(' ')[0]
-  const recent = financingRequests.slice(0, 5)
+  const allRequests = getFinancingRequests()
+  const recent = allRequests.slice(0, 5)
   const pendingKyc = clients.filter((c) => c.kycStatus === 'pending')
-  const adHoc = financingRequests.filter(
+  const adHoc = allRequests.filter(
     (r) => r.merchantSource === 'ad_hoc' && r.status === 'submitted',
   )
 
@@ -63,6 +97,8 @@ export default function DashboardPage() {
     color: p.color,
   }))
   const totalFinancings = slices.reduce((sum, s) => sum + s.value, 0)
+  const periodLabel = t(`timeRange.${range}`)
+  const axisFmt = (v: string) => formatChartAxisLabel(v, range)
 
   const recentColumns: Column<FinancingRequest>[] = [
     {
@@ -87,13 +123,16 @@ export default function DashboardPage() {
 
   return (
     <div className="animate-fade-up">
-      <div className="mb-6">
-        <h1 className="text-2xl font-medium text-foreground">
-          {t('dashboard.greeting', { name: firstName })}
-        </h1>
-        <p className="mt-1 text-sm text-foreground-secondary">
-          {t('dashboard.subtitle')} · {formatDate(TODAY, locale)}
-        </p>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-medium text-foreground">
+            {t('dashboard.greeting', { name: firstName })}
+          </h1>
+          <p className="mt-1 text-sm text-foreground-secondary">
+            {t('dashboard.subtitle')} · {formatDate(TODAY, locale)}
+          </p>
+        </div>
+        <TimeRangePicker value={range} onChange={setRange} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -101,47 +140,61 @@ export default function DashboardPage() {
           label={t('dashboard.stats.activeClients')}
           value={formatNumber(kpis.activeClients, locale)}
           icon={Users}
-          trend={trends.clients}
-          spark={sparks.clients}
+          trend={kpis.kycPending > 0 ? 12 : 8}
+          spark={data.sparks.clients}
         />
         <KpiCard
           label={t('dashboard.stats.activeFinancings')}
           value={formatNumber(kpis.activeFinancings, locale)}
           icon={CreditCard}
-          trend={trends.financings}
-          spark={sparks.financings}
+          trend={periodStats.financingTrend}
+          spark={periodStats.financingSpark}
         />
         <KpiCard
           label={t('dashboard.stats.pendingVerification')}
           value={formatNumber(kpis.pendingVerification, locale)}
           icon={Banknote}
           accent="warning"
-          spark={sparks.payments}
+          spark={data.sparks.payments}
           sparkColor="#EF9F27"
         />
         <KpiCard
-          label={t('dashboard.stats.monthRevenue')}
-          value={formatDzd(kpis.monthRevenueDzd, locale)}
+          label={t('timeRange.kpiRevenue', { period: periodLabel })}
+          value={formatDzd(periodStats.periodRevenue, locale)}
           icon={TrendingUp}
-          trend={trends.revenue}
-          spark={sparks.revenue}
+          trend={periodStats.revenueTrend}
+          spark={periodStats.revenueSpark}
           sparkColor="#1D9E75"
         />
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="p-5 lg:col-span-2">
-          <p className="text-md font-medium text-foreground">{t('dashboard.charts.revenue')}</p>
-          <div className="mt-4">
+        <Card className="overflow-hidden p-0 lg:col-span-2">
+          <div className="flex flex-col gap-3 border-b border-border bg-gradient-to-r from-primary-surface/70 to-transparent px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                {t('dashboard.charts.revenue')}
+              </p>
+              <p className="mt-0.5 text-xs text-foreground-tertiary">
+                {t('timeRange.chartHint', { period: periodLabel })} ·{' '}
+                <span className="font-medium text-primary">
+                  {formatDzd(periodStats.periodRevenue, locale)}
+                </span>
+              </p>
+            </div>
+            <TimeRangePicker value={range} onChange={setRange} compact />
+          </div>
+          <div className="p-5">
             <AreaTrend
-              data={data.daily}
+              data={periodStats.areaPoints}
               dataKey="revenueDzd"
               xKey="date"
               color="#0F6E56"
-              xTickFormatter={shortDate}
+              xTickFormatter={axisFmt}
               yTickFormatter={(v) => `${Math.round(v / 1000)}k`}
               valueFormatter={(v) => formatDzd(v, locale)}
-              labelFormatter={shortDate}
+              labelFormatter={axisFmt}
+              height={260}
             />
           </div>
         </Card>
@@ -168,10 +221,21 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="p-5">
-          <p className="text-md font-medium text-foreground">{t('dashboard.weekly')}</p>
-          <div className="mt-4">
-            <BarTrend data={data.weekly} dataKey="financings" xKey="label" color="#0F6E56" />
+        <Card className="overflow-hidden p-0">
+          <div className="border-b border-border bg-gradient-to-r from-primary-surface/70 to-transparent px-5 py-4">
+            <p className="text-sm font-semibold text-foreground">{t('dashboard.weekly')}</p>
+            <p className="mt-0.5 text-xs text-foreground-tertiary">
+              {t('timeRange.chartHint', { period: periodLabel })}
+            </p>
+          </div>
+          <div className="p-5">
+            <BarTrend
+              data={periodStats.barPoints}
+              dataKey="financings"
+              xKey="label"
+              color="#0F6E56"
+              height={220}
+            />
           </div>
         </Card>
 

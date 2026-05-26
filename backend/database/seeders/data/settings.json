@@ -1,0 +1,52 @@
+[
+  {
+    "key": "grace_period_days",
+    "value": 3,
+    "description": "Days after due date before installment is marked late"
+  },
+  {
+    "key": "default_threshold_days",
+    "value": 90,
+    "description": "Days late before financing is marked defaulted"
+  },
+  {
+    "key": "request_expiry_days",
+    "value": 7,
+    "description": "Days a submitted financing request can wait before auto-expiring"
+  },
+  {
+    "key": "kyc_validity_days",
+    "value": 365,
+    "description": "KYC re-verification interval in days"
+  },
+  {
+    "key": "max_credit_limit_dzd",
+    "value": 500000,
+    "description": "Cap on credit limit per client during MVP (in DZD)"
+  },
+  {
+    "key": "min_age_years",
+    "value": 18,
+    "description": "Minimum client age allowed to request financing"
+  },
+  {
+    "key": "max_age_years",
+    "value": 65,
+    "description": "Maximum client age allowed to request financing"
+  },
+  {
+    "key": "mvp_allowed_wilaya_ids",
+    "value": [1],
+    "description": "Wilaya IDs where Crido service is available (MVP scope)"
+  },
+  {
+    "key": "default_first_due_offset_days",
+    "value": 30,
+    "description": "Days from financing activation to first installment due date"
+  },
+  {
+    "key": "weekend_days",
+    "value": [5, 6],
+    "description": "Algerian weekend days (Friday=5, Saturday=6, ISO-8601 with Monday=1)"
+  }
+]

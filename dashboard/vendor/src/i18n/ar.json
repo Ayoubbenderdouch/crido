@@ -14,6 +14,18 @@
     "sectionMain": "العمليات",
     "sectionManage": "المتجر"
   },
+  "timeRange": {
+    "label": "الفترة",
+    "1d": "يوم",
+    "7d": "7 أيام",
+    "30d": "30 يوم",
+    "90d": "90 يوم",
+    "6m": "6 أشهر",
+    "1y": "سنة",
+    "all": "الكل",
+    "chartHint": "الفترة: {{period}}",
+    "kpiSales": "مبيعات {{period}}"
+  },
   "common": {
     "search": "بحث...",
     "view": "عرض",
@@ -34,7 +46,6 @@
     "add": "إضافة",
     "comingSoon": "هذه الصفحة قيد الإنشاء",
     "comingSoonHint": "ستُبنى ضمن السبرينت القادم حسب خارطة الطريق.",
-    "actionDemo": "إجراء تجريبي — سيُفعَّل بعد ربط الواجهة الخلفية.",
     "notFound": "العنصر غير موجود",
     "call": "اتصال",
     "whatsapp": "واتساب",
@@ -43,11 +54,24 @@
   },
   "login": {
     "title": "تسجيل الدخول",
-    "subtitle": "لوحة تحكم تجار Crido",
+    "welcome": "مرحباً بعودتك",
+    "subtitle": "سجّل دخولك لإدارة متجرك وطلبات التمويل",
+    "vendorPortal": "لوحة التجار",
+    "tagline": "قسّطها بسهولة — إدارة متجرك في مكان واحد",
     "phone": "رقم الهاتف",
     "password": "كلمة المرور",
     "submit": "دخول",
-    "demoHint": "نموذج تجريبي — بيانات الدخول مُعبّأة مسبقاً."
+    "demoHint": "نموذج تجريبي — بيانات الدخول مُعبّأة مسبقاً.",
+    "secureAccess": "دخول آمن لحسابك التجاري",
+    "footer": "© Crido — أدرار، الجزائر",
+    "features": {
+      "requests": "تأكيد طلبات التمويل فوراً",
+      "financing": "متابعة التمويلات والأقساط",
+      "payouts": "استلام المدفوعات بشفافية"
+    },
+    "errors": {
+      "generic": "تعذّر تسجيل الدخول. تحقّق من بياناتك."
+    }
   },
   "dashboard": {
     "title": "لوحة التحكم",
@@ -60,18 +84,33 @@
       "pendingPayout": "رصيد معلق"
     },
     "charts": {
-      "sales": "المبيعات اليومية (آخر 30 يوم)",
+      "sales": "المبيعات",
       "topProducts": "أكثر المنتجات مبيعاً",
       "duration": "مدة التمويلات"
     },
     "recentFinancings": "أحدث التمويلات",
     "recentPayouts": "أحدث المدفوعات",
     "months": "أشهر",
-    "noPending": "لا توجد طلبات معلقة"
+    "noPending": "لا توجد طلبات معلقة",
+    "goal": {
+      "title": "هدف مبيعات الشهر",
+      "subtitle": "تتبّع تقدّمك نحو هدفك الشهري",
+      "target": "الهدف",
+      "achieved": "المحقّق",
+      "remaining": "المتبقي: {{amount}}",
+      "complete": "تهانينا! حقّقت هدف الشهر 🎉",
+      "viewRequests": "عرض الطلبات",
+      "pendingBadge": "{{count}} طلب بانتظارك"
+    }
   },
   "requests": {
     "title": "الطلبات",
     "subtitle": "طلبات التمويل الواردة من زبائنك",
+    "badge": "طلبات التمويل",
+    "detailLabel": "طلب تمويل",
+    "pendingBanner": "{{count}} طلب بانتظار تأكيدك",
+    "emptyTab": "لا توجد طلبات في هذا التبويب",
+    "rejectReasonRequired": "يرجى ذكر سبب الرفض",
     "tabs": { "new": "جديد", "confirmed": "مؤكد", "approved": "موافق عليه", "rejected": "مرفوض" },
     "confirm": "تأكيد الطلب",
     "reject": "رفض الطلب",
@@ -114,10 +153,24 @@
     "merchantNote": "ملاحظة التاجر",
     "confirmedToast": "تم تأكيد الطلب — أُرسلت رسالة تأكيد للزبون.",
     "rejectedToast": "تم رفض الطلب.",
+    "confirmedNote": "تم التأكيد من التاجر.",
+    "rejectedNote": "مرفوض من التاجر.",
     "timelineSubmitted": "أرسل الزبون الطلب",
     "timelineConfirmed": "أكّدت الطلب",
     "timelineApproved": "وافقت Crido — أصبح تمويلاً",
-    "timelineRejected": "تم رفض الطلب"
+    "timelineRejected": "تم رفض الطلب",
+    "whatsapp": {
+      "title": "رسائل واتساب سريعة",
+      "subtitle": "رسائل جاهزة بالعربية — اضغط للإرسال عبر واتساب",
+      "confirmed": "تأكيد الطلب",
+      "ready": "المنتج جاهز",
+      "needInfo": "طلب معلومات",
+      "messages": {
+        "confirmed": "مرحباً {{name}}، تم تأكيد طلب التمويل {{ref}} عبر Crido. شكراً لثقتك بمتجرنا.",
+        "ready": "مرحباً {{name}}، منتجك من طلب {{ref}} جاهز للاستلام. يرجى التواصل معنا لتنسيق التسليم.",
+        "needInfo": "مرحباً {{name}}، نحتاج بعض المعلومات الإضافية لإتمام طلب التمويل {{ref}}. هل يمكنك الرد في أقرب وقت؟"
+      }
+    }
   },
   "financings": {
     "title": "التمويلات",
@@ -135,11 +188,40 @@
     },
     "payoutPaid": "مدفوع",
     "payoutPending": "بانتظار الدفع",
-    "privacyNote": "تفاصيل أقساط الزبون لا تظهر لك حفاظاً على الخصوصية — لقد استلمت مبلغك كاملاً مقدّماً."
+    "privacyNote": "تفاصيل أقساط الزبون لا تظهر لك حفاظاً على الخصوصية — لقد استلمت مبلغك كاملاً مقدّماً.",
+    "detailLabel": "تفاصيل التمويل",
+    "timelineHint": "مسار التمويل من تفعيله حتى اليوم",
+    "timelineActivated": "تم تفعيل التمويل",
+    "timelinePayoutPaid": "استلمت مدفوعاتك",
+    "timelinePayoutPending": "مدفوعاتك قيد التحويل",
+    "timelineActive": "التمويل نشط — الزبون يدفع أقساطه",
+    "timelineCompleted": "اكتمل التمويل",
+    "timelineDefaulted": "تعثّر سداد الزبون",
+    "sections": {
+      "customer": "الزبون",
+      "product": "المنتج والخطة",
+      "timeline": "المسار",
+      "summary": "ملخص المدفوعات"
+    },
+    "fields": {
+      "requestRef": "طلب التمويل الأصلي",
+      "activated": "تاريخ التفعيل"
+    },
+    "summary": {
+      "margin": "هامش Crido",
+      "hint": "يُدفع لك المبلغ كاملاً مقدماً — تأخّر أقساط الزبون لا يؤثّر على مدفوعاتك."
+    }
   },
   "payouts": {
     "title": "المدفوعات",
     "subtitle": "الأموال التي تدفعها لك Crido",
+    "badge": "مدفوعات Crido",
+    "detailLabel": "دفعة",
+    "pendingLabel": "إجمالي المعلق",
+    "amountCardTitle": "مبلغ الدفعة",
+    "paidHint": "تم دفع هذه الدفعة — يمكنك تحميل الإيصال أدناه.",
+    "receiptTitle": "إيصال دفع Crido",
+    "receiptFooter": "هذا المستند صادر من لوحة تحكم التاجر — Crido",
     "tabs": { "all": "الكل", "pending": "معلق", "paid": "مدفوع" },
     "columns": {
       "reference": "المرجع",
@@ -164,11 +246,14 @@
       "agent": "الوكيل المكلّف"
     },
     "downloadReceipt": "تحميل الإيصال",
+    "receiptDownloaded": "تم تحميل الإيصال",
     "incomingHint": "ستصلك هذه الدفعة في التاريخ المتوقع."
   },
   "customers": {
     "title": "الزبائن",
     "subtitle": "الزبائن الذين اشتروا عبر متجرك",
+    "badge": "زبائن المتجر",
+    "sections": { "profile": "معلومات الزبون" },
     "columns": {
       "customer": "الزبون",
       "commune": "البلدية",
@@ -201,24 +286,118 @@
     "outOfStock": "غير متوفر",
     "available": "معروض",
     "unavailable": "غير معروض",
-    "units": "وحدة"
+    "units": "وحدة",
+    "editTitle": "تعديل {{name}}",
+    "formHint": "يظهر المنتج للزبائن عند طلب التمويل من متجرك",
+    "savedNew": "تمت إضافة المنتج بنجاح",
+    "savedEdit": "تم تحديث المنتج",
+    "deleted": "تم حذف المنتج",
+    "deleteConfirm": "حذف هذا المنتج؟",
+    "unavailableHint": "لن يظهر للزبائن حتى تفعّله",
+    "badgeNew": "منتج جديد",
+    "badgeEdit": "تعديل",
+    "availableDesc": "يظهر في كتالوج التمويل للزبائن",
+    "sections": {
+      "media": "صور المنتج",
+      "details": "التفاصيل"
+    },
+    "placeholders": {
+      "nameAr": "مثال: iPhone 16 Pro",
+      "nameFr": "Ex. iPhone 16 Pro",
+      "description": "وصف قصير يظهر للزبائن (اختياري)"
+    },
+    "fields": {
+      "nameAr": "الاسم (عربي)",
+      "nameFr": "الاسم (فرنسي)",
+      "description": "الوصف"
+    },
+    "images": {
+      "sectionHint": "الصورة الأولى = الغلاف في الكتالوج. حتى 4 صور.",
+      "dropTitle": "اسحب الصور أو انقر للرفع",
+      "dropHint": "JPG أو PNG — حتى 4 ميغا لكل صورة",
+      "cta": "إضافة صور",
+      "cover": "صورة الغلاف",
+      "gallery": "المعرض",
+      "setCover": "غلاف",
+      "add": "إضافة",
+      "more": "صور",
+      "added": "تمت إضافة الصور",
+      "failed": "تعذّر رفع الصورة",
+      "tooLarge": "الحد الأقصى {{mb}} ميغا",
+      "maxReached": "الحد {{count}} صور"
+    },
+    "preview": {
+      "label": "معاينة حية",
+      "hint": "هكذا يظهر المنتج في كتالوج متجرك",
+      "placeholderName": "اسم المنتج"
+    },
+    "bnpl": {
+      "title": "معاينة أقساط التمويل",
+      "subtitle": "هامش الزبون + عمولة Crido {{rate}}% — تقدير فوري",
+      "enterPrice": "أدخل سعر المنتج لمعاينة الأقساط الشهرية",
+      "months": "{{count}} أشهر",
+      "marginPct": "هامش {{pct}}%",
+      "monthlyLabel": "القسط الشهري",
+      "perMonth": "/ شهر",
+      "popular": "الأكثر",
+      "clientTotal": "إجمالي على الزبون",
+      "merchantPayout": "ما تستلمه",
+      "commission": "عمولة Crido",
+      "disclaimer": "أرقام تقديرية (مرابحة) — تُثبَّت عند الموافقة على الطلب"
+    }
   },
   "branches": {
     "title": "الفروع",
     "subtitle": "المواقع الفعلية لمتجرك",
     "addBranch": "إضافة فرع",
+    "badgeNew": "فرع جديد",
+    "badgeEdit": "تعديل",
     "columns": {
       "branch": "الفرع",
       "address": "العنوان",
       "phone": "الهاتف",
       "manager": "المسؤول",
       "status": "الحالة"
+    },
+    "editTitle": "تعديل {{name}}",
+    "formHint": "الفروع تظهر للزبائن عند تأكيد الطلبات",
+    "savedNew": "تمت إضافة الفرع",
+    "savedEdit": "تم تحديث الفرع",
+    "activeDesc": "الفروع النشطة تظهر عند تأكيد الطلبات",
+    "sections": {
+      "location": "الموقع",
+      "locationHint": "ولاية أدرار فقط — MVP الحالي",
+      "contact": "الاتصال",
+      "contactHint": "هاتف الفرع ومسؤوله",
+      "status": "الحالة"
+    },
+    "placeholders": {
+      "name": "مثال: فرع وسط المدينة",
+      "commune": "أدرار",
+      "street": "شارع، رقم، حي...",
+      "manager": "اسم المسؤول"
+    },
+    "preview": {
+      "label": "معاينة الفرع",
+      "hint": "هكذا يظهر الفرع في لوحة التحكم",
+      "placeholderName": "اسم الفرع"
+    },
+    "fields": {
+      "name": "اسم الفرع",
+      "wilaya": "الولاية",
+      "commune": "البلدية",
+      "street": "العنوان",
+      "phone": "الهاتف",
+      "manager": "المسؤول",
+      "active": "فرع نشط"
     }
   },
   "staff": {
     "title": "الموظفون",
     "subtitle": "من يمكنه الوصول إلى لوحة التحكم",
     "addStaff": "دعوة موظف",
+    "badgeNew": "دعوة جديدة",
+    "badgeEdit": "تعديل",
     "columns": {
       "name": "الاسم",
       "phone": "الهاتف",
@@ -232,12 +411,47 @@
       "cashier": "أمين صندوق",
       "viewer": "مشاهدة فقط"
     },
-    "neverLoggedIn": "لم يدخل بعد"
+    "neverLoggedIn": "لم يدخل بعد",
+    "editTitle": "تعديل {{name}}",
+    "formHint": "يحصل الموظف على وصول حسب دوره",
+    "savedNew": "تمت دعوة الموظف",
+    "savedEdit": "تم تحديث الموظف",
+    "activeDesc": "تعطيل الحساب يمنع الدخول دون حذف السجل",
+    "roleDesc": "يحدد ما يمكن للموظف رؤيته وتعديله",
+    "sections": {
+      "identity": "الهوية",
+      "identityHint": "الاسم ورقم الهاتف للدخول",
+      "access": "الصلاحيات",
+      "accessHint": "اختر الدور المناسب لمهام الموظف",
+      "status": "الحالة"
+    },
+    "placeholders": {
+      "name": "الاسم الكامل"
+    },
+    "preview": {
+      "label": "معاينة العضو",
+      "hint": "بطاقة العضو في قائمة الفريق",
+      "placeholderName": "اسم الموظف"
+    },
+    "fields": {
+      "name": "الاسم",
+      "phone": "الهاتف",
+      "role": "الدور",
+      "active": "حساب نشط"
+    }
   },
   "profile": {
     "title": "الملف التجاري",
     "subtitle": "هوية متجرك لدى Crido",
     "edit": "تعديل الملف",
+    "editHint": "حدّث معلومات متجرك الظاهرة للزبائن وCrido",
+    "editIntro": "التعديلات تُحفظ محلياً وتظهر فوراً في لوحة التحكم.",
+    "saved": "تم حفظ الملف التجاري",
+    "partnerSince": "شريك Crido منذ {{date}}",
+    "readonlyNote": "المعلومات القانونية والبنكية للعرض فقط — تواصل مع Crido للتعديل.",
+    "validation": {
+      "required": "هذا الحقل مطلوب"
+    },
     "sections": {
       "identity": "الهوية التجارية",
       "legal": "المعلومات القانونية",
@@ -246,6 +460,9 @@
       "documents": "مستندات KYB"
     },
     "fields": {
+      "nameAr": "الاسم (عربي)",
+      "nameFr": "الاسم (فرنسي)",
+      "tagline": "الشعار",
       "name": "الاسم التجاري",
       "category": "الفئة",
       "description": "الوصف",
@@ -289,7 +506,11 @@
     "channels": { "sms": "رسائل SMS", "email": "بريد إلكتروني", "push": "إشعارات فورية" },
     "defaultBranch": "الفرع الافتراضي",
     "language": "لغة الواجهة",
-    "changePassword": "تغيير كلمة المرور"
+    "changePassword": "تغيير كلمة المرور",
+    "passwordChanged": "تم تحديث كلمة المرور",
+    "save": "حفظ الإعدادات",
+    "saved": "تم حفظ الإعدادات",
+    "securityHint": "غيّر كلمة المرور بانتظام لحماية حساب متجرك."
   },
   "status": {
     "draft": "مسودة",
@@ -335,5 +556,11 @@
     "retired": "متقاعد",
     "unemployed": "بدون عمل",
     "other": "أخرى"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "markAllRead": "تعليم الكل كمقروء",
+    "empty": "لا توجد إشعارات",
+    "unreadCount": "{{count}} غير مقروء"
   }
 }

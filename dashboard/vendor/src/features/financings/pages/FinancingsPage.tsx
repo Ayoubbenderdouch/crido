@@ -1,27 +1,36 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { CreditCard } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Card } from '@/components/ui/card'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { StatusBadge } from '@/components/data/StatusBadge'
 import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { cn } from '@/lib/utils'
-import { fetchFinancings } from '@/lib/mock/api'
-import type { Financing } from '@/lib/mock/data'
+import { fetchFinancings } from '@/lib/api'
+import type { Financing, FinancingStatus } from '@/lib/mock/data'
 import { formatDzd, formatDate, type Locale } from '@/lib/format'
 
-const TABS = ['all', 'active', 'completed'] as const
+const TABS: { key: 'all' | 'active' | 'completed'; status?: FinancingStatus }[] = [
+  { key: 'all' },
+  { key: 'active', status: 'active' },
+  { key: 'completed', status: 'completed' },
+]
 
 export default function FinancingsPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
-  const [tab, setTab] = useState<(typeof TABS)[number]>('all')
+  const navigate = useNavigate()
+  const [tab, setTab] = useState<(typeof TABS)[number]['key']>('all')
 
   const { data, isLoading } = useQuery({ queryKey: ['financings'], queryFn: fetchFinancings })
-  const rows = (data ?? []).filter((f) => tab === 'all' || f.status === tab)
+  const all = data ?? []
+  const activeTab = TABS.find((tb) => tb.key === tab) ?? TABS[0]
+  const rows = all.filter((f) => !activeTab.status || f.status === activeTab.status)
+  const countOf = (status?: FinancingStatus) =>
+    status ? all.filter((f) => f.status === status).length : all.length
 
   const columns: Column<Financing>[] = [
     {
@@ -79,33 +88,51 @@ export default function FinancingsPage() {
     <div className="animate-fade-up">
       <PageHeader title={t('financings.title')} subtitle={t('financings.subtitle')} />
 
-      <div className="mb-4 flex gap-1 border-b border-border">
-        {TABS.map((tb) => (
-          <button
-            key={tb}
-            type="button"
-            onClick={() => setTab(tb)}
-            className={cn(
-              '-mb-px border-b-2 px-4 py-2 text-sm transition-colors',
-              tab === tb
-                ? 'border-primary font-medium text-primary'
-                : 'border-transparent text-foreground-secondary hover:text-foreground',
-            )}
-          >
-            {t(`financings.tabs.${tb}`)}
-          </button>
-        ))}
+      <div className="mb-5 flex flex-wrap gap-1 rounded-2xl border border-border bg-card p-1 shadow-sm">
+        {TABS.map((tb) => {
+          const count = countOf(tb.status)
+          return (
+            <button
+              key={tb.key}
+              type="button"
+              onClick={() => setTab(tb.key)}
+              className={cn(
+                'flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm transition-all sm:flex-none',
+                tab === tb.key
+                  ? 'bg-primary font-medium text-primary-fg shadow-sm'
+                  : 'text-foreground-secondary hover:bg-background-secondary hover:text-foreground',
+              )}
+            >
+              {t(`financings.tabs.${tb.key}`)}
+              {count > 0 ? (
+                <span
+                  className={cn(
+                    'flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-medium',
+                    tab === tb.key ? 'bg-primary-fg/20 text-primary-fg' : 'bg-background-secondary text-foreground-tertiary',
+                  )}
+                >
+                  {count}
+                </span>
+              ) : null}
+            </button>
+          )
+        })}
       </div>
 
-      <Card>
+      <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         {isLoading ? (
           <Loader />
         ) : rows.length === 0 ? (
           <EmptyState icon={CreditCard} title={t('common.noResults')} />
         ) : (
-          <DataTable columns={columns} rows={rows} rowKey={(f) => f.reference} />
+          <DataTable
+            columns={columns}
+            rows={rows}
+            rowKey={(f) => f.reference}
+            onRowClick={(f) => navigate(`/financings/${f.reference}`)}
+          />
         )}
-      </Card>
+      </section>
 
       <p className="mt-3 text-xs leading-relaxed text-foreground-tertiary">
         {t('financings.privacyNote')}

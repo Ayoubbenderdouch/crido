@@ -14,6 +14,18 @@
     "sectionMain": "Opérations",
     "sectionManage": "Boutique"
   },
+  "timeRange": {
+    "label": "Période",
+    "1d": "1 jour",
+    "7d": "7 jours",
+    "30d": "30 jours",
+    "90d": "90 jours",
+    "6m": "6 mois",
+    "1y": "1 an",
+    "all": "Tout",
+    "chartHint": "Période : {{period}}",
+    "kpiSales": "Ventes — {{period}}"
+  },
   "common": {
     "search": "Rechercher...",
     "view": "Voir",
@@ -34,7 +46,6 @@
     "add": "Ajouter",
     "comingSoon": "Cette page est en construction",
     "comingSoonHint": "Elle sera construite lors d'un prochain sprint selon la feuille de route.",
-    "actionDemo": "Action de démo — activée après le branchement du backend.",
     "notFound": "Élément introuvable",
     "call": "Appeler",
     "whatsapp": "WhatsApp",
@@ -43,11 +54,24 @@
   },
   "login": {
     "title": "Connexion",
-    "subtitle": "Espace vendeur Crido",
+    "welcome": "Bon retour",
+    "subtitle": "Connectez-vous pour gérer votre boutique et les demandes de financement",
+    "vendorPortal": "Espace vendeur",
+    "tagline": "Achetez maintenant, payez en plusieurs fois — tout en un seul endroit",
     "phone": "Numéro de téléphone",
     "password": "Mot de passe",
     "submit": "Se connecter",
-    "demoHint": "Démo — identifiants pré-remplis."
+    "demoHint": "Démo — identifiants pré-remplis.",
+    "secureAccess": "Accès sécurisé à votre compte marchand",
+    "footer": "© Crido — Adrar, Algérie",
+    "features": {
+      "requests": "Confirmez les demandes de financement instantanément",
+      "financing": "Suivez les financements et les échéances",
+      "payouts": "Recevez vos versements en toute transparence"
+    },
+    "errors": {
+      "generic": "Connexion impossible. Vérifiez vos identifiants."
+    }
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -60,18 +84,33 @@
       "pendingPayout": "Solde en attente"
     },
     "charts": {
-      "sales": "Ventes quotidiennes (30 derniers jours)",
+      "sales": "Ventes",
       "topProducts": "Produits les plus vendus",
       "duration": "Durée des financements"
     },
     "recentFinancings": "Derniers financements",
     "recentPayouts": "Derniers versements",
     "months": "mois",
-    "noPending": "Aucune demande en attente"
+    "noPending": "Aucune demande en attente",
+    "goal": {
+      "title": "Objectif de ventes du mois",
+      "subtitle": "Suivez votre progression vers l'objectif mensuel",
+      "target": "Objectif",
+      "achieved": "Réalisé",
+      "remaining": "Reste : {{amount}}",
+      "complete": "Bravo ! Objectif du mois atteint 🎉",
+      "viewRequests": "Voir les demandes",
+      "pendingBadge": "{{count}} demande(s) en attente"
+    }
   },
   "requests": {
     "title": "Demandes",
     "subtitle": "Demandes de financement reçues de vos clients",
+    "badge": "Demandes de financement",
+    "detailLabel": "Demande de financement",
+    "pendingBanner": "{{count}} demande(s) en attente de votre confirmation",
+    "emptyTab": "Aucune demande dans cet onglet",
+    "rejectReasonRequired": "Veuillez indiquer le motif du rejet",
     "tabs": { "new": "Nouvelles", "confirmed": "Confirmées", "approved": "Approuvées", "rejected": "Rejetées" },
     "confirm": "Confirmer la demande",
     "reject": "Rejeter la demande",
@@ -114,10 +153,24 @@
     "merchantNote": "Note du marchand",
     "confirmedToast": "Demande confirmée — un SMS de confirmation a été envoyé au client.",
     "rejectedToast": "Demande rejetée.",
+    "confirmedNote": "Confirmé par le commerçant.",
+    "rejectedNote": "Refusé par le commerçant.",
     "timelineSubmitted": "Le client a soumis la demande",
     "timelineConfirmed": "Vous avez confirmé la demande",
     "timelineApproved": "Crido a approuvé — devenue un financement",
-    "timelineRejected": "Demande rejetée"
+    "timelineRejected": "Demande rejetée",
+    "whatsapp": {
+      "title": "Messages WhatsApp rapides",
+      "subtitle": "Messages prêts à l'emploi — ouvrir dans WhatsApp",
+      "confirmed": "Commande confirmée",
+      "ready": "Produit prêt",
+      "needInfo": "Demander des infos",
+      "messages": {
+        "confirmed": "Bonjour {{name}}, votre demande de financement {{ref}} via Crido est confirmée. Merci pour votre confiance.",
+        "ready": "Bonjour {{name}}, votre produit (demande {{ref}}) est prêt à être récupéré. Contactez-nous pour organiser la livraison.",
+        "needInfo": "Bonjour {{name}}, nous avons besoin d'informations complémentaires pour finaliser la demande {{ref}}. Pouvez-vous nous répondre rapidement ?"
+      }
+    }
   },
   "financings": {
     "title": "Financements",
@@ -135,11 +188,40 @@
     },
     "payoutPaid": "Versé",
     "payoutPending": "En attente de versement",
-    "privacyNote": "Le détail des échéances du client ne vous est pas visible pour des raisons de confidentialité — vous avez été payé intégralement d'avance."
+    "privacyNote": "Le détail des échéances du client ne vous est pas visible pour des raisons de confidentialité — vous avez été payé intégralement d'avance.",
+    "detailLabel": "Détail du financement",
+    "timelineHint": "Parcours du financement depuis son activation",
+    "timelineActivated": "Financement activé",
+    "timelinePayoutPaid": "Votre versement reçu",
+    "timelinePayoutPending": "Versement en cours",
+    "timelineActive": "Financement actif — le client paie ses échéances",
+    "timelineCompleted": "Financement clôturé",
+    "timelineDefaulted": "Défaut de paiement du client",
+    "sections": {
+      "customer": "Client",
+      "product": "Produit et plan",
+      "timeline": "Parcours",
+      "summary": "Récapitulatif des versements"
+    },
+    "fields": {
+      "requestRef": "Demande d'origine",
+      "activated": "Date d'activation"
+    },
+    "summary": {
+      "margin": "Marge Crido",
+      "hint": "Vous êtes payé intégralement d'avance — le retard des échéances du client n'affecte pas vos versements."
+    }
   },
   "payouts": {
     "title": "Versements",
     "subtitle": "L'argent que Crido vous verse",
+    "badge": "Versements Crido",
+    "detailLabel": "Versement",
+    "pendingLabel": "Total en attente",
+    "amountCardTitle": "Montant du versement",
+    "paidHint": "Ce versement a été effectué — vous pouvez télécharger le reçu ci-dessous.",
+    "receiptTitle": "Reçu de versement Crido",
+    "receiptFooter": "Document émis depuis le tableau de bord marchand — Crido",
     "tabs": { "all": "Tous", "pending": "En attente", "paid": "Versés" },
     "columns": {
       "reference": "Référence",
@@ -164,11 +246,14 @@
       "agent": "Agent assigné"
     },
     "downloadReceipt": "Télécharger le reçu",
+    "receiptDownloaded": "Reçu téléchargé",
     "incomingHint": "Ce versement vous parviendra à la date prévue."
   },
   "customers": {
     "title": "Clients",
     "subtitle": "Clients ayant acheté via votre boutique",
+    "badge": "Clients de la boutique",
+    "sections": { "profile": "Informations client" },
     "columns": {
       "customer": "Client",
       "commune": "Commune",
@@ -201,24 +286,118 @@
     "outOfStock": "Rupture",
     "available": "Affiché",
     "unavailable": "Masqué",
-    "units": "unité(s)"
+    "units": "unité(s)",
+    "editTitle": "Modifier {{name}}",
+    "formHint": "Visible pour les clients qui financent chez vous",
+    "savedNew": "Produit ajouté",
+    "savedEdit": "Produit mis à jour",
+    "deleted": "Produit supprimé",
+    "deleteConfirm": "Supprimer ce produit ?",
+    "unavailableHint": "Masqué pour les clients tant qu'il est désactivé",
+    "badgeNew": "Nouveau produit",
+    "badgeEdit": "Modification",
+    "availableDesc": "Visible dans le catalogue BNPL",
+    "sections": {
+      "media": "Photos du produit",
+      "details": "Détails"
+    },
+    "placeholders": {
+      "nameAr": "Ex. iPhone 16 Pro",
+      "nameFr": "Ex. iPhone 16 Pro",
+      "description": "Courte description (optionnel)"
+    },
+    "fields": {
+      "nameAr": "Nom (arabe)",
+      "nameFr": "Nom (français)",
+      "description": "Description"
+    },
+    "images": {
+      "sectionHint": "La première image = couverture du catalogue. Jusqu'à 4 photos.",
+      "dropTitle": "Glissez des images ou cliquez",
+      "dropHint": "JPG ou PNG — 4 Mo max par fichier",
+      "cta": "Ajouter des photos",
+      "cover": "Photo de couverture",
+      "gallery": "Galerie",
+      "setCover": "Couverture",
+      "add": "Ajouter",
+      "more": "photos",
+      "added": "Images ajoutées",
+      "failed": "Échec du téléversement",
+      "tooLarge": "Max {{mb}} Mo",
+      "maxReached": "Limite {{count}} images"
+    },
+    "preview": {
+      "label": "Aperçu en direct",
+      "hint": "Rendu dans votre catalogue boutique",
+      "placeholderName": "Nom du produit"
+    },
+    "bnpl": {
+      "title": "Aperçu des échéances BNPL",
+      "subtitle": "Marge client + commission Crido {{rate}}% — estimation instantanée",
+      "enterPrice": "Saisissez le prix du produit pour prévisualiser les mensualités",
+      "months": "{{count}} mois",
+      "marginPct": "Marge {{pct}}%",
+      "monthlyLabel": "Mensualité",
+      "perMonth": "/ mois",
+      "popular": "Populaire",
+      "clientTotal": "Total client",
+      "merchantPayout": "Votre versement",
+      "commission": "Commission Crido",
+      "disclaimer": "Chiffres indicatifs (Murabaha) — figés à l'approbation de la demande"
+    }
   },
   "branches": {
     "title": "Succursales",
     "subtitle": "Les emplacements physiques de votre boutique",
     "addBranch": "Ajouter une succursale",
+    "badgeNew": "Nouvelle succursale",
+    "badgeEdit": "Modification",
     "columns": {
       "branch": "Succursale",
       "address": "Adresse",
       "phone": "Téléphone",
       "manager": "Responsable",
       "status": "Statut"
+    },
+    "editTitle": "Modifier {{name}}",
+    "formHint": "Les succursales apparaissent lors de la confirmation des demandes",
+    "savedNew": "Succursale ajoutée",
+    "savedEdit": "Succursale mise à jour",
+    "activeDesc": "Les succursales actives sont proposées lors des confirmations",
+    "sections": {
+      "location": "Emplacement",
+      "locationHint": "Wilaya d'Adrar uniquement — MVP actuel",
+      "contact": "Contact",
+      "contactHint": "Téléphone de la succursale et responsable",
+      "status": "Statut"
+    },
+    "placeholders": {
+      "name": "Ex. Succursale centre-ville",
+      "commune": "Adrar",
+      "street": "Rue, numéro, quartier...",
+      "manager": "Nom du responsable"
+    },
+    "preview": {
+      "label": "Aperçu succursale",
+      "hint": "Rendu dans votre liste de succursales",
+      "placeholderName": "Nom de la succursale"
+    },
+    "fields": {
+      "name": "Nom",
+      "wilaya": "Wilaya",
+      "commune": "Commune",
+      "street": "Adresse",
+      "phone": "Téléphone",
+      "manager": "Responsable",
+      "active": "Succursale active"
     }
   },
   "staff": {
     "title": "Personnel",
     "subtitle": "Qui peut accéder au tableau de bord",
     "addStaff": "Inviter un membre",
+    "badgeNew": "Nouvelle invitation",
+    "badgeEdit": "Modification",
     "columns": {
       "name": "Nom",
       "phone": "Téléphone",
@@ -232,12 +411,47 @@
       "cashier": "Caissier",
       "viewer": "Lecture seule"
     },
-    "neverLoggedIn": "Jamais connecté"
+    "neverLoggedIn": "Jamais connecté",
+    "editTitle": "Modifier {{name}}",
+    "formHint": "L'accès dépend du rôle attribué",
+    "savedNew": "Invitation envoyée",
+    "savedEdit": "Membre mis à jour",
+    "activeDesc": "Désactiver bloque la connexion sans supprimer l'historique",
+    "roleDesc": "Définit ce que le membre peut voir et modifier",
+    "sections": {
+      "identity": "Identité",
+      "identityHint": "Nom et téléphone pour la connexion",
+      "access": "Accès",
+      "accessHint": "Choisissez le rôle adapté aux tâches",
+      "status": "Statut"
+    },
+    "placeholders": {
+      "name": "Nom complet"
+    },
+    "preview": {
+      "label": "Aperçu membre",
+      "hint": "Carte du membre dans la liste équipe",
+      "placeholderName": "Nom du membre"
+    },
+    "fields": {
+      "name": "Nom",
+      "phone": "Téléphone",
+      "role": "Rôle",
+      "active": "Compte actif"
+    }
   },
   "profile": {
     "title": "Profil commercial",
     "subtitle": "L'identité de votre boutique chez Crido",
     "edit": "Modifier le profil",
+    "editHint": "Mettez à jour les informations visibles pour Crido et vos clients",
+    "editIntro": "Les modifications sont enregistrées localement et visibles immédiatement.",
+    "saved": "Profil enregistré",
+    "partnerSince": "Partenaire Crido depuis le {{date}}",
+    "readonlyNote": "Informations légales et bancaires en lecture seule — contactez Crido pour toute modification.",
+    "validation": {
+      "required": "Ce champ est requis"
+    },
     "sections": {
       "identity": "Identité commerciale",
       "legal": "Informations légales",
@@ -246,6 +460,9 @@
       "documents": "Documents KYB"
     },
     "fields": {
+      "nameAr": "Nom (arabe)",
+      "nameFr": "Nom (français)",
+      "tagline": "Slogan",
       "name": "Raison sociale",
       "category": "Catégorie",
       "description": "Description",
@@ -289,7 +506,11 @@
     "channels": { "sms": "SMS", "email": "E-mail", "push": "Notifications push" },
     "defaultBranch": "Succursale par défaut",
     "language": "Langue de l'interface",
-    "changePassword": "Changer le mot de passe"
+    "changePassword": "Changer le mot de passe",
+    "passwordChanged": "Mot de passe mis à jour",
+    "save": "Enregistrer",
+    "saved": "Paramètres enregistrés",
+    "securityHint": "Changez votre mot de passe régulièrement pour protéger votre compte marchand."
   },
   "status": {
     "draft": "Brouillon",
@@ -335,5 +556,11 @@
     "retired": "Retraité",
     "unemployed": "Sans emploi",
     "other": "Autre"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Tout marquer comme lu",
+    "empty": "Aucune notification",
+    "unreadCount": "{{count}} non lue(s)"
   }
 }

@@ -1,0 +1,162 @@
+[
+  {
+    "slug": "electronics",
+    "parent_slug": null,
+    "name_ar": "إلكترونيات",
+    "name_fr": "Électronique",
+    "icon_name": "smartphone",
+    "sort_order": 1
+  },
+  {
+    "slug": "appliances",
+    "parent_slug": null,
+    "name_ar": "أجهزة منزلية",
+    "name_fr": "Électroménager",
+    "icon_name": "refrigerator",
+    "sort_order": 2
+  },
+  {
+    "slug": "furniture",
+    "parent_slug": null,
+    "name_ar": "أثاث",
+    "name_fr": "Meubles",
+    "icon_name": "sofa",
+    "sort_order": 3
+  },
+  {
+    "slug": "computing",
+    "parent_slug": null,
+    "name_ar": "حواسيب",
+    "name_fr": "Informatique",
+    "icon_name": "laptop",
+    "sort_order": 4
+  },
+  {
+    "slug": "mobile",
+    "parent_slug": null,
+    "name_ar": "هواتف",
+    "name_fr": "Téléphones",
+    "icon_name": "smartphone",
+    "sort_order": 5
+  },
+  {
+    "slug": "fashion",
+    "parent_slug": null,
+    "name_ar": "ملابس",
+    "name_fr": "Mode",
+    "icon_name": "shirt",
+    "sort_order": 6
+  },
+  {
+    "slug": "beauty",
+    "parent_slug": null,
+    "name_ar": "تجميل",
+    "name_fr": "Beauté",
+    "icon_name": "sparkles",
+    "sort_order": 7
+  },
+  {
+    "slug": "home",
+    "parent_slug": null,
+    "name_ar": "منزل وديكور",
+    "name_fr": "Maison & Déco",
+    "icon_name": "home",
+    "sort_order": 8
+  },
+  {
+    "slug": "baby",
+    "parent_slug": null,
+    "name_ar": "مستلزمات الأطفال",
+    "name_fr": "Bébé",
+    "icon_name": "baby",
+    "sort_order": 9
+  },
+  {
+    "slug": "sports",
+    "parent_slug": null,
+    "name_ar": "رياضة",
+    "name_fr": "Sport",
+    "icon_name": "dumbbell",
+    "sort_order": 10
+  },
+  {
+    "slug": "automotive",
+    "parent_slug": null,
+    "name_ar": "سيارات",
+    "name_fr": "Auto",
+    "icon_name": "car",
+    "sort_order": 11
+  },
+  {
+    "slug": "jewelry",
+    "parent_slug": null,
+    "name_ar": "مجوهرات",
+    "name_fr": "Bijoux",
+    "icon_name": "gem",
+    "sort_order": 12
+  },
+  {
+    "slug": "tvs",
+    "parent_slug": "electronics",
+    "name_ar": "تلفزيونات",
+    "name_fr": "Téléviseurs",
+    "icon_name": "tv",
+    "sort_order": 1
+  },
+  {
+    "slug": "audio",
+    "parent_slug": "electronics",
+    "name_ar": "أجهزة الصوت",
+    "name_fr": "Audio",
+    "icon_name": "headphones",
+    "sort_order": 2
+  },
+  {
+    "slug": "gaming",
+    "parent_slug": "electronics",
+    "name_ar": "ألعاب الفيديو",
+    "name_fr": "Gaming",
+    "icon_name": "gamepad",
+    "sort_order": 3
+  },
+  {
+    "slug": "smartphones",
+    "parent_slug": "mobile",
+    "name_ar": "هواتف ذكية",
+    "name_fr": "Smartphones",
+    "icon_name": "smartphone",
+    "sort_order": 1
+  },
+  {
+    "slug": "accessories",
+    "parent_slug": "mobile",
+    "name_ar": "إكسسوارات",
+    "name_fr": "Accessoires",
+    "icon_name": "cable",
+    "sort_order": 2
+  },
+  {
+    "slug": "kitchen",
+    "parent_slug": "appliances",
+    "name_ar": "أجهزة المطبخ",
+    "name_fr": "Cuisine",
+    "icon_name": "utensils",
+    "sort_order": 1
+  },
+  {
+    "slug": "laundry",
+    "parent_slug": "appliances",
+    "name_ar": "غسيل وكوي",
+    "name_fr": "Lavage",
+    "icon_name": "washing-machine",
+    "sort_order": 2
+  },
+  {
+    "slug": "climate",
+    "parent_slug": "appliances",
+    "name_ar": "تكييف وتدفئة",
+    "name_fr": "Climatisation",
+    "icon_name": "wind",
+    "sort_order": 3
+  }
+]

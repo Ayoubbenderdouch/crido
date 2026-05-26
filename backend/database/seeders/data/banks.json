@@ -1,0 +1,189 @@
+[
+  {
+    "code": "CCP",
+    "name_ar": "بريد الجزائر - الحساب الجاري البريدي",
+    "name_fr": "Algérie Poste – CCP",
+    "swift_code": null,
+    "is_postal": true,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 0
+  },
+  {
+    "code": "BNA",
+    "name_ar": "البنك الوطني الجزائري",
+    "name_fr": "Banque Nationale d'Algérie",
+    "swift_code": "BNALDZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 1
+  },
+  {
+    "code": "BEA",
+    "name_ar": "بنك الجزائر الخارجي",
+    "name_fr": "Banque Extérieure d'Algérie",
+    "swift_code": "BEXADZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 2
+  },
+  {
+    "code": "CPA",
+    "name_ar": "القرض الشعبي الجزائري",
+    "name_fr": "Crédit Populaire d'Algérie",
+    "swift_code": "CPALDZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 3
+  },
+  {
+    "code": "BADR",
+    "name_ar": "بنك الفلاحة والتنمية الريفية",
+    "name_fr": "Banque de l'Agriculture et du Développement Rural",
+    "swift_code": "BADRDZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 4
+  },
+  {
+    "code": "BDL",
+    "name_ar": "بنك التنمية المحلية",
+    "name_fr": "Banque de Développement Local",
+    "swift_code": "BDLADZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 5
+  },
+  {
+    "code": "CNEP",
+    "name_ar": "الصندوق الوطني للتوفير والاحتياط",
+    "name_fr": "Caisse Nationale d'Épargne et de Prévoyance",
+    "swift_code": "CNEPDZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 6
+  },
+  {
+    "code": "AGB",
+    "name_ar": "بنك الخليج الجزائر",
+    "name_fr": "Gulf Bank Algeria",
+    "swift_code": "AGBADZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 10
+  },
+  {
+    "code": "BNPP-DZ",
+    "name_ar": "بنك بي إن بي باريبا الجزائر",
+    "name_fr": "BNP Paribas El Djazaïr",
+    "swift_code": "BNPADZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 11
+  },
+  {
+    "code": "SGA",
+    "name_ar": "بنك سوسيتي جنرال الجزائر",
+    "name_fr": "Société Générale Algérie",
+    "swift_code": "SOGEDZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 12
+  },
+  {
+    "code": "TRUST",
+    "name_ar": "بنك ترست الجزائر",
+    "name_fr": "Trust Bank Algeria",
+    "swift_code": "TRUSDZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 13
+  },
+  {
+    "code": "NATIXIS",
+    "name_ar": "ناتيكسيس الجزائر",
+    "name_fr": "Natixis Algérie",
+    "swift_code": "NATXDZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 14
+  },
+  {
+    "code": "ABC",
+    "name_ar": "بنك إيه بي سي",
+    "name_fr": "Arab Banking Corporation",
+    "swift_code": "ABCODZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 15
+  },
+  {
+    "code": "HOUSING",
+    "name_ar": "بنك الإسكان",
+    "name_fr": "Housing Bank for Trade & Finance",
+    "swift_code": "HBHODZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 16
+  },
+  {
+    "code": "FRANSABANK",
+    "name_ar": "فرنسبنك الجزائر",
+    "name_fr": "Fransabank Al-Djazaïr",
+    "swift_code": "FSABDZAL",
+    "is_postal": false,
+    "is_islamic": false,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 17
+  },
+  {
+    "code": "BARAKA",
+    "name_ar": "بنك البركة الجزائري",
+    "name_fr": "Al Baraka Bank of Algeria",
+    "swift_code": "BARKDZAL",
+    "is_postal": false,
+    "is_islamic": true,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 20
+  },
+  {
+    "code": "SALAM",
+    "name_ar": "بنك السلام الجزائر",
+    "name_fr": "Al Salam Bank Algeria",
+    "swift_code": "SLAMDZAL",
+    "is_postal": false,
+    "is_islamic": true,
+    "supports_direct_debit": false,
+    "is_active": true,
+    "display_order": 21
+  }
+]
