@@ -1,3 +1,4 @@
+import { asset } from '@/lib/asset'
 import { ArrowLeft, Check, MapPin, Sparkles } from 'lucide-react'
 import { useT } from '@/i18n/useT'
 import { Reveal } from './Reveal'
@@ -187,7 +188,7 @@ export function AdrarSection() {
 
             <div className="relative overflow-hidden rounded-3xl border border-teal/10 bg-white shadow-[0_30px_60px_-30px_rgba(4,36,30,0.25)]">
               <img
-                src="/images/adrar-context.png"
+                src={asset('/images/adrar-context.png')}
                 alt={t('imageAlt')}
                 className="block h-auto w-full object-cover"
                 onError={(e) => {

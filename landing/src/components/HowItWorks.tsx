@@ -1,3 +1,4 @@
+import { asset } from '@/lib/asset'
 import { Smartphone, Store, FileSignature, CalendarCheck } from 'lucide-react'
 import { useT } from '@/i18n/useT'
 import { Reveal } from './Reveal'
@@ -34,22 +35,22 @@ const TR = {
 const STEPS = [
   {
     id: 'step1' as const,
-    img: '/images/step-1-download.png',
+    img: asset('/images/step-1-download.png'),
     icon: Smartphone,
   },
   {
     id: 'step2' as const,
-    img: '/images/step-2-shop.png',
+    img: asset('/images/step-2-shop.png'),
     icon: Store,
   },
   {
     id: 'step3' as const,
-    img: '/images/step-3-sign.png',
+    img: asset('/images/step-3-sign.png'),
     icon: FileSignature,
   },
   {
     id: 'step4' as const,
-    img: '/images/step-4-pay.png',
+    img: asset('/images/step-4-pay.png'),
     icon: CalendarCheck,
   },
 ]

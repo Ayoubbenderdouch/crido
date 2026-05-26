@@ -1,3 +1,4 @@
+import { asset } from '@/lib/asset'
 import { ArrowLeft, Check } from 'lucide-react'
 import { useT } from '@/i18n/useT'
 
@@ -138,7 +139,7 @@ export function Hero() {
           <div className="pointer-events-none absolute inset-0 -z-10 mx-auto h-[16rem] w-[16rem] rounded-full bg-teal-bright/12 blur-[80px] sm:h-[22rem] sm:w-[22rem] sm:blur-[100px] md:h-[26rem] md:w-[26rem]" />
 
           <img
-            src="/images/hero-character.png"
+            src={asset('/images/hero-character.png')}
             alt={t('heroAlt')}
             className="floaty h-auto w-full max-w-[16rem] object-contain sm:max-w-[22rem] md:max-w-[26rem] lg:max-w-[32rem] xl:max-w-[36rem]"
             onError={(e) => {

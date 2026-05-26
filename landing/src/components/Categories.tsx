@@ -1,3 +1,4 @@
+import { asset } from '@/lib/asset'
 import {
   ArrowUpRight,
   Laptop,
@@ -96,7 +97,7 @@ function CategoryCard({ category, index }: { category: Category; index: number }
 
           {/* The real product image */}
           <img
-            src={`/images/category-${slug}.png`}
+            src={asset(`/images/category-${slug}.png`)}
             alt={title}
             loading="lazy"
             className="relative h-full w-full object-contain p-6 transition-transform duration-500 ease-out group-hover:scale-105 sm:p-7 md:p-8"

@@ -1,3 +1,4 @@
+import { asset } from '@/lib/asset'
 import {
   BadgePercent,
   ShieldCheck,
@@ -94,7 +95,7 @@ export function WhyCrido() {
               <article className="group h-full rounded-3xl border border-line bg-white p-5 transition-colors hover:border-teal/40 md:p-7 lg:p-8">
                 <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-surface text-teal transition-colors group-hover:bg-teal group-hover:text-white sm:h-20 sm:w-20">
                   <img
-                    src={`/images/benefit-${b.slug}.png`}
+                    src={asset(`/images/benefit-${b.slug}.png`)}
                     alt=""
                     className="h-10 w-10 object-contain sm:h-12 sm:w-12"
                     onError={(e) => {

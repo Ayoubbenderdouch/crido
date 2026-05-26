@@ -1,3 +1,4 @@
+import { asset } from '@/lib/asset'
 import { useEffect, useRef, useState, type ComponentType } from 'react'
 import {
   ArrowLeft,
@@ -37,12 +38,12 @@ type Plan = {
 }
 
 const PRODUCTS: Product[] = [
-  { key: 'iphone',   nameKey: 'productIphone',   priceDzd: 200_000, icon: Smartphone,     image: '/images/category-phones.png' },
-  { key: 'macbook',  nameKey: 'productMacbook',  priceDzd: 350_000, icon: Laptop,         image: '/images/category-laptops.png' },
-  { key: 'fridge',   nameKey: 'productFridge',   priceDzd: 120_000, icon: Refrigerator,   image: '/images/category-appliances.png' },
-  { key: 'tv',       nameKey: 'productTv',       priceDzd: 90_000,  icon: Tv,             image: '/images/category-tvs.png' },
-  { key: 'sofa',     nameKey: 'productSofa',     priceDzd: 80_000,  icon: Sofa,           image: '/images/category-furniture.png' },
-  { key: 'washing',  nameKey: 'productWashing',  priceDzd: 60_000,  icon: WashingMachine, image: '/images/category-washing.png' },
+  { key: 'iphone',   nameKey: 'productIphone',   priceDzd: 200_000, icon: Smartphone,     image: asset('/images/category-phones.png') },
+  { key: 'macbook',  nameKey: 'productMacbook',  priceDzd: 350_000, icon: Laptop,         image: asset('/images/category-laptops.png') },
+  { key: 'fridge',   nameKey: 'productFridge',   priceDzd: 120_000, icon: Refrigerator,   image: asset('/images/category-appliances.png') },
+  { key: 'tv',       nameKey: 'productTv',       priceDzd: 90_000,  icon: Tv,             image: asset('/images/category-tvs.png') },
+  { key: 'sofa',     nameKey: 'productSofa',     priceDzd: 80_000,  icon: Sofa,           image: asset('/images/category-furniture.png') },
+  { key: 'washing',  nameKey: 'productWashing',  priceDzd: 60_000,  icon: WashingMachine, image: asset('/images/category-washing.png') },
 ]
 
 const PLANS: Plan[] = [

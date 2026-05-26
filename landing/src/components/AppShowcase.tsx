@@ -1,3 +1,4 @@
+import { asset } from '@/lib/asset'
 import type { ReactNode } from 'react'
 import { Bell, LineChart, Sparkles } from 'lucide-react'
 import { useT } from '@/i18n/useT'
@@ -105,7 +106,7 @@ function StoreBadge({
 const SCREEN_LAYOUT = [
   {
     key: 'home',
-    src: '/images/app-screen-home.png',
+    src: asset('/images/app-screen-home.png'),
     altKey: 'altHome' as const,
     wrapperCls:
       'hidden sm:block z-10 sm:-rotate-[6deg] sm:translate-y-8 sm:hover:-translate-y-2 sm:hover:rotate-0',
@@ -113,7 +114,7 @@ const SCREEN_LAYOUT = [
   },
   {
     key: 'plan',
-    src: '/images/app-screen-plan-selector.png',
+    src: asset('/images/app-screen-plan-selector.png'),
     altKey: 'altPlan' as const,
     wrapperCls:
       'block z-20 sm:hover:-translate-y-2 sm:hover:rotate-0',
@@ -121,7 +122,7 @@ const SCREEN_LAYOUT = [
   },
   {
     key: 'financings',
-    src: '/images/app-screen-my-financings.png',
+    src: asset('/images/app-screen-my-financings.png'),
     altKey: 'altFinancings' as const,
     wrapperCls:
       'hidden sm:block z-10 sm:rotate-[6deg] sm:translate-y-8 sm:hover:-translate-y-2 sm:hover:rotate-0',
