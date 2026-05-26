@@ -35,22 +35,22 @@ const TR = {
 const STEPS = [
   {
     id: 'step1' as const,
-    img: asset('/images/step-1-download.png'),
+    img: asset('/images/step-1-download.webp'),
     icon: Smartphone,
   },
   {
     id: 'step2' as const,
-    img: asset('/images/step-2-shop.png'),
+    img: asset('/images/step-2-shop.webp'),
     icon: Store,
   },
   {
     id: 'step3' as const,
-    img: asset('/images/step-3-sign.png'),
+    img: asset('/images/step-3-sign.webp'),
     icon: FileSignature,
   },
   {
     id: 'step4' as const,
-    img: asset('/images/step-4-pay.png'),
+    img: asset('/images/step-4-pay.webp'),
     icon: CalendarCheck,
   },
 ]

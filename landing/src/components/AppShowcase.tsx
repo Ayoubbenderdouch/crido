@@ -106,7 +106,7 @@ function StoreBadge({
 const SCREEN_LAYOUT = [
   {
     key: 'home',
-    src: asset('/images/app-screen-home.png'),
+    src: asset('/images/app-screen-home.webp'),
     altKey: 'altHome' as const,
     wrapperCls:
       'hidden sm:block z-10 sm:-rotate-[6deg] sm:translate-y-8 sm:hover:-translate-y-2 sm:hover:rotate-0',
@@ -114,7 +114,7 @@ const SCREEN_LAYOUT = [
   },
   {
     key: 'plan',
-    src: asset('/images/app-screen-plan-selector.png'),
+    src: asset('/images/app-screen-plan-selector.webp'),
     altKey: 'altPlan' as const,
     wrapperCls:
       'block z-20 sm:hover:-translate-y-2 sm:hover:rotate-0',
@@ -122,7 +122,7 @@ const SCREEN_LAYOUT = [
   },
   {
     key: 'financings',
-    src: asset('/images/app-screen-my-financings.png'),
+    src: asset('/images/app-screen-my-financings.webp'),
     altKey: 'altFinancings' as const,
     wrapperCls:
       'hidden sm:block z-10 sm:rotate-[6deg] sm:translate-y-8 sm:hover:-translate-y-2 sm:hover:rotate-0',

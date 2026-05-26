@@ -137,7 +137,7 @@ export function MerchantBand() {
               <div className="absolute inset-0 translate-x-3 translate-y-4 rounded-3xl bg-teal-bright/20 blur-2xl sm:rounded-[32px]" />
               <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-white/10 bg-teal/20 shadow-[0_45px_90px_-30px_rgba(0,0,0,0.55)] sm:rounded-[32px]">
                 <img
-                  src={asset('/images/merchant-scene.png')}
+                  src={asset('/images/merchant-scene.webp')}
                   alt={t('imageAlt')}
                   className="h-full w-full object-cover object-center"
                   onError={(e) => {
