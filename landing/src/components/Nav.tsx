@@ -1,3 +1,4 @@
+import { asset } from '@/lib/asset'
 import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { useT } from '@/i18n/useT'
@@ -88,7 +89,7 @@ export function Nav() {
             className="flex items-center gap-2.5"
             onClick={() => setOpen(false)}
           >
-            <img src="/crido-logo.png" alt="" className="h-8 w-8 rounded-xl md:h-9 md:w-9" />
+            <img src={asset("/crido-logo.png")} alt="" className="h-8 w-8 rounded-xl md:h-9 md:w-9" />
             <span
               className={`text-lg font-bold transition-colors md:text-xl ${
                 onMobile && !open ? 'text-teal' : scrolled ? 'text-teal' : 'text-white'
@@ -178,7 +179,7 @@ export function Nav() {
 
           <div className="relative flex h-16 items-center justify-between px-5">
             <div className="flex items-center gap-2.5">
-              <img src="/crido-logo.png" alt="" className="h-8 w-8 rounded-xl" />
+              <img src={asset("/crido-logo.png")} alt="" className="h-8 w-8 rounded-xl" />
               <span className="text-lg font-bold text-white">Crido</span>
             </div>
             <div className="flex items-center gap-2">
