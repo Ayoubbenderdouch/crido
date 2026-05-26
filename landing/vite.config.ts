@@ -6,9 +6,10 @@ import path from 'node:path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // Served from https://ayoubbenderdouch.github.io/crido/ — keep the base path
-  // matched so absolute /images/... still resolve under the subpath.
-  base: '/crido/',
+  // Base path is set via env var so the same code deploys cleanly to either:
+  //   • GitHub Pages (subpath): VITE_BASE_PATH=/crido/  (set in workflow)
+  //   • Vercel / custom domain (root): VITE_BASE_PATH unset → defaults to '/'
+  base: process.env.VITE_BASE_PATH || '/',
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
