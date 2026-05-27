@@ -14,7 +14,7 @@ type Props = {
   compact?: boolean
 }
 
-export function defaultPayoutTransferRef(method: MerchantPayout['method'], ref: string): string {
+function defaultPayoutTransferRef(method: MerchantPayout['method'], ref: string): string {
   if (method === 'ccp_transfer') return `CCP-${ref.slice(-6)}`
   if (method === 'baridi_mob') return `BM-${ref.slice(-6)}`
   return `CASH-${ref.slice(-6)}`

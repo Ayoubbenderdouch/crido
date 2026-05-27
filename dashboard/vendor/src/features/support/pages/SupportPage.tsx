@@ -84,6 +84,9 @@ export default function SupportPage() {
   const [adminTyping, setAdminTyping] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const pendingReplyRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Monotonic counter so locally-created message IDs stay stable across
+  // renders without calling impure Date.now()/Math.random() during render.
+  const localMsgCounterRef = useRef(0)
 
   const decorated = useMemo(() => decorate(messages), [messages])
 
@@ -105,8 +108,9 @@ export default function SupportPage() {
   }, [])
 
   function appendMessage(body: string, sender: SupportMessage['sender'], read: boolean) {
+    localMsgCounterRef.current += 1
     const msg: SupportMessage = {
-      id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      id: `msg-${localMsgCounterRef.current}`,
       sender,
       body,
       sent_at: nowIso(),

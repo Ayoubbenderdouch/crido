@@ -56,9 +56,23 @@ export default function RoleDetailPage() {
     [id],
   )
 
-  const initialPermissions = role?.permissions ?? []
+  const initialPermissions = useMemo(() => role?.permissions ?? [], [role])
   const [permissions, setPermissions] = useState<string[]>(initialPermissions)
   const [deleteOpen, setDeleteOpen] = useState(false)
+
+  const readOnly = role?.slug === 'super_admin'
+
+  // For system roles other than super_admin, permissions stay editable but
+  // the role itself can't be deleted. Super admin is fully read-only.
+  // (Computed before the early return so hook order stays stable.)
+  const dirty = useMemo(() => {
+    if (readOnly) return false
+    const a = new Set(initialPermissions)
+    const b = new Set(permissions)
+    if (a.size !== b.size) return true
+    for (const p of a) if (!b.has(p)) return true
+    return false
+  }, [initialPermissions, permissions, readOnly])
 
   if (!role) {
     return (
@@ -80,20 +94,7 @@ export default function RoleDetailPage() {
     )
   }
 
-  const isSuperAdmin = role.slug === 'super_admin'
   const isSystem = role.is_system
-  const readOnly = isSuperAdmin
-
-  // For system roles other than super_admin, permissions stay editable but
-  // the role itself can't be deleted. Super admin is fully read-only.
-  const dirty = useMemo(() => {
-    if (readOnly) return false
-    const a = new Set(initialPermissions)
-    const b = new Set(permissions)
-    if (a.size !== b.size) return true
-    for (const p of a) if (!b.has(p)) return true
-    return false
-  }, [initialPermissions, permissions, readOnly])
 
   const assignedStaff = MOCK_STAFF.filter((s) => s.roleId === role.id)
   const grantedCount = permissions.includes('*')

@@ -81,14 +81,7 @@ export default function MessagesPage() {
   )
 
   // The active conversation comes from the URL when present, else the first row.
-  const initialActiveId = conversationId ?? conversations[0]?.id
-  const [activeId, setActiveId] = useState<string | undefined>(initialActiveId)
-
-  useEffect(() => {
-    if (conversationId && conversationId !== activeId) {
-      setActiveId(conversationId)
-    }
-  }, [conversationId, activeId])
+  const activeId = conversationId ?? conversations[0]?.id
 
   // Filter the sidebar conversation list.
   const filtered = useMemo(() => {
@@ -109,14 +102,6 @@ export default function MessagesPage() {
   }, [conversations, filter, search])
 
   const active = conversations.find((c) => c.id === activeId)
-
-  // Mark the active conversation as read whenever the user opens it.
-  useEffect(() => {
-    if (!active || active.unread_count === 0) return
-    setConversations((prev) =>
-      prev.map((c) => (c.id === active.id ? { ...c, unread_count: 0 } : c)),
-    )
-  }, [active])
 
   const threadMessages = useMemo(
     () =>
@@ -145,6 +130,9 @@ export default function MessagesPage() {
   // Auto-scroll to the bottom when the active conversation changes or a
   // new message lands. We pin the scroll container, not the page.
   const threadRef = useRef<HTMLDivElement>(null)
+  // Monotonic counter so locally-sent message IDs stay stable across renders
+  // without calling impure Date.now()/Math.random() in the render path.
+  const localMsgCounterRef = useRef(0)
   useEffect(() => {
     const el = threadRef.current
     if (!el) return
@@ -155,8 +143,12 @@ export default function MessagesPage() {
   }, [activeId, threadMessages.length])
 
   function selectConversation(id: string) {
-    setActiveId(id)
-    if (conversationId) navigate(`/messages/${id}`, { replace: true })
+    // Mark the chosen conversation as read immediately — feels more responsive
+    // than waiting for an effect after the navigation settles.
+    setConversations((prev) =>
+      prev.map((c) => (c.id === id && c.unread_count > 0 ? { ...c, unread_count: 0 } : c)),
+    )
+    navigate(`/messages/${id}`, { replace: !!conversationId })
   }
 
   function markAllAsRead() {
@@ -170,7 +162,8 @@ export default function MessagesPage() {
     const body = draft.trim()
     if (!body || !active) return
     const now = new Date().toISOString()
-    const id = `msg-local-${Date.now()}`
+    localMsgCounterRef.current += 1
+    const id = `msg-local-${localMsgCounterRef.current}`
     setMessages((prev) => [...prev, { id, conversation_id: active.id, sender: 'us', body, sent_at: now }])
     setConversations((prev) =>
       prev.map((c) =>

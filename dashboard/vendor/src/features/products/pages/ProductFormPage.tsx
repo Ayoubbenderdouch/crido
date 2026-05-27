@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useForm, type Resolver } from 'react-hook-form'
+import { useForm, useWatch, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
@@ -41,13 +41,15 @@ export default function ProductFormPage() {
   const queryClient = useQueryClient()
   const existing = productId ? getProductById(productId) : undefined
 
-  const [coverImage, setCoverImage] = useState<string | undefined>()
-  const [gallery, setGallery] = useState<string[]>([])
+  // Initialize from `existing` directly so we don't have to sync via an
+  // effect (which the purity rule rightly flags).
+  const [coverImage, setCoverImage] = useState<string | undefined>(existing?.coverImage)
+  const [gallery, setGallery] = useState<string[]>(existing?.gallery ?? [])
 
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
@@ -64,7 +66,10 @@ export default function ProductFormPage() {
     },
   })
 
-  const watched = watch()
+  // `useWatch` is compiler-safe; the bare `watch()` from `useForm` returns a
+  // function that the React Compiler can't memoize. The cast is safe because
+  // `useForm` was initialized with a value for every field.
+  const watched = useWatch({ control }) as FormValues
 
   useEffect(() => {
     if (existing) {
@@ -78,8 +83,6 @@ export default function ProductFormPage() {
         descriptionAr: existing.descriptionAr ?? '',
         available: existing.available,
       })
-      setCoverImage(existing.coverImage)
-      setGallery(existing.gallery ?? [])
     }
   }, [existing, reset])
 

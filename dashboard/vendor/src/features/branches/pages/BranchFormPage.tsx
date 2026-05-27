@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
@@ -37,7 +37,7 @@ export default function BranchFormPage() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     reset,
     formState: { isSubmitting },
   } = useForm<FormValues>({
@@ -52,7 +52,10 @@ export default function BranchFormPage() {
     },
   })
 
-  const watched = watch()
+  // `useWatch` is compiler-safe; the bare `watch()` from `useForm` returns a
+  // function that the React Compiler can't memoize. The cast is safe because
+  // `useForm` was initialized with a value for every field.
+  const watched = useWatch({ control }) as FormValues
 
   useEffect(() => {
     if (existing) {

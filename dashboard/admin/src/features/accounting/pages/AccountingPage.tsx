@@ -204,7 +204,10 @@ export default function AccountingPage() {
 
   // For the prototype only the May 2026 fixture is wired up. Other months
   // render with empty data — the UI still shows correctly.
-  const allRows = month === 5 && year === 2026 ? MOCK_MAY_INSTALLMENTS : []
+  const allRows = useMemo(
+    () => (month === 5 && year === 2026 ? MOCK_MAY_INSTALLMENTS : []),
+    [month, year],
+  )
 
   const wilayaOptions = useMemo(() => {
     const set = new Set<string>()

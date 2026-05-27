@@ -46,7 +46,7 @@ const BAND_STYLES: Record<DebtBand, { bg: string; text: string; ring: string }> 
   unknown: { bg: 'bg-background-secondary', text: 'text-foreground-tertiary', ring: 'ring-border' },
 }
 
-export function bandOf(ratioPct: number, hasIncome: boolean): DebtBand {
+function bandOf(ratioPct: number, hasIncome: boolean): DebtBand {
   if (!hasIncome) return 'unknown'
   if (ratioPct > DEBT_RATIO_MAX_PCT) return 'critical'
   if (ratioPct > 25) return 'high'
@@ -54,7 +54,7 @@ export function bandOf(ratioPct: number, hasIncome: boolean): DebtBand {
   return 'safe'
 }
 
-function DebtRatioBadge({ client, locale: _locale }: { client: Client; locale: Locale }) {
+function DebtRatioBadge({ client }: { client: Client }) {
   const ratio = debtRatioPct(client)
   const hasIncome = !!client.monthlyIncomeDzd && client.monthlyIncomeDzd > 0
   const band = bandOf(ratio, hasIncome)
@@ -106,7 +106,7 @@ export default function ClientsPage() {
   const [onlyOverPolicy, setOnlyOverPolicy] = useState(false) // > 25% red flag
 
   const { data, isLoading } = useQuery({ queryKey: ['clients'], queryFn: fetchClients })
-  const clients = data ?? []
+  const clients = useMemo(() => data ?? [], [data])
 
   const wilayaOptions = useMemo(() => {
     const set = new Set<string>()
@@ -257,7 +257,7 @@ export default function ClientsPage() {
       key: 'ratio',
       header: colHeaderRatio,
       align: 'center',
-      cell: (c) => <DebtRatioBadge client={c} locale={locale} />,
+      cell: (c) => <DebtRatioBadge client={c} />,
     },
     { key: 'kyc', header: t('clients.columns.kyc'), cell: (c) => <StatusBadge status={c.kycStatus} /> },
     { key: 'tier', header: t('clients.columns.tier'), align: 'center', cell: (c) => <TierBadge tier={c.tier} /> },

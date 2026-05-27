@@ -5,11 +5,11 @@
 // Mock-creates a `submitted` request and navigates to its detail.
 // ─────────────────────────────────────────────────────────────
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useForm, Controller, type Resolver } from 'react-hook-form'
+import { useForm, useWatch, Controller, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
@@ -234,7 +234,6 @@ export default function NewRequestPage() {
     register,
     handleSubmit,
     control,
-    watch,
     setValue,
     formState: { errors, isSubmitting, isValid },
   } = useForm<FormValues>({
@@ -252,32 +251,34 @@ export default function NewRequestPage() {
     },
   })
 
-  const watched = watch()
+  // `useWatch` is compiler-safe; the bare `watch()` from `useForm` returns a
+  // function that the React Compiler can't memoize. The cast is safe because
+  // `useForm` was initialized with a value for every field.
+  const watched = useWatch({ control }) as FormValues
   const wilayaId = Number(watched.wilayaId) || 1
   const communes = useMemo(() => getCommunesForWilaya(wilayaId), [wilayaId])
   const selectedWilaya = WILAYAS.find((w) => w.id === wilayaId)
   const wilayaUnavailable = selectedWilaya ? !selectedWilaya.serviceAvailable : false
 
-  const [recognized, setRecognized] = useState<string | null>(null)
+  // Customer auto-fill: derive the recognized name directly from the phone
+  // input so we don't have to mirror it into local state via an effect.
+  const recognized = useMemo<string | null>(() => {
+    if (!PHONE_RE.test(watched.phone)) return null
+    return customers.find((c) => c.phone === watched.phone)?.name ?? null
+  }, [watched.phone, customers])
 
-  // Customer auto-fill: try to match an existing customer by phone.
+  // The form-field side effect (filling name / wilaya / commune from the
+  // matched customer) stays in an effect — `setValue` is RHF's imperative
+  // API, not React local state, so the purity rule doesn't apply.
   useEffect(() => {
-    if (!PHONE_RE.test(watched.phone)) {
-      setRecognized(null)
-      return
-    }
+    if (!PHONE_RE.test(watched.phone)) return
     const match = customers.find((c) => c.phone === watched.phone)
-    if (match) {
-      setValue('fullName', match.name, { shouldValidate: true })
-      // Try to map commune name (ar) back to a wilaya/commune entry.
-      const commune = ADRAR_COMMUNES.find((c) => c.nameAr === match.commune)
-      if (commune) {
-        setValue('wilayaId', commune.wilayaId, { shouldValidate: true })
-        setValue('commune', commune.nameAr, { shouldValidate: true })
-      }
-      setRecognized(match.name)
-    } else {
-      setRecognized(null)
+    if (!match) return
+    setValue('fullName', match.name, { shouldValidate: true })
+    const commune = ADRAR_COMMUNES.find((c) => c.nameAr === match.commune)
+    if (commune) {
+      setValue('wilayaId', commune.wilayaId, { shouldValidate: true })
+      setValue('commune', commune.nameAr, { shouldValidate: true })
     }
   }, [watched.phone, customers, setValue])
 
