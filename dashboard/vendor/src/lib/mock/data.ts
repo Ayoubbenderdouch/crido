@@ -7,7 +7,13 @@
 
 export type Locale = 'ar' | 'fr'
 
-export type RequestStatus = 'submitted' | 'merchant_confirmed' | 'approved' | 'merchant_rejected'
+export type RequestStatus =
+  | 'submitted'
+  | 'merchant_confirmed'
+  | 'processing'
+  | 'approved'
+  | 'completed'
+  | 'merchant_rejected'
 export type FinancingStatus = 'active' | 'completed' | 'defaulted'
 export type PayoutStatus = 'pending' | 'processing' | 'paid'
 export type PayoutMethod = 'ccp_transfer' | 'baridi_mob' | 'cash_delivery'
@@ -63,6 +69,18 @@ export type IncomingRequest = {
   status: RequestStatus
   createdAt: string
   note: string | null
+  /** ISO datetime — set the moment the request appears in the merchant queue. */
+  submittedAt: string
+  /** ISO datetime — set when the merchant confirms availability + price. */
+  merchantConfirmedAt?: string | null
+  /** ISO datetime — set when Crido takes the request into processing. */
+  processingStartedAt?: string | null
+  /** ISO datetime — set when Crido approves the request. */
+  approvedAt?: string | null
+  /** ISO datetime — set when the financing has been fully delivered. */
+  completedAt?: string | null
+  /** ISO datetime — set on merchant rejection. */
+  rejectedAt?: string | null
 }
 
 export type Financing = {
@@ -139,16 +157,77 @@ export type Staff = {
   active: boolean
 }
 
-// ── Incoming financing requests (8) ───────────────────────────
+// ── Incoming financing requests (9) ───────────────────────────
+// Mix of statuses spans the richer flow: submitted → merchant_confirmed →
+// processing → approved → completed (and merchant_rejected as a side path).
 export const incomingRequests: IncomingRequest[] = [
-  { reference: 'CR-2026-000142', customerId: 1, customerName: 'إبراهيم سحنون', customerPhone: '+213770112648', productName: 'iPhone 15 Pro', amountDzd: 240000, planMonths: 12, branchName: 'الفرع الرئيسي — أدرار', status: 'submitted', createdAt: '2026-05-20', note: null },
-  { reference: 'CR-2026-000139', customerId: 2, customerName: 'أيوب قويدري', customerPhone: '+213551203847', productName: 'iPhone 16', amountDzd: 200000, planMonths: 12, branchName: 'الفرع الرئيسي — أدرار', status: 'submitted', createdAt: '2026-05-19', note: null },
-  { reference: 'CR-2026-000137', customerId: 3, customerName: 'سمية حساني', customerPhone: '+213779338471', productName: 'Samsung Galaxy S24', amountDzd: 175000, planMonths: 12, branchName: 'فرع رقان', status: 'submitted', createdAt: '2026-05-19', note: null },
-  { reference: 'CR-2026-000133', customerId: 4, customerName: 'خديجة عمراني', customerPhone: '+213551667214', productName: 'حاسوب محمول HP Pavilion', amountDzd: 132000, planMonths: 6, branchName: 'الفرع الرئيسي — أدرار', status: 'merchant_confirmed', createdAt: '2026-05-16', note: 'السعر مؤكد، المنتج متوفر في المخزن.' },
-  { reference: 'CR-2026-000128', customerId: 5, customerName: 'محمد الأمين تواتي', customerPhone: '+213551772900', productName: 'تلفاز Samsung 55"', amountDzd: 158000, planMonths: 12, branchName: 'فرع تامست', status: 'merchant_confirmed', createdAt: '2026-05-14', note: 'تم التأكيد.' },
-  { reference: 'CR-2026-000121', customerId: 6, customerName: 'كريم العماري', customerPhone: '+213662918334', productName: 'iPad Air', amountDzd: 118000, planMonths: 6, branchName: 'الفرع الرئيسي — أدرار', status: 'approved', createdAt: '2026-05-08', note: 'تم التأكيد.' },
-  { reference: 'CR-2026-000115', customerId: 7, customerName: 'نسيمة بكاي', customerPhone: '+213662550719', productName: 'Samsung Galaxy A55', amountDzd: 72000, planMonths: 6, branchName: 'الفرع الرئيسي — أدرار', status: 'approved', createdAt: '2026-05-03', note: 'تم التأكيد.' },
-  { reference: 'CR-2026-000108', customerId: 8, customerName: 'يوسف بن عيسى', customerPhone: '+213663401255', productName: 'سماعة AirPods Pro', amountDzd: 48000, planMonths: 6, branchName: 'فرع أولف', status: 'merchant_rejected', createdAt: '2026-04-27', note: 'المنتج غير متوفر حالياً في المخزن.' },
+  {
+    reference: 'CR-2026-000142', customerId: 1, customerName: 'إبراهيم سحنون', customerPhone: '+213770112648',
+    productName: 'iPhone 15 Pro', amountDzd: 240000, planMonths: 12, branchName: 'الفرع الرئيسي — أدرار',
+    status: 'submitted', createdAt: '2026-05-20', note: null,
+    submittedAt: '2026-05-20T09:14:00',
+  },
+  {
+    reference: 'CR-2026-000139', customerId: 2, customerName: 'أيوب قويدري', customerPhone: '+213551203847',
+    productName: 'iPhone 16', amountDzd: 200000, planMonths: 12, branchName: 'الفرع الرئيسي — أدرار',
+    status: 'submitted', createdAt: '2026-05-19', note: null,
+    submittedAt: '2026-05-19T17:03:00',
+  },
+  {
+    reference: 'CR-2026-000137', customerId: 3, customerName: 'سمية حساني', customerPhone: '+213779338471',
+    productName: 'Samsung Galaxy S24', amountDzd: 175000, planMonths: 12, branchName: 'فرع رقان',
+    status: 'submitted', createdAt: '2026-05-19', note: null,
+    submittedAt: '2026-05-19T11:48:00',
+  },
+  {
+    reference: 'CR-2026-000133', customerId: 4, customerName: 'خديجة عمراني', customerPhone: '+213551667214',
+    productName: 'حاسوب محمول HP Pavilion', amountDzd: 132000, planMonths: 6, branchName: 'الفرع الرئيسي — أدرار',
+    status: 'merchant_confirmed', createdAt: '2026-05-16', note: 'السعر مؤكد، المنتج متوفر في المخزن.',
+    submittedAt: '2026-05-16T10:22:00',
+    merchantConfirmedAt: '2026-05-16T14:32:00',
+  },
+  {
+    reference: 'CR-2026-000128', customerId: 5, customerName: 'محمد الأمين تواتي', customerPhone: '+213551772900',
+    productName: 'تلفاز Samsung 55"', amountDzd: 158000, planMonths: 12, branchName: 'فرع تامست',
+    status: 'processing', createdAt: '2026-05-14', note: 'تم التأكيد.',
+    submittedAt: '2026-05-14T08:55:00',
+    merchantConfirmedAt: '2026-05-14T12:12:00',
+    processingStartedAt: '2026-05-15T09:30:00',
+  },
+  {
+    reference: 'CR-2026-000124', customerId: 3, customerName: 'سمية حساني', customerPhone: '+213779338471',
+    productName: 'سماعة AirPods Pro', amountDzd: 48000, planMonths: 6, branchName: 'فرع رقان',
+    status: 'processing', createdAt: '2026-05-12', note: 'المنتج جاهز للاستلام.',
+    submittedAt: '2026-05-12T15:18:00',
+    merchantConfirmedAt: '2026-05-12T18:40:00',
+    processingStartedAt: '2026-05-13T10:05:00',
+  },
+  {
+    reference: 'CR-2026-000121', customerId: 6, customerName: 'كريم العماري', customerPhone: '+213662918334',
+    productName: 'iPad Air', amountDzd: 118000, planMonths: 6, branchName: 'الفرع الرئيسي — أدرار',
+    status: 'approved', createdAt: '2026-05-08', note: 'تم التأكيد.',
+    submittedAt: '2026-05-08T11:00:00',
+    merchantConfirmedAt: '2026-05-08T13:45:00',
+    processingStartedAt: '2026-05-09T09:10:00',
+    approvedAt: '2026-05-10T16:25:00',
+  },
+  {
+    reference: 'CR-2026-000115', customerId: 7, customerName: 'نسيمة بكاي', customerPhone: '+213662550719',
+    productName: 'Samsung Galaxy A55', amountDzd: 72000, planMonths: 6, branchName: 'الفرع الرئيسي — أدرار',
+    status: 'completed', createdAt: '2026-05-03', note: 'تم التأكيد.',
+    submittedAt: '2026-05-03T09:32:00',
+    merchantConfirmedAt: '2026-05-03T11:18:00',
+    processingStartedAt: '2026-05-04T08:50:00',
+    approvedAt: '2026-05-05T14:00:00',
+    completedAt: '2026-05-05T17:42:00',
+  },
+  {
+    reference: 'CR-2026-000108', customerId: 8, customerName: 'يوسف بن عيسى', customerPhone: '+213663401255',
+    productName: 'سماعة AirPods Pro', amountDzd: 48000, planMonths: 6, branchName: 'فرع أولف',
+    status: 'merchant_rejected', createdAt: '2026-04-27', note: 'المنتج غير متوفر حالياً في المخزن.',
+    submittedAt: '2026-04-27T16:20:00',
+    rejectedAt: '2026-04-27T19:05:00',
+  },
 ]
 
 // ── Financings issued via this merchant (6) ───────────────────
@@ -216,6 +295,90 @@ export const kybDocuments = [
   { key: 'nif', status: 'approved' as const },
   { key: 'nis', status: 'approved' as const },
   { key: 'ownerId', status: 'pending' as const },
+]
+
+// ── Support chat with the Crido admin team ────────────────────
+export type SupportMessage = {
+  id: string
+  sender: 'vendor' | 'admin'
+  body: string
+  sent_at: string
+  read: boolean
+}
+
+export const MOCK_SUPPORT_MESSAGES: SupportMessage[] = [
+  {
+    id: 'msg-001',
+    sender: 'vendor',
+    body: 'السلام عليكم، عندي مشكلة مع طلب رقم CR-2026-000145',
+    sent_at: '2026-05-27T08:42:00',
+    read: true,
+  },
+  {
+    id: 'msg-002',
+    sender: 'admin',
+    body: 'وعليكم السلام، أهلاً بك يا طاهر. ما هي المشكلة بالضبط؟',
+    sent_at: '2026-05-27T08:46:00',
+    read: true,
+  },
+  {
+    id: 'msg-003',
+    sender: 'vendor',
+    body: 'العميل غيّر رأيه بعد ما وقّعت العقد، ويطلب إلغاء الطلب.',
+    sent_at: '2026-05-27T08:48:00',
+    read: true,
+  },
+  {
+    id: 'msg-004',
+    sender: 'admin',
+    body: 'لا مشكلة، يمكننا إلغاء الطلب قبل تحويل المبلغ. سأرسل لك رابط التأكيد بعد لحظات.',
+    sent_at: '2026-05-27T08:50:00',
+    read: true,
+  },
+  {
+    id: 'msg-005',
+    sender: 'vendor',
+    body: 'شكراً جزيلاً. سؤال آخر: متى أستلم دفعة CRF-2026-000081؟',
+    sent_at: '2026-05-27T08:52:00',
+    read: true,
+  },
+  {
+    id: 'msg-006',
+    sender: 'admin',
+    body: 'تظهر لي في النظام كـ "قيد المعالجة". التحويل سيتم خلال 24 ساعة عبر BaridiMob.',
+    sent_at: '2026-05-27T08:55:00',
+    read: true,
+  },
+  {
+    id: 'msg-007',
+    sender: 'vendor',
+    body: 'ممتاز، بارك الله فيك.',
+    sent_at: '2026-05-27T08:56:00',
+    read: true,
+  },
+  {
+    id: 'msg-008',
+    sender: 'admin',
+    body: 'في الخدمة دائماً. إذا احتجت أي شيء آخر، أنا هنا.',
+    sent_at: '2026-05-27T08:57:00',
+    read: false,
+  },
+]
+
+export const SUPPORT_QUICK_REPLIES = [
+  'مشكلة مع طلب',
+  'تأخر في الدفع',
+  'أحتاج تغيير في حسابي',
+  'أحتاج التحدث مع مسؤول',
+  'أخرى',
+]
+
+export const SUPPORT_CANNED_REPLIES = [
+  'شكراً على رسالتك. سأتحقق من الأمر وأعود إليك في أقرب وقت.',
+  'تم تسجيل طلبك. سيتواصل معك أحد الزملاء قريباً.',
+  'فهمت. أمهلني دقائق لأراجع الملف.',
+  'سأنقل المشكلة إلى فريق العمليات وأخبرك بالنتيجة.',
+  'تم. سنرسل لك تأكيداً عبر الرسائل القصيرة بمجرد المعالجة.',
 ]
 
 /** Daily sales series for dashboard charts (365 days — filtered in UI by period). */

@@ -33,6 +33,7 @@ export const buildInstallments = impl.buildInstallments
 export const fetchMerchantPayouts = impl.fetchMerchantPayouts
 export const fetchPayoutContext = impl.fetchPayoutContext
 export const fetchVerifications = impl.fetchVerifications
+export const fetchMerchantVerifications = impl.fetchMerchantVerifications
 export const fetchCollections = impl.fetchCollections
 export const fetchSettings = impl.fetchSettings
 

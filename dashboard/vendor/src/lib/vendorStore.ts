@@ -209,17 +209,95 @@ export function updateRequestStatus(
   const data = loadStore()
   const idx = data.requests.findIndex((r) => r.reference === reference)
   if (idx < 0) return undefined
-  data.requests[idx] = {
-    ...data.requests[idx],
+  const now = new Date().toISOString()
+  const current = data.requests[idx]
+  const next: IncomingRequest = {
+    ...current,
     status,
-    note: note ?? data.requests[idx].note,
+    note: note ?? current.note,
   }
+  // Stamp the appropriate timestamp the first time a state is entered.
+  if (status === 'merchant_confirmed' && !current.merchantConfirmedAt) {
+    next.merchantConfirmedAt = now
+  } else if (status === 'processing' && !current.processingStartedAt) {
+    next.processingStartedAt = now
+  } else if (status === 'approved' && !current.approvedAt) {
+    next.approvedAt = now
+  } else if (status === 'completed' && !current.completedAt) {
+    next.completedAt = now
+  } else if (status === 'merchant_rejected' && !current.rejectedAt) {
+    next.rejectedAt = now
+  }
+  data.requests[idx] = next
   persist(data)
-  return data.requests[idx]
+  return next
 }
 
 export function getPendingRequestCount(): number {
   return getRequests().filter((r) => r.status === 'submitted').length
+}
+
+/**
+ * Generate the next CR-{YYYY}-{6-digit-seq} reference based on the highest
+ * sequence already present in the store. Year is the current calendar year.
+ */
+function nextRequestReference(existing: IncomingRequest[]): string {
+  const year = new Date().getFullYear()
+  const prefix = `CR-${year}-`
+  const seq = existing
+    .filter((r) => r.reference.startsWith(prefix))
+    .map((r) => {
+      const tail = r.reference.slice(prefix.length)
+      const n = Number.parseInt(tail, 10)
+      return Number.isFinite(n) ? n : 0
+    })
+    .reduce((max, n) => Math.max(max, n), 0)
+  // Fallback: when starting fresh, base the sequence on store length + a buffer
+  // so we don't immediately collide with the seeded references (000142 etc.).
+  const seedHigh = existing
+    .map((r) => Number.parseInt(r.reference.split('-').pop() ?? '0', 10))
+    .reduce((max, n) => Math.max(max, n), 0)
+  const next = Math.max(seq, seedHigh) + 1
+  return `${prefix}${String(next).padStart(6, '0')}`
+}
+
+export type CreateRequestInput = {
+  customerName: string
+  customerPhone: string
+  productName: string
+  amountDzd: number
+  planMonths: number
+  branchName: string
+  note?: string | null
+}
+
+/**
+ * Create a brand-new financing request in `submitted` state.
+ * Used by the "Add request" form when a merchant initiates the flow.
+ */
+export function createRequest(input: CreateRequestInput): IncomingRequest {
+  const data = loadStore()
+  const reference = nextRequestReference(data.requests)
+  const customerId =
+    Math.max(0, ...data.requests.map((r) => r.customerId)) + 1
+  const created: IncomingRequest = {
+    reference,
+    customerId,
+    customerName: input.customerName,
+    customerPhone: input.customerPhone,
+    productName: input.productName,
+    amountDzd: input.amountDzd,
+    planMonths: input.planMonths,
+    branchName: input.branchName,
+    status: 'submitted',
+    createdAt: new Date().toISOString().slice(0, 10),
+    submittedAt: new Date().toISOString(),
+    note: input.note ?? null,
+  }
+  // Newest first so the request shows up at the top of the queue.
+  data.requests = [created, ...data.requests]
+  persist(data)
+  return created
 }
 
 // ——— Payouts ———

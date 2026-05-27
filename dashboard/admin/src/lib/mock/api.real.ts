@@ -41,7 +41,9 @@ import {
   type SettingCategory,
   type SettingUnit,
   type VerificationItem,
+  type MerchantVerification,
 } from './data'
+import { merchantVerifications as merchantVerificationsMock } from './data'
 import type { Enum } from '../api/types'
 
 void authApi // keep import for re-exporting elsewhere if needed
@@ -69,6 +71,8 @@ function adaptClient(c: clientsApi.AdminClient): Client {
     id: c.id,
     name,
     phone,
+    nationalId: c.nin_18digits ?? c.national_id_number ?? '',
+    wilaya: c.wilaya?.name_ar ?? 'أدرار',
     commune: c.commune?.name_ar ?? '—',
     kycStatus: enumValue<KycStatus>(c.kyc_status, 'not_started'),
     tier: (c.credit_tier?.value as CreditTier) ?? 'C',
@@ -79,6 +83,9 @@ function adaptClient(c: clientsApi.AdminClient): Client {
     employmentStatus: (c.employment_status?.value as EmploymentStatus) ?? 'other',
     employer: c.employer_name ?? null,
     monthlyIncomeDzd: c.monthly_income_dzd ?? null,
+    // Backend does not yet aggregate the current-month installment sum.
+    // TODO(backend): expose `current_monthly_debt_dzd` so debt-ratio computes server-side.
+    currentMonthlyDebtDzd: 0,
     dateOfBirth: c.date_of_birth ?? '',
     address: c.address ?? '',
     createdAt: c.created_at ?? '',
@@ -523,6 +530,17 @@ export async function fetchPayoutContext(
 export async function fetchVerifications(): Promise<VerificationItem[]> {
   const res = await verifyApi.listVerifications({ pending_only: true, per_page: 100 })
   return res.data.map(adaptVerification)
+}
+
+/**
+ * Verification call log (history, all outcomes).
+ *
+ * Until the backend exposes a paginated call-log endpoint, we surface the
+ * seeded mock list so the admin "Verification Calls" page can render. The
+ * data shape mirrors what the real API will return (`MerchantVerification`).
+ */
+export async function fetchMerchantVerifications(): Promise<MerchantVerification[]> {
+  return [...merchantVerificationsMock].sort((a, b) => b.called_at.localeCompare(a.called_at))
 }
 
 export async function fetchCollections(): Promise<CollectionAccount[]> {

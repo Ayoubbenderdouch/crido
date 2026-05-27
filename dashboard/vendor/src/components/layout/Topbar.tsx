@@ -1,8 +1,9 @@
 import { useState, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Search, Bell, Store } from 'lucide-react'
+import { Bell, Store } from 'lucide-react'
 import { merchantProfile } from '@/lib/mock/data'
 import { NotificationDrawer } from '@/components/layout/NotificationDrawer'
+import { GlobalSearch } from '@/components/data/GlobalSearch'
 import {
   getNotificationReadSnapshot,
   getVendorNotifications,
@@ -49,18 +50,7 @@ export function Topbar() {
           </div>
         </div>
 
-        <div className="relative hidden max-w-xs flex-1 md:block">
-          <Search
-            size={16}
-            strokeWidth={1.5}
-            className="pointer-events-none absolute inset-y-0 my-auto start-3 text-foreground-tertiary"
-          />
-          <input
-            type="search"
-            placeholder={t('common.search')}
-            className="h-9 w-full rounded-md border border-border bg-background-secondary ps-9 pe-3 text-sm text-foreground placeholder:text-foreground-tertiary focus:border-primary focus:bg-background focus:outline-none"
-          />
-        </div>
+        <GlobalSearch />
 
         <div className="flex items-center gap-1">
           <button

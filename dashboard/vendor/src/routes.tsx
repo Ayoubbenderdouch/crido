@@ -4,6 +4,7 @@ import LoginPage from '@/features/auth/pages/LoginPage'
 import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import RequestsPage from '@/features/requests/pages/RequestsPage'
 import RequestDetailPage from '@/features/requests/pages/RequestDetailPage'
+import NewRequestPage from '@/features/requests/pages/NewRequestPage'
 import FinancingsPage from '@/features/financings/pages/FinancingsPage'
 import FinancingDetailPage from '@/features/financings/pages/FinancingDetailPage'
 import PayoutsPage from '@/features/payouts/pages/PayoutsPage'
@@ -19,6 +20,7 @@ import StaffFormPage from '@/features/staff/pages/StaffFormPage'
 import ProfilePage from '@/features/profile/pages/ProfilePage'
 import ProfileEditPage from '@/features/profile/pages/ProfileEditPage'
 import SettingsPage from '@/features/settings/pages/SettingsPage'
+import SupportPage from '@/features/support/pages/SupportPage'
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -28,6 +30,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: 'dashboard', element: <DashboardPage /> },
       { path: 'requests', element: <RequestsPage /> },
+      { path: 'requests/new', element: <NewRequestPage /> },
       { path: 'requests/:reference', element: <RequestDetailPage /> },
       { path: 'financings', element: <FinancingsPage /> },
       { path: 'financings/:reference', element: <FinancingDetailPage /> },
@@ -46,6 +49,7 @@ export const router = createBrowserRouter([
       { path: 'staff/:id', element: <StaffFormPage /> },
       { path: 'profile', element: <ProfilePage /> },
       { path: 'profile/edit', element: <ProfileEditPage /> },
+      { path: 'support', element: <SupportPage /> },
       { path: 'settings', element: <SettingsPage /> },
     ],
   },

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard, ClipboardList, CreditCard, Wallet,
   Users, Package, Store, UserCog, Building2, Settings, LogOut,
+  HeadphonesIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { clearToken, getStoredUser } from '@/lib/auth'
@@ -30,6 +31,7 @@ const NAV = [
       { to: '/branches', key: 'branches', icon: Store },
       { to: '/staff', key: 'staff', icon: UserCog },
       { to: '/profile', key: 'profile', icon: Building2 },
+      { to: '/support', key: 'support', icon: HeadphonesIcon },
       { to: '/settings', key: 'settings', icon: Settings },
     ],
   },

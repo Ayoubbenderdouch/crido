@@ -13,6 +13,12 @@ import {
   Clock,
   Wallet,
   X,
+  CheckCircle2,
+  PlayCircle,
+  Loader2,
+  Hourglass,
+  Sparkles,
+  Activity,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/data/StatusBadge'
@@ -20,10 +26,11 @@ import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { cn } from '@/lib/utils'
 import { confirmRequest, fetchRequest, isRealApi, rejectRequest } from '@/lib/api'
-import { merchantProfile } from '@/lib/mock/data'
+import { merchantProfile, type IncomingRequest } from '@/lib/mock/data'
 import { updateRequestStatus } from '@/lib/vendorStore'
 import { apiErrorMessage } from '@/lib/apiClient'
-import { formatDzd, type Locale } from '@/lib/format'
+import { formatDate, formatDzd, type Locale } from '@/lib/format'
+import { RequestStepper } from '../components/RequestStepper'
 
 const INPUT =
   'w-full rounded-xl border border-border-strong bg-background px-3.5 py-2.5 text-sm text-foreground transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15'
@@ -113,13 +120,371 @@ function ActionModal({
   )
 }
 
+// ─── Activity log ─────────────────────────────────────────────────────
+
+type LogEntry = {
+  key: string
+  icon: React.ComponentType<{ size?: number; className?: string }>
+  title: string
+  detail?: string
+  timestamp?: string | null
+  tone: 'submitted' | 'confirmed' | 'processing' | 'approved' | 'completed' | 'rejected'
+}
+
+function buildLog(request: IncomingRequest, locale: Locale): LogEntry[] {
+  const ar = locale === 'ar'
+  const log: LogEntry[] = []
+
+  log.push({
+    key: 'submitted',
+    icon: Sparkles,
+    title: ar ? 'أرسل الزبون الطلب' : 'Client a soumis la demande',
+    detail: ar
+      ? `طلب من ${request.customerName}`
+      : `Demande de ${request.customerName}`,
+    timestamp: request.submittedAt ?? request.createdAt,
+    tone: 'submitted',
+  })
+
+  if (request.merchantConfirmedAt) {
+    log.push({
+      key: 'merchant_confirmed',
+      icon: CheckCircle2,
+      title: ar ? 'تم التأكيد من قبل التاجر' : 'Confirmé par le marchand',
+      detail: ar
+        ? 'السعر والمنتج مؤكَّدان — انتظار Crido'
+        : 'Prix et produit confirmés — en attente de Crido',
+      timestamp: request.merchantConfirmedAt,
+      tone: 'confirmed',
+    })
+  }
+
+  if (request.processingStartedAt) {
+    log.push({
+      key: 'processing',
+      icon: Loader2,
+      title: ar ? 'بدأت Crido بمعالجة الطلب' : 'Crido a démarré le traitement',
+      detail: ar
+        ? 'مراجعة المستندات وإصدار العقد'
+        : 'Vérification des documents et émission du contrat',
+      timestamp: request.processingStartedAt,
+      tone: 'processing',
+    })
+  }
+
+  if (request.approvedAt) {
+    log.push({
+      key: 'approved',
+      icon: CheckCircle2,
+      title: ar ? 'وافقت Crido على الطلب' : 'Crido a approuvé la demande',
+      detail: ar
+        ? 'أصبح تمويلاً — سيُحوَّل لك المبلغ قريباً'
+        : 'Devient un financement — votre versement arrive',
+      timestamp: request.approvedAt,
+      tone: 'approved',
+    })
+  }
+
+  if (request.completedAt) {
+    log.push({
+      key: 'completed',
+      icon: Sparkles,
+      title: ar ? 'اكتمل الطلب' : 'Demande clôturée',
+      detail: ar
+        ? 'تم تسليم المنتج للزبون'
+        : 'Produit livré au client',
+      timestamp: request.completedAt,
+      tone: 'completed',
+    })
+  }
+
+  if (request.rejectedAt) {
+    log.push({
+      key: 'rejected',
+      icon: X,
+      title: ar ? 'تم رفض الطلب' : 'Demande rejetée',
+      detail: request.note ?? undefined,
+      timestamp: request.rejectedAt,
+      tone: 'rejected',
+    })
+  }
+
+  return log
+}
+
+const TONE_RING: Record<LogEntry['tone'], string> = {
+  submitted: 'bg-sky-100 text-sky-700 ring-sky-200',
+  confirmed: 'bg-primary-surface text-primary ring-primary/20',
+  processing: 'bg-amber-100 text-amber-700 ring-amber-200',
+  approved: 'bg-primary-surface text-primary ring-primary/20',
+  completed: 'bg-emerald-100 text-emerald-700 ring-emerald-200',
+  rejected: 'bg-danger/10 text-danger ring-danger/30',
+}
+
+function ActivityLog({ request }: { request: IncomingRequest }) {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language as Locale
+  const ar = locale === 'ar'
+  const entries = buildLog(request, locale)
+
+  return (
+    <SectionCard
+      icon={Activity}
+      title={ar ? 'سجل النشاط' : "Journal d'activité"}
+      subtitle={
+        ar
+          ? 'كل تغيير في حالة الطلب يُسجَّل هنا'
+          : 'Chaque transition est consignée ici'
+      }
+    >
+      <ol className="relative py-3">
+        {entries.map((entry, idx) => {
+          const Icon = entry.icon
+          const isLast = idx === entries.length - 1
+          return (
+            <li key={entry.key} className="relative flex gap-3 pb-5 last:pb-2">
+              {/* Vertical timeline line */}
+              {!isLast ? (
+                <span
+                  className="absolute top-9 h-[calc(100%-2.25rem)] w-px bg-border"
+                  style={{ insetInlineStart: '1.0625rem' }}
+                />
+              ) : null}
+              <span
+                className={cn(
+                  'relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full ring-2 ring-offset-2 ring-offset-card transition-all',
+                  TONE_RING[entry.tone],
+                )}
+              >
+                <Icon
+                  size={16}
+                  className={cn(entry.tone === 'processing' && 'animate-spin')}
+                />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-foreground">{entry.title}</p>
+                {entry.detail ? (
+                  <p className="mt-0.5 text-xs leading-relaxed text-foreground-secondary">
+                    {entry.detail}
+                  </p>
+                ) : null}
+                {entry.timestamp ? (
+                  <p className="mt-1 text-[11px] tabular-nums text-foreground-tertiary" dir="ltr">
+                    {formatDate(entry.timestamp.slice(0, 10), locale)}
+                    {entry.timestamp.includes('T') ? (
+                      <span className="ms-1 opacity-70">{entry.timestamp.slice(11, 16)}</span>
+                    ) : null}
+                  </p>
+                ) : null}
+              </div>
+            </li>
+          )
+        })}
+      </ol>
+      <p className="border-t border-border pt-3 pb-3 text-[11px] leading-relaxed text-foreground-tertiary">
+        {ar
+          ? 'الحالات الجديدة (تأكيد التاجر / قيد المعالجة) تظهر فور تنفيذها.'
+          : 'Les nouvelles étapes (confirmation marchand / en traitement) apparaissent en temps réel.'}
+        {' '}
+        {t('common.actions') ? null : null}
+      </p>
+    </SectionCard>
+  )
+}
+
+// ─── Status-driven action block ───────────────────────────────────────
+
+function StatusActionBlock({
+  request,
+  locale,
+  onConfirm,
+  onReject,
+  onStartProcessing,
+}: {
+  request: IncomingRequest
+  locale: Locale
+  onConfirm: () => void
+  onReject: () => void
+  onStartProcessing: () => void
+}) {
+  const ar = locale === 'ar'
+
+  if (request.status === 'submitted') {
+    return (
+      <div className="overflow-hidden rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary-surface to-primary-surface/30 shadow-sm">
+        <div className="px-5 py-4 sm:px-6 sm:py-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+                <Hourglass size={12} />
+                {ar ? 'يحتاج إجراءك' : 'Action requise'}
+              </div>
+              <h3 className="text-sm font-semibold text-foreground sm:text-md">
+                {ar ? 'هل تؤكد توفر المنتج والسعر؟' : 'Confirmez la disponibilité et le prix'}
+              </h3>
+              <p className="mt-0.5 max-w-xl text-xs leading-relaxed text-foreground-secondary">
+                {ar
+                  ? 'سيتم إعلام الزبون فوراً عبر SMS — ثم تنتقل Crido لمعالجة الطلب.'
+                  : 'Le client recevra un SMS — Crido lance ensuite le traitement.'}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="ghost" size="sm" onClick={onReject}>
+                <X size={15} />
+                {ar ? 'رفض الطلب' : 'Rejeter'}
+              </Button>
+              <Button size="sm" onClick={onConfirm}>
+                <CheckCircle2 size={15} />
+                {ar ? 'تأكيد الطلب' : 'Confirmer'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (request.status === 'merchant_confirmed') {
+    return (
+      <div className="overflow-hidden rounded-2xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-amber-50/30 shadow-sm">
+        <div className="px-5 py-4 sm:px-6 sm:py-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-semibold text-amber-800">
+                <CheckCircle2 size={12} />
+                {ar ? 'مؤكَّد من التاجر' : 'Confirmé par le marchand'}
+              </div>
+              <h3 className="text-sm font-semibold text-foreground sm:text-md">
+                {ar
+                  ? 'جاهز للانتقال إلى مرحلة المعالجة'
+                  : 'Prêt à passer au traitement'}
+              </h3>
+              <p className="mt-0.5 max-w-xl text-xs leading-relaxed text-foreground-secondary">
+                {ar
+                  ? 'بمجرد بدء المعالجة، تتولى Crido التحقق من المستندات وإعداد العقد.'
+                  : 'Au démarrage, Crido vérifie les documents et prépare le contrat.'}
+              </p>
+            </div>
+            <Button size="sm" onClick={onStartProcessing}>
+              <PlayCircle size={15} />
+              {ar ? 'بدء المعالجة' : 'Démarrer le traitement'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (request.status === 'processing') {
+    return (
+      <div className="overflow-hidden rounded-2xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-amber-50/30 shadow-sm">
+        <div className="px-5 py-5 sm:px-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700 ring-4 ring-amber-100/60 animate-pulse-soft">
+              <Loader2 size={20} className="animate-spin" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-foreground sm:text-md">
+                {ar ? 'جاري المعالجة من قبل Crido…' : 'Traitement par Crido en cours…'}
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-foreground-secondary">
+                {ar
+                  ? 'فريق العمليات يراجع المستندات. ستُعلَم بمجرد الموافقة.'
+                  : "L'équipe Crido vérifie les documents. Vous serez notifié dès l'approbation."}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (request.status === 'approved') {
+    return (
+      <div className="overflow-hidden rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary-surface to-primary-surface/30 shadow-sm">
+        <div className="px-5 py-5 sm:px-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-fg ring-4 ring-primary/15">
+              <CheckCircle2 size={22} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-primary sm:text-md">
+                {ar ? 'تمت الموافقة على الطلب!' : 'Demande approuvée !'}
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-foreground-secondary">
+                {ar
+                  ? 'سيتم تحويل مدفوعاتك خلال أيام عمل قليلة — تابع المدفوعات.'
+                  : 'Votre versement arrive sous quelques jours ouvrés — voir Versements.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (request.status === 'completed') {
+    return (
+      <div className="overflow-hidden rounded-2xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-emerald-50/30 shadow-sm">
+        <div className="px-5 py-5 sm:px-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 ring-4 ring-emerald-100/60">
+              <Sparkles size={20} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-emerald-700 sm:text-md">
+                {ar ? 'اكتمل الطلب — تم تسليم المنتج' : 'Demande clôturée — produit livré'}
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-foreground-secondary">
+                {ar
+                  ? 'استلم الزبون منتجه. شكراً على شراكتك مع Crido.'
+                  : "Le client a reçu son produit. Merci pour votre partenariat."}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (request.status === 'merchant_rejected') {
+    return (
+      <div className="overflow-hidden rounded-2xl border-2 border-danger/30 bg-danger/5 shadow-sm">
+        <div className="px-5 py-5 sm:px-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-danger text-white">
+              <X size={20} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-danger sm:text-md">
+                {ar ? 'تم رفض الطلب' : 'Demande rejetée'}
+              </p>
+              {request.note ? (
+                <p className="mt-0.5 text-xs leading-relaxed text-foreground-secondary">
+                  {request.note}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return null
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────
+
 export default function RequestDetailPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
+  const ar = locale === 'ar'
   const { reference } = useParams()
   const queryClient = useQueryClient()
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [rejectOpen, setRejectOpen] = useState(false)
+  const [processingOpen, setProcessingOpen] = useState(false)
   const [confirmNote, setConfirmNote] = useState('')
   const [rejectReason, setRejectReason] = useState('')
 
@@ -174,6 +539,21 @@ export default function RequestDetailPage() {
     }
   }
 
+  const handleStartProcessing = () => {
+    if (!reference) return
+    // Mock-only transition — in production this is triggered by Crido admin.
+    updateRequestStatus(
+      reference,
+      'processing',
+      ar ? 'تم بدء المعالجة من قبل Crido.' : 'Traitement démarré par Crido.',
+    )
+    toast.success(
+      ar ? 'تم بدء معالجة الطلب — Crido تتولى الباقي.' : 'Traitement démarré.',
+    )
+    setProcessingOpen(false)
+    invalidate()
+  }
+
   if (isLoading) return <Loader />
   if (!data) {
     return (
@@ -188,28 +568,12 @@ export default function RequestDetailPage() {
   const commission = Math.round((data.amountDzd * merchantProfile.commissionRate) / 100)
   const payout = data.amountDzd - commission
   const waPhone = data.customerPhone.replace(/\D/g, '')
-  const canAct = data.status === 'submitted'
   const waCtx = { name: data.customerName, ref: data.reference }
   const waPresets = [
     { key: 'confirmed' as const, labelKey: 'requests.whatsapp.confirmed', messageKey: 'requests.whatsapp.messages.confirmed' },
     { key: 'ready' as const, labelKey: 'requests.whatsapp.ready', messageKey: 'requests.whatsapp.messages.ready' },
     { key: 'needInfo' as const, labelKey: 'requests.whatsapp.needInfo', messageKey: 'requests.whatsapp.messages.needInfo' },
   ]
-
-  const steps =
-    data.status === 'merchant_rejected'
-      ? [
-          { label: t('requests.timelineSubmitted'), done: true },
-          { label: t('requests.timelineRejected'), done: true },
-        ]
-      : [
-          { label: t('requests.timelineSubmitted'), done: true },
-          {
-            label: t('requests.timelineConfirmed'),
-            done: data.status === 'merchant_confirmed' || data.status === 'approved',
-          },
-          { label: t('requests.timelineApproved'), done: data.status === 'approved' },
-        ]
 
   return (
     <div className="animate-fade-up">
@@ -221,24 +585,28 @@ export default function RequestDetailPage() {
         {t('requests.title')}
       </Link>
 
-      <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="mb-1 text-xs font-medium text-foreground-tertiary">{t('requests.detailLabel')}</p>
           <h1 className="text-2xl font-semibold tracking-tight tabular-nums text-foreground">{data.reference}</h1>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <StatusBadge status={data.status} />
-          {canAct ? (
-            <>
-              <Button variant="ghost" size="sm" onClick={() => setRejectOpen(true)}>
-                {t('requests.reject')}
-              </Button>
-              <Button size="sm" onClick={() => setConfirmOpen(true)}>
-                {t('requests.confirm')}
-              </Button>
-            </>
-          ) : null}
-        </div>
+        <StatusBadge status={data.status} />
+      </div>
+
+      {/* Status stepper — prominent at the top */}
+      <div className="mb-6">
+        <RequestStepper request={data} />
+      </div>
+
+      {/* Action block — what happens next? */}
+      <div className="mb-6">
+        <StatusActionBlock
+          request={data}
+          locale={locale}
+          onConfirm={() => setConfirmOpen(true)}
+          onReject={() => setRejectOpen(true)}
+          onStartProcessing={() => setProcessingOpen(true)}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -301,27 +669,7 @@ export default function RequestDetailPage() {
             </section>
           ) : null}
 
-          <SectionCard icon={Clock} title={t('requests.sections.timeline')}>
-            <ol className="py-2">
-              {steps.map((s, idx) => (
-                <li key={s.label} className="flex items-center gap-3 py-2.5">
-                  <span
-                    className={cn(
-                      'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-medium',
-                      s.done
-                        ? 'bg-primary text-primary-fg'
-                        : 'bg-background-secondary text-foreground-tertiary',
-                    )}
-                  >
-                    {idx + 1}
-                  </span>
-                  <span className={s.done ? 'text-sm text-foreground' : 'text-sm text-foreground-tertiary'}>
-                    {s.label}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </SectionCard>
+          <ActivityLog request={data} />
         </div>
 
         <section className="h-fit overflow-hidden rounded-2xl border border-border bg-card shadow-sm lg:sticky lg:top-6">
@@ -352,6 +700,27 @@ export default function RequestDetailPage() {
             <p className="mt-4 text-xs leading-relaxed text-foreground-tertiary">
               {t('requests.breakdown.hint')}
             </p>
+          </div>
+
+          {/* Small inline status chip with timeline glance */}
+          <div className="border-t border-border px-5 py-4">
+            <div className="flex items-center gap-2">
+              <Clock size={14} className="text-foreground-tertiary" />
+              <p className="text-[11px] text-foreground-tertiary">
+                {ar ? 'آخر تحديث' : 'Mis à jour'}
+                {' · '}
+                {formatDate(
+                  (data.completedAt ??
+                    data.approvedAt ??
+                    data.processingStartedAt ??
+                    data.merchantConfirmedAt ??
+                    data.submittedAt ??
+                    data.createdAt
+                  ).slice(0, 10),
+                  locale,
+                )}
+              </p>
+            </div>
           </div>
         </section>
       </div>
@@ -410,6 +779,39 @@ export default function RequestDetailPage() {
           dir="rtl"
           placeholder={t('requests.rejectModal.reasonPlaceholder')}
         />
+      </ActionModal>
+
+      <ActionModal
+        open={processingOpen}
+        title={ar ? 'بدء المعالجة' : 'Démarrer le traitement'}
+        onClose={() => setProcessingOpen(false)}
+        footer={
+          <>
+            <Button variant="secondary" size="sm" onClick={() => setProcessingOpen(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button size="sm" onClick={handleStartProcessing}>
+              <PlayCircle size={15} />
+              {ar ? 'تأكيد بدء المعالجة' : 'Confirmer'}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <div className="flex items-start gap-3 rounded-xl bg-amber-50 px-4 py-3">
+            <Hourglass size={18} className="mt-0.5 shrink-0 text-amber-700" />
+            <p className="text-sm leading-relaxed text-amber-900">
+              {ar
+                ? 'هل أنت متأكد من بدء معالجة الطلب؟ بعد هذه الخطوة، تتولى Crido التحقق من المستندات وإصدار العقد.'
+                : 'Voulez-vous démarrer le traitement ? Crido prend ensuite en charge la vérification et le contrat.'}
+            </p>
+          </div>
+          <ul className="space-y-1.5 ps-1 text-xs leading-relaxed text-foreground-secondary">
+            <li>• {ar ? 'يُعلَم الزبون فوراً عبر SMS' : "Le client reçoit un SMS de mise à jour"}</li>
+            <li>• {ar ? 'يُعَدّ العقد ويُرسَل للتوقيع' : 'Le contrat est préparé et envoyé pour signature'}</li>
+            <li>• {ar ? 'يبقى الطلب في حالة "قيد المعالجة" حتى الموافقة' : 'La demande reste « En traitement » jusqu’à approbation'}</li>
+          </ul>
+        </div>
       </ActionModal>
     </div>
   )

@@ -14,6 +14,7 @@ import {
   collectionAccounts,
   financings,
   merchants,
+  merchantVerifications,
   payments,
   settings,
   verificationQueue,
@@ -23,6 +24,7 @@ import {
   type FinancingRequest,
   type Merchant,
   type MerchantPayout,
+  type MerchantVerification,
   type Payment,
   type SettingItem,
   type VerificationItem,
@@ -276,6 +278,11 @@ export async function fetchPayoutContext(
 export async function fetchVerifications(): Promise<VerificationItem[]> {
   await delay()
   return verificationQueue
+}
+
+export async function fetchMerchantVerifications(): Promise<MerchantVerification[]> {
+  await delay()
+  return [...merchantVerifications].sort((a, b) => b.called_at.localeCompare(a.called_at))
 }
 
 export async function fetchCollections(): Promise<CollectionAccount[]> {

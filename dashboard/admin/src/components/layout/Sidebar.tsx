@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard, Users, Store, FileText, CreditCard, Banknote,
   Send, PhoneCall, AlertTriangle, BarChart3, Wallet, Settings, LogOut,
+  Bell, MessageSquare, Shield, Calculator,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getStoredUser, logoutWithApi } from '@/lib/auth'
@@ -13,23 +14,27 @@ const NAV = [
   {
     section: 'sectionMain',
     items: [
-      { to: '/dashboard', key: 'dashboard', icon: LayoutDashboard },
-      { to: '/clients', key: 'clients', icon: Users },
-      { to: '/merchants', key: 'merchants', icon: Store },
-      { to: '/financing-requests', key: 'requests', icon: FileText },
-      { to: '/financings', key: 'financings', icon: CreditCard },
-      { to: '/payments', key: 'payments', icon: Banknote },
-      { to: '/payouts', key: 'payouts', icon: Send },
-      { to: '/merchant-verifications', key: 'verifications', icon: PhoneCall },
-      { to: '/collections', key: 'collections', icon: AlertTriangle },
+      { to: '/dashboard', key: 'dashboard', icon: LayoutDashboard, label: 'لوحة التحكم' },
+      { to: '/clients', key: 'clients', icon: Users, label: 'العملاء' },
+      { to: '/merchants', key: 'merchants', icon: Store, label: 'التجار' },
+      { to: '/financing-requests', key: 'requests', icon: FileText, label: 'طلبات التمويل' },
+      { to: '/financings', key: 'financings', icon: CreditCard, label: 'التمويلات' },
+      { to: '/payments', key: 'payments', icon: Banknote, label: 'المدفوعات' },
+      { to: '/payouts', key: 'payouts', icon: Send, label: 'مدفوعات التجار' },
+      { to: '/merchant-verifications', key: 'verifications', icon: PhoneCall, label: 'مكالمات التحقق' },
+      { to: '/collections', key: 'collections', icon: AlertTriangle, label: 'التحصيل' },
+      { to: '/messages', key: 'messages', icon: MessageSquare, label: 'الرسائل' },
+      { to: '/notifications', key: 'notifications', icon: Bell, label: 'الإشعارات' },
     ],
   },
   {
     section: 'sectionManage',
     items: [
-      { to: '/finance', key: 'finance', icon: Wallet },
-      { to: '/reports', key: 'reports', icon: BarChart3 },
-      { to: '/settings', key: 'settings', icon: Settings },
+      { to: '/accounting', key: 'accounting', icon: Calculator, label: 'المحاسبة' },
+      { to: '/finance', key: 'finance', icon: Wallet, label: 'المالية' },
+      { to: '/reports', key: 'reports', icon: BarChart3, label: 'التقارير' },
+      { to: '/roles', key: 'roles', icon: Shield, label: 'الصلاحيات' },
+      { to: '/settings', key: 'settings', icon: Settings, label: 'الإعدادات' },
     ],
   },
 ]
@@ -76,7 +81,7 @@ export function Sidebar() {
                 }
               >
                 <item.icon size={18} strokeWidth={1.5} />
-                {t(`nav.${item.key}`)}
+                {t(`nav.${item.key}`, { defaultValue: item.label })}
               </NavLink>
             ))}
           </div>

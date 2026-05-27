@@ -53,6 +53,9 @@ function adapt(raw: ApiFinancingRequest): IncomingRequest {
     branchName: '',
     status,
     createdAt: (raw.submitted_at ?? raw.created_at ?? '').slice(0, 10),
+    submittedAt: raw.submitted_at ?? raw.created_at ?? new Date().toISOString(),
+    merchantConfirmedAt: raw.merchant_confirmed_at ?? undefined,
+    approvedAt: raw.approved_at ?? undefined,
     note: raw.rejection_reason ?? null,
   }
 }

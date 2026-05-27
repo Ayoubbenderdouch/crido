@@ -30,7 +30,14 @@ import { fetchPaymentContext } from '@/lib/mock/api'
 import { clientHref, findClientByName } from '@/lib/financingLookup'
 import { formatDzd, formatDate, type Locale } from '@/lib/format'
 import { cn } from '@/lib/utils'
-import { Smartphone, Building2, Wallet, Banknote as BanknoteIcon } from 'lucide-react'
+import {
+  Smartphone,
+  Building2,
+  Wallet,
+  Banknote as BanknoteIcon,
+  FileText,
+  Briefcase,
+} from 'lucide-react'
 import { PaymentProofPreview } from '@/components/payments/PaymentProofPreview'
 import type { PaymentMethod } from '@/lib/mock/data'
 
@@ -39,15 +46,38 @@ const METHOD_ICON: Record<PaymentMethod, typeof BanknoteIcon> = {
   baridi_mob: Smartphone,
   bank_transfer: Building2,
   cash_to_agent: BanknoteIcon,
+  check: FileText,
+  company_payment: Briefcase,
+}
+
+const METHOD_LABEL_AR: Partial<Record<PaymentMethod, string>> = {
+  check: 'شيك',
+  company_payment: 'دفع من شركة',
+}
+
+const METHOD_TONE: Record<PaymentMethod, { wrap: string; icon: string }> = {
+  ccp: { wrap: 'bg-primary-surface text-primary', icon: 'text-primary' },
+  baridi_mob: { wrap: 'bg-primary-surface text-primary', icon: 'text-primary' },
+  bank_transfer: { wrap: 'bg-primary-surface text-primary', icon: 'text-primary' },
+  cash_to_agent: { wrap: 'bg-primary-surface text-primary', icon: 'text-primary' },
+  check: { wrap: 'bg-info/10 text-info', icon: 'text-info' },
+  company_payment: { wrap: 'bg-warning/10 text-warning', icon: 'text-warning' },
 }
 
 function MethodBadge({ method }: { method: PaymentMethod }) {
   const { t } = useTranslation()
   const Icon = METHOD_ICON[method]
+  const tone = METHOD_TONE[method]
+  const label = METHOD_LABEL_AR[method] ?? t(`method.${method}`)
   return (
-    <span className="inline-flex items-center gap-2 rounded-xl bg-primary-surface px-3 py-2 text-sm font-medium text-primary">
-      <Icon size={18} />
-      {t(`method.${method}`)}
+    <span
+      className={cn(
+        'inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium',
+        tone.wrap,
+      )}
+    >
+      <Icon size={18} className={tone.icon} />
+      {label}
     </span>
   )
 }

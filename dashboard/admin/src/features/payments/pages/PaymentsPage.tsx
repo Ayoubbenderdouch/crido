@@ -14,6 +14,8 @@ import {
   Building2,
   Wallet,
   BanknoteIcon,
+  FileText,
+  Briefcase,
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -40,18 +42,48 @@ const METHOD_ICON: Record<PaymentMethod, typeof Banknote> = {
   baridi_mob: Smartphone,
   bank_transfer: Building2,
   cash_to_agent: BanknoteIcon,
+  check: FileText,
+  company_payment: Briefcase,
+}
+
+// Each method gets its own visual tone so admins can scan the table fast.
+// Existing methods keep the i18n-driven label; the two new methods use inline
+// Arabic (i18n entries will be added in a follow-up sweep — see ar.json/fr.json).
+const METHOD_STYLE: Record<PaymentMethod, { wrap: string; icon: string; label: string | null }> = {
+  ccp: { wrap: 'bg-background-secondary text-foreground-secondary', icon: 'text-primary', label: null },
+  baridi_mob: { wrap: 'bg-background-secondary text-foreground-secondary', icon: 'text-primary', label: null },
+  bank_transfer: { wrap: 'bg-background-secondary text-foreground-secondary', icon: 'text-primary', label: null },
+  cash_to_agent: { wrap: 'bg-background-secondary text-foreground-secondary', icon: 'text-primary', label: null },
+  check: { wrap: 'bg-info/10 text-info', icon: 'text-info', label: 'شيك' },
+  company_payment: { wrap: 'bg-warning/10 text-warning', icon: 'text-warning', label: 'دفع من شركة' },
 }
 
 function MethodBadge({ method }: { method: PaymentMethod }) {
   const { t } = useTranslation()
   const Icon = METHOD_ICON[method]
+  const style = METHOD_STYLE[method]
+  const label = style.label ?? t(`method.${method}`)
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-lg bg-background-secondary px-2 py-1 text-xs font-medium text-foreground-secondary">
-      <Icon size={14} className="text-primary" strokeWidth={1.75} />
-      {t(`method.${method}`)}
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium',
+        style.wrap,
+      )}
+    >
+      <Icon size={14} className={style.icon} strokeWidth={1.75} />
+      {label}
     </span>
   )
 }
+
+const METHOD_FILTER_OPTIONS: PaymentMethod[] = [
+  'ccp',
+  'baridi_mob',
+  'bank_transfer',
+  'cash_to_agent',
+  'check',
+  'company_payment',
+]
 
 export default function PaymentsPage() {
   const { t, i18n } = useTranslation()
@@ -60,6 +92,7 @@ export default function PaymentsPage() {
   const queryClient = useQueryClient()
   const [tab, setTab] = useState<Tab>('pending_verification')
   const [search, setSearch] = useState('')
+  const [methodFilter, setMethodFilter] = useState<PaymentMethod | 'all'>('all')
   const [activeRef, setActiveRef] = useState<string | null>(null)
   const [modal, setModal] = useState<'verify' | 'reject' | null>(null)
   const [note, setNote] = useState('')
@@ -80,6 +113,7 @@ export default function PaymentsPage() {
   const rows = useMemo(() => {
     let list = data ?? []
     if (tab !== 'all') list = list.filter((p) => p.status === tab)
+    if (methodFilter !== 'all') list = list.filter((p) => p.method === methodFilter)
     const q = search.trim().toLowerCase()
     if (q) {
       list = list.filter(
@@ -95,7 +129,7 @@ export default function PaymentsPage() {
       if (b.status === 'pending_verification' && a.status !== 'pending_verification') return 1
       return b.submittedAt.localeCompare(a.submittedAt)
     })
-  }, [data, tab, search])
+  }, [data, tab, methodFilter, search])
 
   const tabCounts = useMemo(() => {
     const all = data ?? []
@@ -299,17 +333,32 @@ export default function PaymentsPage() {
             </button>
           ))}
         </div>
-        <div className="relative max-w-sm flex-1 sm:max-w-xs">
-          <Search
-            size={16}
-            className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-foreground-tertiary"
-          />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t('payments.search')}
-            className="h-10 w-full rounded-xl border border-border bg-background ps-9 pe-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15"
-          />
+        <div className="flex flex-1 flex-wrap items-center gap-2 sm:justify-end">
+          <select
+            value={methodFilter}
+            onChange={(e) => setMethodFilter(e.target.value as PaymentMethod | 'all')}
+            className="h-10 rounded-xl border border-border bg-background px-3 text-sm font-medium text-foreground-secondary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15"
+            aria-label="طريقة الدفع"
+          >
+            <option value="all">كل طرق الدفع</option>
+            {METHOD_FILTER_OPTIONS.map((m) => (
+              <option key={m} value={m}>
+                {METHOD_STYLE[m].label ?? t(`method.${m}`)}
+              </option>
+            ))}
+          </select>
+          <div className="relative max-w-sm flex-1 sm:max-w-xs">
+            <Search
+              size={16}
+              className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-foreground-tertiary"
+            />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t('payments.search')}
+              className="h-10 w-full rounded-xl border border-border bg-background ps-9 pe-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15"
+            />
+          </div>
         </div>
       </div>
 

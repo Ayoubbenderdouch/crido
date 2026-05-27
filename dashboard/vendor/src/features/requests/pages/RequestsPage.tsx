@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ClipboardList, Inbox } from 'lucide-react'
+import { ClipboardList, Inbox, Hourglass, Loader2, CheckCircle2, Sparkles, X } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { DataTable, type Column } from '@/components/data/DataTable'
 import { StatusBadge } from '@/components/data/StatusBadge'
@@ -12,14 +12,80 @@ import { Loader } from '@/components/data/Loader'
 import { cn } from '@/lib/utils'
 import { fetchRequests } from '@/lib/api'
 import { merchantProfile, type IncomingRequest, type RequestStatus } from '@/lib/mock/data'
-import { formatDzd, formatDate, type Locale } from '@/lib/format'
+import { formatDate, formatDzd, type Locale } from '@/lib/format'
+import { RequestStepperCompact } from '../components/RequestStepper'
 
-const TABS: { key: string; status: RequestStatus | 'all' }[] = [
-  { key: 'new', status: 'submitted' },
-  { key: 'confirmed', status: 'merchant_confirmed' },
-  { key: 'approved', status: 'approved' },
-  { key: 'rejected', status: 'merchant_rejected' },
+type TabKey =
+  | 'confirmation_needed'
+  | 'in_processing'
+  | 'awaiting_approval'
+  | 'approved'
+  | 'completed'
+  | 'rejected'
+
+type TabDef = {
+  key: TabKey
+  /** Status keys captured by this tab. */
+  match: RequestStatus[]
+  icon: typeof Hourglass
+  /** Urgency rank — smaller = higher priority. */
+  urgency: number
+  /** Visual tint for the active tab pill. */
+  tint?: 'amber' | 'primary' | 'neutral'
+}
+
+// Tabs are sorted by urgency: confirmation_needed first (action required),
+// then in_processing & awaiting_approval (Crido has the ball), then the
+// historical tabs (approved, completed, rejected).
+const TABS: TabDef[] = [
+  { key: 'confirmation_needed', match: ['submitted'], icon: Hourglass, urgency: 0, tint: 'amber' },
+  { key: 'in_processing', match: ['processing'], icon: Loader2, urgency: 1, tint: 'amber' },
+  { key: 'awaiting_approval', match: ['merchant_confirmed'], icon: Hourglass, urgency: 2, tint: 'amber' },
+  { key: 'approved', match: ['approved'], icon: CheckCircle2, urgency: 3, tint: 'primary' },
+  { key: 'completed', match: ['completed'], icon: Sparkles, urgency: 4, tint: 'primary' },
+  { key: 'rejected', match: ['merchant_rejected'], icon: X, urgency: 5, tint: 'neutral' },
 ]
+
+// Translation strings inlined (the task said not to edit i18n JSON).
+function tabLabel(key: TabKey, lang: string): string {
+  if (lang === 'fr') {
+    return {
+      confirmation_needed: 'Confirmation requise',
+      in_processing: 'En traitement',
+      awaiting_approval: "En attente d'approbation",
+      approved: 'Approuvées',
+      completed: 'Clôturées',
+      rejected: 'Rejetées',
+    }[key]
+  }
+  return {
+    confirmation_needed: 'بحاجة تأكيد',
+    in_processing: 'قيد المعالجة',
+    awaiting_approval: 'بانتظار الموافقة',
+    approved: 'موافق عليها',
+    completed: 'مكتملة',
+    rejected: 'مرفوضة',
+  }[key]
+}
+
+function urgencyOf(status: RequestStatus): number {
+  switch (status) {
+    case 'submitted':
+      return 0
+    case 'merchant_confirmed':
+      return 1
+    case 'processing':
+      return 2
+    case 'approved':
+      return 3
+    case 'completed':
+      return 4
+    case 'merchant_rejected':
+      return 5
+    default:
+      return 99
+  }
+}
 
 function payoutOf(amount: number): number {
   return amount - Math.round((amount * merchantProfile.commissionRate) / 100)
@@ -28,16 +94,23 @@ function payoutOf(amount: number): number {
 export default function RequestsPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
+  const ar = locale === 'ar'
   const navigate = useNavigate()
-  const [tab, setTab] = useState<string>('new')
+  const [tab, setTab] = useState<TabKey>('confirmation_needed')
 
   const { data, isLoading } = useQuery({ queryKey: ['requests'], queryFn: fetchRequests })
-  const all = data ?? []
+  const all = useMemo<IncomingRequest[]>(() => data ?? [], [data])
 
   const active = TABS.find((tb) => tb.key === tab) ?? TABS[0]
-  const rows = all.filter((r) => r.status === active.status)
-  const countOf = (status: RequestStatus) => all.filter((r) => r.status === status).length
-  const pendingCount = countOf('submitted')
+  const rows = useMemo(
+    () =>
+      all
+        .filter((r) => active.match.includes(r.status))
+        .sort((a, b) => urgencyOf(a.status) - urgencyOf(b.status) || (b.submittedAt ?? '').localeCompare(a.submittedAt ?? '')),
+    [all, active],
+  )
+  const countOf = (tb: TabDef) => all.filter((r) => tb.match.includes(r.status)).length
+  const pendingCount = countOf(TABS[0])
 
   const columns: Column<IncomingRequest>[] = [
     {
@@ -81,6 +154,16 @@ export default function RequestsPage() {
       ),
     },
     {
+      key: 'progress',
+      header: ar ? 'التقدّم' : 'Progression',
+      align: 'center',
+      cell: (r) => (
+        <div className="flex items-center justify-center">
+          <RequestStepperCompact status={r.status} />
+        </div>
+      ),
+    },
+    {
       key: 'status',
       header: t('requests.columns.status'),
       align: 'end',
@@ -90,7 +173,11 @@ export default function RequestsPage() {
       key: 'date',
       header: t('requests.columns.date'),
       align: 'end',
-      cell: (r) => <span className="text-foreground-tertiary">{formatDate(r.createdAt, locale)}</span>,
+      cell: (r) => (
+        <span className="text-foreground-tertiary">
+          {formatDate((r.submittedAt ?? r.createdAt).slice(0, 10), locale)}
+        </span>
+      ),
     },
   ]
 
@@ -112,25 +199,45 @@ export default function RequestsPage() {
 
       <div className="mb-5 flex flex-wrap gap-1 rounded-2xl border border-border bg-card p-1 shadow-sm">
         {TABS.map((tb) => {
-          const count = countOf(tb.status as RequestStatus)
+          const count = countOf(tb)
+          const TabIcon = tb.icon
+          const isActive = tab === tb.key
+          const isProcessing = tb.key === 'in_processing'
           return (
             <button
               key={tb.key}
               type="button"
               onClick={() => setTab(tb.key)}
               className={cn(
-                'flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm transition-all sm:flex-none',
-                tab === tb.key
-                  ? 'bg-primary font-medium text-primary-fg shadow-sm'
+                'group flex flex-1 items-center justify-center gap-2 rounded-xl px-3.5 py-2.5 text-xs transition-all sm:flex-none sm:text-sm',
+                isActive
+                  ? tb.tint === 'amber'
+                    ? 'bg-amber-500/10 font-semibold text-amber-900 shadow-sm ring-1 ring-amber-300/60'
+                    : tb.tint === 'neutral'
+                      ? 'bg-background-secondary font-semibold text-foreground shadow-sm'
+                      : 'bg-primary font-semibold text-primary-fg shadow-sm'
                   : 'text-foreground-secondary hover:bg-background-secondary hover:text-foreground',
               )}
             >
-              {t(`requests.tabs.${tb.key}`)}
+              <TabIcon
+                size={14}
+                className={cn(
+                  isProcessing && isActive && 'animate-spin',
+                  tb.key === 'confirmation_needed' && isActive && 'animate-pulse-soft',
+                )}
+              />
+              {tabLabel(tb.key, locale)}
               {count > 0 ? (
                 <span
                   className={cn(
-                    'flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-medium',
-                    tab === tb.key ? 'bg-primary-fg/20 text-primary-fg' : 'bg-background-secondary text-foreground-tertiary',
+                    'flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-medium tabular-nums',
+                    isActive
+                      ? tb.tint === 'amber'
+                        ? 'bg-amber-500/20 text-amber-900'
+                        : tb.tint === 'neutral'
+                          ? 'bg-foreground/10 text-foreground'
+                          : 'bg-primary-fg/20 text-primary-fg'
+                      : 'bg-background-secondary text-foreground-tertiary',
                   )}
                 >
                   {count}

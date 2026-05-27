@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { ChevronRight, IdCard, Camera, UserX } from 'lucide-react'
+import { AlertTriangle, Camera, ChevronRight, IdCard, MapPin, ShieldAlert, UserX } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/data/StatusBadge'
@@ -14,7 +14,13 @@ import { EmptyState } from '@/components/data/EmptyState'
 import { Loader } from '@/components/data/Loader'
 import { cn } from '@/lib/utils'
 import { fetchClient } from '@/lib/mock/api'
-import { financings, type Client, type Financing } from '@/lib/mock/data'
+import {
+  DEBT_RATIO_MAX_PCT,
+  debtRatioPct,
+  financings,
+  type Client,
+  type Financing,
+} from '@/lib/mock/data'
 import { formatDzd, formatDate, type Locale } from '@/lib/format'
 
 const TABS = ['overview', 'kyc', 'financings', 'credit'] as const
@@ -63,11 +69,20 @@ export default function ClientDetailPage() {
         <Avatar name={c.name} size={52} />
         <div className="me-auto">
           <h1 className="text-xl font-medium text-foreground">{c.name}</h1>
-          <p className="text-sm tabular-nums text-foreground-tertiary" dir="ltr">{c.phone}</p>
+          <p className="flex items-center gap-2 text-sm text-foreground-tertiary">
+            <span className="tabular-nums" dir="ltr">{c.phone}</span>
+            <span className="text-foreground-tertiary/40">·</span>
+            <span className="inline-flex items-center gap-1">
+              <MapPin size={12} />
+              {c.wilaya}
+            </span>
+          </p>
         </div>
         <TierBadge tier={c.tier} />
         <StatusBadge status={c.kycStatus} />
       </div>
+
+      <DebtRatioPanel client={c} locale={locale} />
 
       <div className="mb-4 flex gap-1 border-b border-border">
         {TABS.map((tb) => (
@@ -97,11 +112,15 @@ export default function ClientDetailPage() {
 
 function OverviewTab({ client: c, locale }: { client: Client; locale: Locale }) {
   const { t } = useTranslation()
+  const ninLabel = locale === 'ar' ? 'الرقم الوطني (NIN)' : 'NIN'
+  const wilayaLabel = locale === 'ar' ? 'الولاية' : 'Wilaya'
   return (
     <Card className="px-5">
       <Field label={t('clients.fields.phone')} value={<span dir="ltr">{c.phone}</span>} />
+      <Field label={ninLabel} value={<span dir="ltr" className="font-mono tabular-nums">{c.nationalId || '—'}</span>} />
       <Field label={t('clients.fields.dob')} value={formatDate(c.dateOfBirth, locale)} />
       <Field label={t('clients.fields.address')} value={c.address} />
+      <Field label={wilayaLabel} value={c.wilaya} />
       <Field label={t('clients.columns.commune')} value={c.commune} />
       <Field label={t('clients.fields.employment')} value={t(`employment.${c.employmentStatus}`)} />
       <Field label={t('clients.fields.employer')} value={c.employer ?? '—'} />
@@ -217,5 +236,161 @@ function CreditTab({ client: c, locale }: { client: Client; locale: Locale }) {
         </div>
       </Card>
     </div>
+  )
+}
+
+// ── Debt-to-income panel ──────────────────────────────────────────────
+// Always visible across all tabs; mirrors the policy badge in the list page.
+//   • 0–15%   green
+//   • 15–25%  amber
+//   • 25–30%  red (admin must review)
+//   • > 30%   critical (auto-rejected by Crido policy)
+function DebtRatioPanel({ client: c, locale }: { client: Client; locale: Locale }) {
+  const ratio = debtRatioPct(c)
+  const hasIncome = !!c.monthlyIncomeDzd && c.monthlyIncomeDzd > 0
+  const overPolicy = hasIncome && ratio > DEBT_RATIO_MAX_PCT
+  const isHigh = hasIncome && ratio > 25 && ratio <= DEBT_RATIO_MAX_PCT
+  const isCaution = hasIncome && ratio > 15 && ratio <= 25
+
+  // Bar is clamped to 100% but tinted by the band.
+  const barPct = Math.min(100, Math.max(0, ratio))
+  const policyPct = DEBT_RATIO_MAX_PCT // 30
+  const barColor = overPolicy
+    ? '#E24B4A'
+    : isHigh
+      ? '#E24B4A'
+      : isCaution
+        ? '#EF9F27'
+        : '#1D9E75'
+  const ratioTextClass = overPolicy
+    ? 'text-[#E24B4A]'
+    : isHigh
+      ? 'text-[#791F1F]'
+      : isCaution
+        ? 'text-[#633806]'
+        : 'text-[#04342C]'
+
+  const lbl = {
+    title: locale === 'ar' ? 'نسبة المديونية الشهرية' : "Ratio d'endettement mensuel",
+    formula: locale === 'ar' ? 'القسط الشهري ÷ الدخل الشهري × 100' : 'Charge mensuelle ÷ Revenu × 100',
+    debt: locale === 'ar' ? 'القسط الشهري' : 'Charge mensuelle',
+    income: locale === 'ar' ? 'الدخل الشهري' : 'Revenu mensuel',
+    policy: locale === 'ar' ? `السقف ${policyPct}%` : `Plafond ${policyPct}%`,
+    policyNote:
+      locale === 'ar'
+        ? `سياسة Crido: لا يجب أن تتجاوز نسبة المديونية الشهرية ${policyPct}٪ من خلاصة الدخل.`
+        : `Politique Crido : le ratio mensuel ne doit pas dépasser ${policyPct}% du revenu.`,
+    overWarning:
+      locale === 'ar'
+        ? `هذا العميل يتجاوز سقف ${policyPct}٪ — مرفوض تلقائياً وفق سياسة المخاطر.`
+        : `Ce client dépasse le plafond de ${policyPct}% — automatiquement refusé.`,
+    highWarning:
+      locale === 'ar'
+        ? 'تحذير: نسبة المديونية مرتفعة — تتطلب مراجعة من المسؤول قبل قبول أي تمويل جديد.'
+        : 'Alerte : ratio élevé — toute nouvelle demande nécessite une revue manuelle.',
+    cautionNote:
+      locale === 'ar' ? 'نسبة معتدلة — قابلة للقبول' : 'Ratio modéré — acceptable',
+    safeNote: locale === 'ar' ? 'هامش أمان جيد' : 'Marge confortable',
+    noIncome:
+      locale === 'ar'
+        ? 'لا يوجد دخل مُسجَّل — لا يمكن حساب نسبة المديونية.'
+        : 'Aucun revenu enregistré — ratio non calculable.',
+  }
+
+  return (
+    <Card
+      className={cn(
+        'mb-4 overflow-hidden border-l-4 p-5',
+        overPolicy
+          ? 'border-l-[#E24B4A] bg-[#FCEBEB]/40'
+          : isHigh
+            ? 'border-l-[#E24B4A]'
+            : isCaution
+              ? 'border-l-[#EF9F27]'
+              : 'border-l-[#1D9E75]',
+      )}
+    >
+      <div className="flex flex-wrap items-end gap-6">
+        <div className="min-w-[180px]">
+          <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-foreground-tertiary">
+            <ShieldAlert size={12} />
+            {lbl.title}
+          </p>
+          {hasIncome ? (
+            <p className={cn('mt-1 text-5xl font-semibold tabular-nums leading-none', ratioTextClass)}>
+              {ratio.toFixed(1)}
+              <span className="text-3xl">%</span>
+            </p>
+          ) : (
+            <p className="mt-1 text-3xl font-medium text-foreground-tertiary">—</p>
+          )}
+          <p className="mt-1 text-[11px] text-foreground-tertiary">{lbl.formula}</p>
+        </div>
+
+        <div className="flex flex-1 flex-col gap-3 min-w-[260px]">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
+            <span className="inline-flex items-center gap-2">
+              <span className="text-foreground-tertiary">{lbl.debt}</span>
+              <span className="font-medium tabular-nums text-foreground">
+                {c.currentMonthlyDebtDzd ? formatDzd(c.currentMonthlyDebtDzd, locale) : '—'}
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <span className="text-foreground-tertiary">{lbl.income}</span>
+              <span className="font-medium tabular-nums text-foreground">
+                {c.monthlyIncomeDzd ? formatDzd(c.monthlyIncomeDzd, locale) : '—'}
+              </span>
+            </span>
+          </div>
+
+          {/* Bar with 30% policy marker */}
+          <div className="relative" aria-hidden>
+            <div className="h-3 overflow-hidden rounded-full bg-background-secondary">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{ width: `${barPct}%`, backgroundColor: barColor }}
+              />
+            </div>
+            {/* 30% policy marker line */}
+            <div
+              className="absolute -top-1 h-5 w-px bg-foreground-secondary/80"
+              style={{ insetInlineStart: `${policyPct}%` }}
+            />
+            <span
+              className="absolute -top-5 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground-secondary/90 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-background"
+              style={{ insetInlineStart: `${policyPct}%`, ['--tw-translate-x' as string]: '-50%' }}
+            >
+              {lbl.policy}
+            </span>
+            <div className="mt-1 flex justify-between text-[10px] tabular-nums text-foreground-tertiary">
+              <span>0%</span>
+              <span>50%</span>
+              <span>100%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Contextual warning / note */}
+      {overPolicy ? (
+        <div className="mt-4 flex items-start gap-2 rounded-lg bg-[#E24B4A] px-3 py-2 text-sm text-white">
+          <AlertTriangle size={16} strokeWidth={2.5} className="mt-0.5 shrink-0" />
+          <span>{lbl.overWarning}</span>
+        </div>
+      ) : isHigh ? (
+        <div className="mt-4 flex items-start gap-2 rounded-lg border border-[#E24B4A]/30 bg-[#FCEBEB]/60 px-3 py-2 text-sm text-[#791F1F]">
+          <AlertTriangle size={16} strokeWidth={2} className="mt-0.5 shrink-0" />
+          <span>{lbl.highWarning}</span>
+        </div>
+      ) : isCaution ? (
+        <p className="mt-3 text-xs text-[#633806]">{lbl.cautionNote}</p>
+      ) : hasIncome ? (
+        <p className="mt-3 text-xs text-[#04342C]/80">{lbl.safeNote}</p>
+      ) : (
+        <p className="mt-3 text-xs text-foreground-tertiary">{lbl.noIncome}</p>
+      )}
+
+      <p className="mt-2 text-[11px] text-foreground-tertiary">{lbl.policyNote}</p>
+    </Card>
   )
 }

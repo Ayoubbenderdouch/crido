@@ -80,6 +80,26 @@ body {
   }
 }
 
+/* Soft pulse used on the active step of the request status stepper */
+@keyframes crido-pulse-soft {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(15, 110, 86, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(15, 110, 86, 0);
+  }
+}
+
+.animate-pulse-soft {
+  animation: crido-pulse-soft 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-soft {
+    animation: none;
+  }
+}
+
 /* Quiet scrollbars */
 * {
   scrollbar-width: thin;
